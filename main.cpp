@@ -200,13 +200,24 @@ public:
 		}
 		else
 		{
-			return window;
+			window->main_surface_ = SDL_GetWindowSurface(window->sdl_handle_);
+			if (window->main_surface_ == nullptr)
+			{
+				const char* error_message = SDL_GetError();
+				Error("SDL_GetWindowSurface Failed", error_message);
+				return nullptr;
+			}
+			else
+			{
+				return window;
+			}
 		}
 	}
 
 private:
 
 	SDL_Window* sdl_handle_ = nullptr;
+	SDL_Surface* main_surface_ = nullptr;
 
 	static void destroy(void* ptr)
 	{
