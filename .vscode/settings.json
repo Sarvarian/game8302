@@ -51,5 +51,10 @@
     "xtr1common": "cpp",
     "xutility": "cpp"
   },
-  "cSpell.words": ["SDL_MESSAGEBOX_ERROR", "SDL_WINDOWPOS_UNDEFINED"]
+  "cSpell.words": [
+    "blit",
+    "SDL_BlitSurface",
+    "SDL_MESSAGEBOX_ERROR",
+    "SDL_WINDOWPOS_UNDEFINED"
+  ]
 }

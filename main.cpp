@@ -2,8 +2,10 @@
 #include <iostream>
 #include "SDL2/SDL.h"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define WINDOW_SCREEN_WIDTH 800
+#define WINDOW_SCREEN_HEIGHT 600
+#define WINDOW_TITLE "Game Window"
+#define SPRITE_SHEET_FILE_NAME "art.bmp"
 
 #define DEBUG_MESSAGE_DESTROY 0
 
@@ -52,7 +54,7 @@ int ExitCode::exit_code_ = 0;
 
 void Error(const char* title, const char* message)
 {
-	std::cerr << title << " : " << message << '\n';
+	std::cerr << "Error: " << title << " : " << message << '\n';
 	SDL_ShowSimpleMessageBox(
 		SDL_MESSAGEBOX_ERROR,
 		title,
@@ -61,9 +63,14 @@ void Error(const char* title, const char* message)
 	);
 }
 
+void SilentError(const char* title, const char* message)
+{
+	SDL_Log("Error: %s : %s", title, message);
+}
+
 void DebugLog(const char* message)
 {
-	SDL_Log("%s", message);
+	SDL_Log("DEBUG: %s", message);
 }
 
 void app_main();
@@ -152,6 +159,7 @@ public:
 	bool did_init = false;
 	bool do_run_main_loop = false;
 	class Window* window = nullptr;
+	class SpriteSheet* sheet = nullptr;
 
 };
 
@@ -187,9 +195,9 @@ public:
 		state->destruction_stack.add(window, Window::destroy);
 
 		window->sdl_handle_ = SDL_CreateWindow(
-			"Game Window",
+			WINDOW_TITLE,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			SCREEN_WIDTH, SCREEN_HEIGHT,
+			WINDOW_SCREEN_WIDTH, WINDOW_SCREEN_HEIGHT,
 			0
 		);
 		if (window->sdl_handle_ == nullptr)
@@ -211,6 +219,21 @@ public:
 			{
 				return window;
 			}
+		}
+	}
+
+	void blit(SDL_Surface* src_surface, const SDL_Rect* src_rect, SDL_Rect* dist_rect)
+	{
+		SDL_BlitSurface(src_surface, src_rect, main_surface_, dist_rect);
+	}
+
+	void update()
+	{
+		int res = SDL_UpdateWindowSurface(sdl_handle_);
+		if (res != 0)
+		{
+			const char* error_message = SDL_GetError();
+			SilentError("SDL_UpdateWindowSurface Failed", error_message);
 		}
 	}
 
@@ -240,16 +263,73 @@ private:
 
 };
 
+class SpriteSheet
+{
+public:
+
+	static SpriteSheet* create(GlobalState* state)
+	{
+		SpriteSheet* sheet = new SpriteSheet();
+		state->destruction_stack.add(sheet, destroy);
+
+		sheet->surface_ = SDL_LoadBMP(SPRITE_SHEET_FILE_NAME);
+		if (sheet->surface_ == nullptr)
+		{
+			const char* error_message = SDL_GetError();
+			Error("SDL_LoadBMP(SPRITE_SHEET_FILE_NAME) Failed", error_message);
+			return nullptr;
+		}
+		else
+		{
+			return sheet;
+		}
+	}
+
+	SDL_Surface* get()
+	{
+		return surface_;
+	}
+
+private:
+
+	SDL_Surface* surface_ = nullptr;
+
+	static void destroy(void* ptr)
+	{
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Sprite sheet destruction starts here.");
+#endif
+
+		SpriteSheet* sheet = (SpriteSheet*)ptr;
+		if (sheet->surface_ != nullptr)
+		{
+			SDL_FreeSurface(sheet->surface_);
+			sheet->surface_ = nullptr;
+		}
+		delete sheet;
+
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Sprite sheet destruction ends here.");
+#endif
+	}
+
+};
+
 void initialization(GlobalState* state)
 {
 	state->did_init = true;
+
 	state->window = Window::create(state);
 	if (state->window == nullptr)
 	{
 		state->did_init = false;
 		const char* error_message = SDL_GetError();
 		Error("Window::create Failed", error_message);
+		return;
 	}
+
+	state->sheet = SpriteSheet::create(state);
+
 }
 
 void main_loop(GlobalState* state)
@@ -263,6 +343,19 @@ void main_loop(GlobalState* state)
 		}
 	}
 
+	SDL_Rect src = {};
+	src.x = 0;
+	src.y = 0;
+	src.w = 128;
+	src.h = 128;
+	SDL_Rect dist = {};
+	dist.x = 100;
+	dist.y = 100;
+	dist.w = 128;
+	dist.h = 128;
+	state->window->blit(state->sheet->get(), &src, &dist);
+
+	state->window->update();
 
 }
 
