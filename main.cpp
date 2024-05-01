@@ -212,12 +212,21 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		// i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
+		i32 actual_delay = (i32)(frame_started_at - previous_frame_ended_at);
+		i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
 		i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
 
 		// i32 frame_time_method_1 = from_start_of_frame;
-		i32 frame_time_method_2 = from_last_frame_ended - ((i32)(max_frame_time_in_milliseconds));
+		i32 frame_time_method_2 = 0;
 
+		if (actual_delay > max_frame_time_in_milliseconds)
+		{
+			frame_time_method_2 = from_last_frame_ended - max_frame_time_in_milliseconds;
+		}
+		else
+		{
+			frame_time_method_2 = from_start_of_frame;
+		}
 
 		i32 frame_time = frame_time_method_2;
 
