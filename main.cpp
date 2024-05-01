@@ -220,6 +220,11 @@ private:
 				((i32)(max_frame_time_in_miliseconds)) - ((i32)(frame_time_1))
 				)
 			;
+
+		if (delay_time > max_frame_time_in_miliseconds)
+		{
+			delay_time = 0;
+		}
 	}
 
 #if DEBUG_PRINT_FPS_EVERY_SECOND
