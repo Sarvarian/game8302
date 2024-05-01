@@ -8,7 +8,8 @@ using namespace ab;
 #define WINDOW_TITLE "Game Window"
 #define SPRITE_SHEET_FILE_NAME "art.bmp"
 
-#define DEBUG_PRINT_FPS_EVERY_SECOND 1
+#define DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND 1
+#define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
 #define DEBUG_MESSAGE_DESTROY 0
 
 class CMDLine
@@ -184,14 +185,16 @@ public:
 		frame_ended_at = get_tick();
 		calculate_delay_time();
 
-#if DEBUG_PRINT_FPS_EVERY_SECOND
+#if DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND
 
 		print_fps_every_second();
 #endif
 
 		if (delay_time > 0)
 		{
-			// SDL_Log("delay time: %u", delay_time);
+#if DEBUG_LOG_MAIN_LOOP_DELAY_TIME
+			SDL_Log("delay time: %u", delay_time);
+#endif
 			SDL_Delay(delay_time);
 		}
 	}
@@ -228,7 +231,7 @@ private:
 		}
 	}
 
-#if DEBUG_PRINT_FPS_EVERY_SECOND
+#if DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND
 	u64 last_print = 0;
 	std::vector<int> fps_data = std::vector<int>((size_t)120);
 
