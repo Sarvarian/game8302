@@ -17,16 +17,16 @@ namespace ab
 		typedef intptr_t   isize;
 		typedef uintptr_t  usize;
 
-#define ptr   void*
-#define null  NULL
+		// #define ptr   void*
+		// #define null  NULL
 
-		// #define and   &&
-		// #define or    ||
-		// #define not   !
+				// #define and   &&
+				// #define or    ||
+				// #define not   !
 
-#define sub
-#define proc  void
-#define func
+		// #define sub
+		// #define proc  void
+		// #define func
 
 	} // space: primitives
 

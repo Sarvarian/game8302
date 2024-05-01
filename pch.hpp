@@ -1,7 +1,8 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+#include <iostream>
 
 #if defined(_MSC_VER) && (_MSC_VER < 1300)
 #define OLD_MSVC
@@ -10,7 +11,8 @@
 #ifdef OLD_MSVC
 #include "SDL_stdinc.h"
 #else
-#include "SDL.h"
+#include "SDL2/SDL.h"
+// #include "SDL.h"
 #endif
 
 #ifdef OLD_MSVC
