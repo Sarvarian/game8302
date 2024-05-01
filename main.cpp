@@ -190,7 +190,10 @@ public:
 		SDL_Log("delay time: %d", delay_time);
 #endif
 
-		SDL_Delay(delay_time);
+		if (delay_time > 0)
+		{
+			SDL_Delay(delay_time);
+		}
 	}
 
 private:
