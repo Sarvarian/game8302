@@ -54,7 +54,7 @@
   "cSpell.words": [
     "blit",
     "isize",
-    "keysym",
+    "event.key.keysym.scancode",
     "SDL_BlitSurface",
     "SDL_MESSAGEBOX_ERROR",
     "SDL_WINDOWPOS_UNDEFINED"
