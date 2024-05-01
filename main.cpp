@@ -160,7 +160,7 @@ public:
 
 	static constexpr u64 one_second = 1;
 	static constexpr u64 miliseconds_per_seconds = 1000;
-	static constexpr u64 max_frame_time_in_miliseconds =
+	static constexpr u64 max_frame_time_in_milliseconds =
 		(u64)(
 			(((double)(one_second)) / ((double)(MAIN_LOOP_RATE_PER_SECOND)))
 			* ((double)(miliseconds_per_seconds))
@@ -209,21 +209,21 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
+		i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
 		// i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
 
-		i64 frame_time_1 = from_start_of_frame;
-		// i32 frame_time_2 = from_last_frame_ended - ((i32)(max_frame_time_in_miliseconds));
+		i32 frame_time_method_1 = from_start_of_frame;
+		// i32 frame_time_method_2 = from_last_frame_ended - ((i32)(max_frame_time_in_milliseconds));
 
-		delay_time =
-			(u32)(
-				((i32)(max_frame_time_in_miliseconds)) - ((i32)(frame_time_1))
-				)
-			;
 
-		if (delay_time > max_frame_time_in_miliseconds)
+		i32 frame_time = frame_time_method_1;
+		if (frame_time >= max_frame_time_in_milliseconds)
 		{
 			delay_time = 0;
+		}
+		else
+		{
+			delay_time = max_frame_time_in_milliseconds - frame_time;
 		}
 	}
 
@@ -234,7 +234,7 @@ private:
 	void print_fps_every_second()
 	{
 		int fps = 0;
-		int frame_time = (frame_ended_at - previous_frame_ended_at);
+		int frame_time = (int)(frame_ended_at - previous_frame_ended_at);
 		if (frame_time > 0)
 		{
 			fps = (int)miliseconds_per_seconds / frame_time;
@@ -247,8 +247,8 @@ private:
 			{
 				data_sum += datum;
 			}
-			int average_fps = data_sum / fps_data.size();
-			SDL_Log("FPS: %d", average_fps);
+			isize average_fps = data_sum / fps_data.size();
+			SDL_Log("FPS: %lld", average_fps);
 			last_print = frame_ended_at;
 			fps_data.clear();
 		}
