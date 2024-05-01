@@ -17,6 +17,9 @@ namespace ab
 		typedef intptr_t   isize;
 		typedef uintptr_t  usize;
 
+		using glm::ivec2;
+		using glm::uvec2;
+
 		// #define ptr   void*
 		// #define null  NULL
 

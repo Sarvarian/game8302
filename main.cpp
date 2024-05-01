@@ -1,7 +1,5 @@
 #include "pch.hpp"
 
-#include "game_objects.hpp"
-
 using namespace ab;
 
 #define MAIN_LOOP_RATE_PER_SECOND 60
@@ -393,6 +391,44 @@ private:
 
 };
 
+struct GameObject
+{
+public:
+	ivec2 position() const
+	{
+		return position_;
+	}
+
+	uvec2 sprite_index() const
+	{
+		return sprite_index_;
+	}
+
+protected:
+	ivec2 position_ = {};
+	uvec2 sprite_index_ = {};
+};
+
+struct Ship : public GameObject
+{
+public:
+
+	Ship()
+	{
+		position_.x = 100;
+		position_.y = 100;
+	}
+
+	void move(ivec2 dir)
+	{
+		position_ += speed_ * dir;
+	}
+
+private:
+	i32 speed_ = 5;
+
+};
+
 class SpriteSheet
 {
 public:
@@ -418,13 +454,13 @@ public:
 	void blit(const GameObject* object, Window* window)
 	{
 		SDL_Rect src = {};
-		src.x = SPRITE_SIZE * object->sprite_index_x;
-		src.y = SPRITE_SIZE * object->sprite_index_y;
+		src.x = SPRITE_SIZE * object->sprite_index().x;
+		src.y = SPRITE_SIZE * object->sprite_index().y;
 		src.w = SPRITE_SIZE;
 		src.h = SPRITE_SIZE;
 		SDL_Rect dist = {};
-		dist.x = object->pos_x;
-		dist.y = object->pos_y;
+		dist.x = object->position().x;
+		dist.y = object->position().y;
 		dist.w = SPRITE_SIZE;
 		dist.h = SPRITE_SIZE;
 		window->blit(surface_, &src, &dist);
@@ -453,46 +489,6 @@ private:
 #endif
 	}
 
-};
-
-struct ivec2
-{
-	i32 x = 0;
-	i32 y = 0;
-};
-
-struct uvec2
-{
-	u32 x = 0;
-	u32 y = 0;
-};
-
-struct GameObject
-{
-public:
-
-
-protected:
-	ivec2 position = {};
-	uvec2 sprite_index = {};
-};
-
-struct Ship : public GameObject
-{
-public:
-	u32 speed = 5;
-
-	Ship()
-	{
-		position.x = 100;
-		position.y = 100;
-	}
-
-	void move(i32 dir_x, i32 dir_y)
-	{
-		pos_x += speed * dir_x;
-		pos_y += speed * dir_y;
-	}
 };
 
 class GameState
@@ -560,10 +556,7 @@ void main_loop(GlobalState* global_state)
 	GameState* game_state = global_state->game_state;
 	Ship* ship = &(game_state->ship);
 
-	static struct {
-		i32 dir_x = 0;
-		i32 dir_y = 0;
-	} ship_move_control;
+	static ivec2 ship_move_dir;
 
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
@@ -576,43 +569,43 @@ void main_loop(GlobalState* global_state)
 		{
 			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
-				ship_move_control.dir_x -= 1;
+				ship_move_dir.x -= 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
 			{
-				ship_move_control.dir_x += 1;
+				ship_move_dir.x += 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
 			{
-				ship_move_control.dir_y -= 1;
+				ship_move_dir.y -= 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
 			{
-				ship_move_control.dir_y += 1;
+				ship_move_dir.y += 1;
 			}
 		}
 		else if (event.type == SDL_KEYUP)
 		{
 			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
-				ship_move_control.dir_x += 1;
+				ship_move_dir.x += 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
 			{
-				ship_move_control.dir_x -= 1;
+				ship_move_dir.x -= 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
 			{
-				ship_move_control.dir_y += 1;
+				ship_move_dir.y += 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
 			{
-				ship_move_control.dir_y -= 1;
+				ship_move_dir.y -= 1;
 			}
 		}
 	}
 
-	ship->move(ship_move_control.dir_x, ship_move_control.dir_y);
+	ship->move(ship_move_dir);
 
 	global_state->window->clear();
 

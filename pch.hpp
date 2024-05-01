@@ -28,4 +28,6 @@ typedef int              intptr_t;
 #endif
 #endif
 
+#include "glm/glm.hpp"
+
 #include "primes.hpp"
