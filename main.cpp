@@ -278,6 +278,7 @@ public:
 	bool do_run_main_loop = false;
 	class Window* window = nullptr;
 	class SpriteSheet* sheet = nullptr;
+	class GameState* game_state = nullptr;
 
 };
 
@@ -436,6 +437,34 @@ private:
 
 };
 
+class GameState
+{
+public:
+	static GameState* create(GlobalState* state)
+	{
+		GameState* game_state = new GameState();
+		state->destruction_stack.add(game_state, destroy);
+
+		return game_state;
+	}
+
+private:
+
+	static void destroy(void* ptr)
+	{
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Game state destruction starts here.");
+#endif
+
+		GameState* game_state = (GameState*)ptr;
+		delete game_state;
+
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Game state destruction ends here.");
+#endif
+	}
+};
+
 void initialization(GlobalState* state)
 {
 	state->did_init = true;
@@ -450,7 +479,20 @@ void initialization(GlobalState* state)
 	}
 
 	state->sheet = SpriteSheet::create(state);
+	if (state->sheet == nullptr)
+	{
+		state->did_init = false;
+		Error("SpriteSheet::create Failed", "state->sheet == nullptr");
+		return;
+	}
 
+	state->game_state = GameState::create(state);
+	if (state->game_state == nullptr)
+	{
+		state->did_init = false;
+		Error("GameState::create Failed", "state->game_state == nullptr");
+		return;
+	}
 }
 
 void main_loop(GlobalState* state)
