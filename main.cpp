@@ -1,5 +1,7 @@
 #include "pch.hpp"
 
+#include "game_objects.hpp"
+
 using namespace ab;
 
 #define MAIN_LOOP_RATE_PER_SECOND 60
@@ -7,6 +9,7 @@ using namespace ab;
 #define WINDOW_SCREEN_HEIGHT 600
 #define WINDOW_TITLE "Game Window"
 #define SPRITE_SHEET_FILE_NAME "art.bmp"
+#define SPRITE_SIZE 128
 
 #define DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND 0
 #define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
@@ -349,6 +352,11 @@ public:
 		SDL_BlitSurface(src_surface, src_rect, main_surface_, dist_rect);
 	}
 
+	void clear()
+	{
+		SDL_FillRect(main_surface_, nullptr, 0x000000);
+	}
+
 	void update()
 	{
 		int res = SDL_UpdateWindowSurface(sdl_handle_);
@@ -407,9 +415,19 @@ public:
 		}
 	}
 
-	SDL_Surface* get()
+	void blit(const GameObject* object, Window* window)
 	{
-		return surface_;
+		SDL_Rect src = {};
+		src.x = SPRITE_SIZE * object->sprite_index_x;
+		src.y = SPRITE_SIZE * object->sprite_index_y;
+		src.w = SPRITE_SIZE;
+		src.h = SPRITE_SIZE;
+		SDL_Rect dist = {};
+		dist.x = object->pos_x;
+		dist.y = object->pos_y;
+		dist.w = SPRITE_SIZE;
+		dist.h = SPRITE_SIZE;
+		window->blit(surface_, &src, &dist);
 	}
 
 private:
@@ -447,6 +465,8 @@ public:
 
 		return game_state;
 	}
+
+	Ship ship = {};
 
 private:
 
@@ -495,30 +515,44 @@ void initialization(GlobalState* state)
 	}
 }
 
-void main_loop(GlobalState* state)
+void main_loop(GlobalState* global_state)
 {
+	GameState* game_state = global_state->game_state;
+	Ship* ship = &(game_state->ship);
+
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 		{
-			state->do_run_main_loop = false;
+			global_state->do_run_main_loop = false;
+		}
+		else if (event.type == SDL_KEYDOWN)
+		{
+			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+			{
+				ship->pos_x -= ship->speed;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+			{
+				ship->pos_x += ship->speed;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+			{
+				ship->pos_y -= ship->speed;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+			{
+				ship->pos_y += ship->speed;
+			}
 		}
 	}
 
-	SDL_Rect src = {};
-	src.x = 0;
-	src.y = 0;
-	src.w = 128;
-	src.h = 128;
-	SDL_Rect dist = {};
-	dist.x = 100;
-	dist.y = 100;
-	dist.w = 128;
-	dist.h = 128;
-	state->window->blit(state->sheet->get(), &src, &dist);
+	global_state->window->clear();
 
-	state->window->update();
+	global_state->sheet->blit(ship, global_state->window);
+
+	global_state->window->update();
 
 }
 
