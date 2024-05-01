@@ -191,7 +191,7 @@ public:
 
 		if (delay_time > 0)
 		{
-			SDL_Log("delay time: %u", delay_time);
+			// SDL_Log("delay time: %u", delay_time);
 			SDL_Delay(delay_time);
 		}
 	}
@@ -209,14 +209,15 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
-		// i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
+		// i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
+		i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
 
-		i32 frame_time_method_1 = from_start_of_frame;
-		// i32 frame_time_method_2 = from_last_frame_ended - ((i32)(max_frame_time_in_milliseconds));
+		// i32 frame_time_method_1 = from_start_of_frame;
+		i32 frame_time_method_2 = from_last_frame_ended - ((i32)(max_frame_time_in_milliseconds));
 
 
-		i32 frame_time = frame_time_method_1;
+		i32 frame_time = frame_time_method_2;
+
 		if (frame_time >= max_frame_time_in_milliseconds)
 		{
 			delay_time = 0;
