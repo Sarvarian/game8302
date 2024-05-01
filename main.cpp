@@ -520,6 +520,11 @@ void main_loop(GlobalState* global_state)
 	GameState* game_state = global_state->game_state;
 	Ship* ship = &(game_state->ship);
 
+	static struct {
+		i32 dir_x = 0;
+		i32 dir_y = 0;
+	} ship_move_control;
+
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
@@ -531,22 +536,43 @@ void main_loop(GlobalState* global_state)
 		{
 			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
-				ship->pos_x -= ship->speed;
+				ship_move_control.dir_x -= 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
 			{
-				ship->pos_x += ship->speed;
+				ship_move_control.dir_x += 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
 			{
-				ship->pos_y -= ship->speed;
+				ship_move_control.dir_y -= 1;
 			}
 			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
 			{
-				ship->pos_y += ship->speed;
+				ship_move_control.dir_y += 1;
+			}
+		}
+		else if (event.type == SDL_KEYUP)
+		{
+			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+			{
+				ship_move_control.dir_x += 1;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+			{
+				ship_move_control.dir_x -= 1;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
+			{
+				ship_move_control.dir_y += 1;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
+			{
+				ship_move_control.dir_y -= 1;
 			}
 		}
 	}
+
+	ship->move(ship_move_control.dir_x, ship_move_control.dir_y);
 
 	global_state->window->clear();
 
