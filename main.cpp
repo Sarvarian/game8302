@@ -192,7 +192,7 @@ public:
 #endif
 
 		{
-			u64 delay_time = calculate_delay_time();
+			u32 delay_time = calculate_delay_time();
 			SDL_Delay(delay_time);
 		}
 	}
@@ -203,7 +203,7 @@ private:
 	u64 frame_ended_at = 0;
 	u64 previous_frame_ended_at = 0;
 
-	u64 calculate_delay_time()
+	u32 calculate_delay_time()
 	{
 		i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
 		i64 from_last_frame = (i64)(previous_frame_ended_at - frame_ended_at);
@@ -212,7 +212,7 @@ private:
 		i64 frame_time_2 = from_last_frame - max_frame_time_in_miliseconds;
 
 		return
-			(u64)(
+			(u32)(
 				(i64)(
 					((i64)(max_frame_time_in_miliseconds)) - ((i64)(frame_time_1))
 					)
