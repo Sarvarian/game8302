@@ -189,10 +189,9 @@ public:
 		print_fps_every_second();
 #endif
 
-		Uint32 temp_delay_time = (Uint32)(delay_time);
-		if (temp_delay_time > 0)
+		if (delay_time > 0)
 		{
-			SDL_Log("delay time: %u", temp_delay_time);
+			SDL_Log("delay time: %u", delay_time);
 			SDL_Delay(delay_time);
 		}
 	}
