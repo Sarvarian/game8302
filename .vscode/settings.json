@@ -54,10 +54,11 @@
   },
   "cSpell.words": [
     "blit",
-    "isize",
     "event.key.keysym.scancode",
+    "isize",
     "SDL_BlitSurface",
     "SDL_MESSAGEBOX_ERROR",
-    "SDL_WINDOWPOS_UNDEFINED"
+    "SDL_WINDOWPOS_UNDEFINED",
+    "uvec"
   ]
 }

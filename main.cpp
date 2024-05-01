@@ -455,6 +455,46 @@ private:
 
 };
 
+struct ivec2
+{
+	i32 x = 0;
+	i32 y = 0;
+};
+
+struct uvec2
+{
+	u32 x = 0;
+	u32 y = 0;
+};
+
+struct GameObject
+{
+public:
+
+
+protected:
+	ivec2 position = {};
+	uvec2 sprite_index = {};
+};
+
+struct Ship : public GameObject
+{
+public:
+	u32 speed = 5;
+
+	Ship()
+	{
+		position.x = 100;
+		position.y = 100;
+	}
+
+	void move(i32 dir_x, i32 dir_y)
+	{
+		pos_x += speed * dir_x;
+		pos_y += speed * dir_y;
+	}
+};
+
 class GameState
 {
 public:
