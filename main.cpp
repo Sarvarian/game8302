@@ -247,7 +247,6 @@ private:
 			fps_data.clear();
 		}
 	}
-
 #endif
 
 };
