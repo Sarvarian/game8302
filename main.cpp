@@ -18,8 +18,6 @@ typedef uintptr_t  usize;
 using glm::ivec2;
 using glm::uvec2;
 
-using namespace ab;
-
 #define MAIN_LOOP_RATE_PER_SECOND 60
 #define WINDOW_SCREEN_WIDTH 800
 #define WINDOW_SCREEN_HEIGHT 600
