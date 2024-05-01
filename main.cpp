@@ -1,12 +1,14 @@
+#include "pch.hpp"
 
-#include <iostream>
-#include "SDL2/SDL.h"
+using namespace ab;
 
+#define MAIN_LOOP_RATE_PER_SECOND 60
 #define WINDOW_SCREEN_WIDTH 800
 #define WINDOW_SCREEN_HEIGHT 600
 #define WINDOW_TITLE "Game Window"
 #define SPRITE_SHEET_FILE_NAME "art.bmp"
 
+#define DEBUG_PRINT_FPS_EVERY_SECOND 1
 #define DEBUG_MESSAGE_DESTROY 0
 
 class CMDLine
@@ -152,10 +154,103 @@ private:
 
 };
 
+class MainLoopTiming
+{
+public:
+
+	static constexpr u64 one_second = 1;
+	static constexpr u64 miliseconds_per_seconds = 1000;
+	static constexpr u64 max_frame_time_in_miliseconds =
+		(u64)(
+			(((double)(one_second)) / ((double)(MAIN_LOOP_RATE_PER_SECOND)))
+			* ((double)(miliseconds_per_seconds))
+			);
+
+	u64 get_tick()
+	{
+		return SDL_GetTicks64();
+	}
+
+	void begin_frame()
+	{
+		{
+			frame_started_at = get_tick();
+		}
+	}
+
+	void end_frame()
+	{
+		{
+			previous_frame_ended_at = frame_ended_at;
+			frame_ended_at = get_tick();
+		}
+
+#if DEBUG_PRINT_FPS_EVERY_SECOND
+		{
+			print_fps_every_second();
+		}
+#endif
+
+		{
+			u64 delay_time = calculate_delay_time();
+			SDL_Delay(delay_time);
+		}
+	}
+
+private:
+
+	u64 frame_started_at = 0;
+	u64 frame_ended_at = 0;
+	u64 previous_frame_ended_at = 0;
+
+	u64 calculate_delay_time()
+	{
+		i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
+		i64 from_last_frame = (i64)(previous_frame_ended_at - frame_ended_at);
+
+		i64 frame_time_1 = from_start_of_frame;
+		i64 frame_time_2 = from_last_frame - max_frame_time_in_miliseconds;
+
+		return
+			(u64)(
+				(i64)(
+					((i64)(max_frame_time_in_miliseconds)) - ((i64)(frame_time_1))
+					)
+				)
+			;
+	}
+
+#if DEBUG_PRINT_FPS_EVERY_SECOND
+	u64 last_print = 0;
+	std::vector<int> fps_data = std::vector<int>((size_t)120);
+
+	void print_fps_every_second()
+	{
+		int fps = (previous_frame_ended_at - frame_ended_at);
+		fps_data.push_back(fps);
+		if (last_print - frame_ended_at < miliseconds_per_seconds)
+		{
+			int data_sum = 0;
+			for (int datum : fps_data)
+			{
+				data_sum += datum;
+			}
+			int average_fps = data_sum / fps_data.size();
+			SDL_Log("FPS: %d", average_fps);
+			last_print = frame_ended_at;
+			fps_data.clear();
+		}
+	}
+
+#endif
+
+};
+
 struct GlobalState
 {
 public:
 	Stack destruction_stack = Stack();
+	MainLoopTiming main_timing = MainLoopTiming();
 	bool did_init = false;
 	bool do_run_main_loop = false;
 	class Window* window = nullptr;
@@ -180,7 +275,9 @@ void app_main()
 		state.do_run_main_loop = true;
 		while (state.do_run_main_loop)
 		{
+			state.main_timing.begin_frame();
 			main_loop(&state);
+			state.main_timing.end_frame();
 		}
 	}
 }
