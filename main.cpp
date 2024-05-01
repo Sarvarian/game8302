@@ -574,8 +574,19 @@ private:
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Input system destruction starts here.");
 #endif
+
 		InputSystem* sys = (InputSystem*)ptr;
+
+		InputNode* node = sys->next_;
+		while (node != nullptr)
+		{
+			InputNode* next_node = node->next_;
+			delete node;
+			node = next_node;
+		}
+
 		delete sys;
+
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Input system destruction ends here.");
 #endif
