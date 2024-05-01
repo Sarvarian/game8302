@@ -187,11 +187,12 @@ public:
 #if DEBUG_PRINT_FPS_EVERY_SECOND
 
 		print_fps_every_second();
-		SDL_Log("delay time: %d", delay_time);
 #endif
 
-		if (delay_time > 0)
+		Uint32 temp_delay_time = (Uint32)(delay_time);
+		if (temp_delay_time > 0)
 		{
+			SDL_Log("delay time: %u", temp_delay_time);
 			SDL_Delay(delay_time);
 		}
 	}
@@ -209,17 +210,15 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		// i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
-		i64 from_last_frame_ended = (i64)(frame_ended_at - previous_frame_ended_at);
+		i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
+		// i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
 
-		// i64 frame_time_1 = from_start_of_frame;
-		i64 frame_time_2 = from_last_frame_ended - ((i64)(max_frame_time_in_miliseconds));
+		i64 frame_time_1 = from_start_of_frame;
+		// i32 frame_time_2 = from_last_frame_ended - ((i32)(max_frame_time_in_miliseconds));
 
 		delay_time =
 			(u32)(
-				(i64)(
-					((i64)(max_frame_time_in_miliseconds)) - ((i64)(frame_time_2))
-					)
+				((i32)(max_frame_time_in_miliseconds)) - ((i32)(frame_time_1))
 				)
 			;
 	}
