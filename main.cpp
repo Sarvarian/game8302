@@ -166,7 +166,7 @@ public:
 			* ((double)(miliseconds_per_seconds))
 			);
 
-	u64 get_tick()
+	static u64 get_tick()
 	{
 		return SDL_GetTicks64();
 	}
@@ -180,21 +180,17 @@ public:
 
 	void end_frame()
 	{
-		{
-			previous_frame_ended_at = frame_ended_at;
-			frame_ended_at = get_tick();
-		}
+		previous_frame_ended_at = frame_ended_at;
+		frame_ended_at = get_tick();
+		calculate_delay_time();
 
 #if DEBUG_PRINT_FPS_EVERY_SECOND
-		{
-			print_fps_every_second();
-		}
+
+		print_fps_every_second();
+		SDL_Log("delay time: %d", delay_time);
 #endif
 
-		{
-			u32 delay_time = calculate_delay_time();
-			SDL_Delay(delay_time);
-		}
+		SDL_Delay(delay_time);
 	}
 
 private:
@@ -202,19 +198,24 @@ private:
 	u64 frame_started_at = 0;
 	u64 frame_ended_at = 0;
 	u64 previous_frame_ended_at = 0;
+	u32 delay_time = 0;
+	u32 previous_delay_time = 0;
 
-	u32 calculate_delay_time()
+
+	void calculate_delay_time()
 	{
-		i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
-		i64 from_last_frame = (i64)(previous_frame_ended_at - frame_ended_at);
+		previous_delay_time = delay_time;
 
-		i64 frame_time_1 = from_start_of_frame;
-		i64 frame_time_2 = from_last_frame - max_frame_time_in_miliseconds;
+		// i64 from_start_of_frame = (i64)(frame_ended_at - frame_started_at);
+		i64 from_last_frame_ended = (i64)(frame_ended_at - previous_frame_ended_at);
 
-		return
+		// i64 frame_time_1 = from_start_of_frame;
+		i64 frame_time_2 = from_last_frame_ended - ((i64)(max_frame_time_in_miliseconds));
+
+		delay_time =
 			(u32)(
 				(i64)(
-					((i64)(max_frame_time_in_miliseconds)) - ((i64)(frame_time_1))
+					((i64)(max_frame_time_in_miliseconds)) - ((i64)(frame_time_2))
 					)
 				)
 			;
@@ -226,9 +227,14 @@ private:
 
 	void print_fps_every_second()
 	{
-		int fps = (previous_frame_ended_at - frame_ended_at);
+		int fps = 0;
+		int frame_time = (frame_ended_at - previous_frame_ended_at);
+		if (frame_time > 0)
+		{
+			fps = (int)miliseconds_per_seconds / frame_time;
+		}
 		fps_data.push_back(fps);
-		if (last_print - frame_ended_at < miliseconds_per_seconds)
+		if (frame_ended_at - last_print > miliseconds_per_seconds)
 		{
 			int data_sum = 0;
 			for (int datum : fps_data)
@@ -250,7 +256,6 @@ struct GlobalState
 {
 public:
 	Stack destruction_stack = Stack();
-	MainLoopTiming main_timing = MainLoopTiming();
 	bool did_init = false;
 	bool do_run_main_loop = false;
 	class Window* window = nullptr;
@@ -264,6 +269,7 @@ void main_loop(GlobalState*);
 void app_main()
 {
 	GlobalState state = GlobalState();
+	MainLoopTiming timing = MainLoopTiming();
 
 	initialization(&state);
 	if (state.did_init == false)
@@ -275,9 +281,9 @@ void app_main()
 		state.do_run_main_loop = true;
 		while (state.do_run_main_loop)
 		{
-			state.main_timing.begin_frame();
+			timing.begin_frame();
 			main_loop(&state);
-			state.main_timing.end_frame();
+			timing.end_frame();
 		}
 	}
 }
