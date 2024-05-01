@@ -1,5 +1,19 @@
-#include <iostream>
+#define MAIN_LOOP_RATE_PER_SECOND 60
+#define WINDOW_SCREEN_WIDTH 800
+#define WINDOW_SCREEN_HEIGHT 600
+#define WINDOW_TITLE "Game Window"
+#define SPRITE_SHEET_FILE_NAME "art.bmp"
+#define SPRITE_SIZE 128
+
+#define DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND 0
+#define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
+#define DEBUG_MESSAGE_DESTROY 0
+
+#if DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND
 #include <vector>
+#endif
+
+#include <iostream>
 #include "SDL2/SDL.h"
 #include "glm/glm.hpp"
 
@@ -17,17 +31,6 @@ typedef uintptr_t  usize;
 
 using glm::ivec2;
 using glm::uvec2;
-
-#define MAIN_LOOP_RATE_PER_SECOND 60
-#define WINDOW_SCREEN_WIDTH 800
-#define WINDOW_SCREEN_HEIGHT 600
-#define WINDOW_TITLE "Game Window"
-#define SPRITE_SHEET_FILE_NAME "art.bmp"
-#define SPRITE_SIZE 128
-
-#define DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND 0
-#define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
-#define DEBUG_MESSAGE_DESTROY 0
 
 class CMDLine
 {
@@ -145,8 +148,10 @@ public:
 		StackNode* node = last_node_;
 		while (node != nullptr)
 		{
-
-			node->destroy_routine_(node->object_);
+			if (node->destroy_routine_ != nullptr)
+			{
+				node->destroy_routine_(node->object_);
+			}
 			StackNode* next_node = node->next_node_;
 			delete node;
 			node = next_node;
@@ -296,6 +301,7 @@ public:
 	class Window* window = nullptr;
 	class SpriteSheet* sheet = nullptr;
 	class GameState* game_state = nullptr;
+	class InputSystem* input_system = nullptr;
 
 };
 
@@ -507,6 +513,76 @@ private:
 
 };
 
+class InputNode
+{
+private:
+	friend class InputSystem;
+
+	InputNode() = default;
+	~InputNode() = default;
+
+	void* object_ = nullptr;
+	void (*input_proc_)(void* object, const SDL_Event* event) = nullptr;
+	InputNode* next_ = nullptr;
+
+};
+
+class InputSystem
+{
+public:
+
+	static InputSystem* create(GlobalState* state)
+	{
+		InputSystem* system = new InputSystem;
+		state->destruction_stack.add(system, destroy);
+		return system;
+	}
+
+	void process(SDL_Event* event)
+	{
+		InputNode* node = next_;
+		while (node != nullptr)
+		{
+			if (node->input_proc_ != nullptr)
+			{
+				node->input_proc_(node->object_, event);
+			}
+		}
+
+	}
+
+	void add(void* object, void (*input_proc_)(void* object, const SDL_Event* event))
+	{
+		InputNode* new_node = new InputNode();
+		new_node->object_ = object;
+		new_node->input_proc_ = input_proc_;
+
+		InputNode** node = &next_;
+		while (*node != nullptr)
+		{
+			node = &((*node)->next_);
+		}
+		(*node)->next_ = new_node;
+	}
+
+private:
+
+	InputNode* next_ = nullptr;
+
+	static void destroy(void* ptr)
+	{
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Input system destruction starts here.");
+#endif
+		InputSystem* sys = (InputSystem*)ptr;
+		delete sys;
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Input system destruction ends here.");
+#endif
+	}
+
+};
+
 class GameState
 {
 public:
@@ -527,10 +603,8 @@ private:
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Game state destruction starts here.");
 #endif
-
 		GameState* game_state = (GameState*)ptr;
 		delete game_state;
-
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Game state destruction ends here.");
 #endif
@@ -555,6 +629,14 @@ void initialization(GlobalState* state)
 	{
 		state->did_init = false;
 		Error("SpriteSheet::create Failed", "state->sheet == nullptr");
+		return;
+	}
+
+	state->input_system = InputSystem::create(state);
+	if (state->input_system == nullptr)
+	{
+		state->did_init = false;
+		Error("InputSystem::create Failed", "state->input_system == nullptr");
 		return;
 	}
 
