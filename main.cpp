@@ -538,7 +538,7 @@ public:
 		return system;
 	}
 
-	void process(SDL_Event* event)
+	void process(const SDL_Event* event)
 	{
 		InputNode* node = next_;
 		while (node != nullptr)
@@ -670,13 +670,19 @@ void main_loop(GlobalState* global_state)
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
+		global_state->input_system->process(&event);
+
 		if (event.type == SDL_QUIT)
 		{
 			global_state->do_run_main_loop = false;
 		}
 		else if (event.type == SDL_KEYDOWN)
 		{
-			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+			if (event.key.repeat != 0)
+			{
+				break;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
 				ship_move_dir.x -= 1;
 			}
@@ -695,7 +701,11 @@ void main_loop(GlobalState* global_state)
 		}
 		else if (event.type == SDL_KEYUP)
 		{
-			if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
+			if (event.key.repeat != 0)
+			{
+				break;
+			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
 				ship_move_dir.x += 1;
 			}
