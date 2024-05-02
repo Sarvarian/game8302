@@ -3,7 +3,7 @@
 #define WINDOW_SCREEN_HEIGHT 600
 #define WINDOW_TITLE "Game Window"
 #define SPRITE_SHEET_FILE_NAME "art.bmp"
-#define SPRITE_SIZE 128
+#define SPRITE_SIZE 16
 
 #define DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND 0
 #define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
@@ -369,7 +369,8 @@ public:
 
 	void blit(SDL_Surface* src_surface, const SDL_Rect* src_rect, SDL_Rect* dist_rect)
 	{
-		SDL_BlitSurface(src_surface, src_rect, main_surface_, dist_rect);
+		SDL_BlitScaled(src_surface, src_rect, main_surface_, dist_rect);
+		// SDL_BlitSurface(src_surface, src_rect, main_surface_, dist_rect);
 	}
 
 	void clear()
@@ -483,8 +484,8 @@ public:
 		SDL_Rect dist = {};
 		dist.x = object->position().x;
 		dist.y = object->position().y;
-		dist.w = SPRITE_SIZE;
-		dist.h = SPRITE_SIZE;
+		dist.w = SPRITE_SIZE * 4;
+		dist.h = SPRITE_SIZE * 4;
 		window->blit(surface_, &src, &dist);
 	}
 
