@@ -29,7 +29,7 @@ typedef Uint64     u64;
 typedef intptr_t   isize;
 typedef uintptr_t  usize;
 
-typedef glm::lowp_fvec2 vec2;
+typedef glm::lowp_fvec2 fvec2;
 typedef glm::lowp_i32vec2 ivec2;
 typedef glm::lowp_u32vec2 uvec2;
 
