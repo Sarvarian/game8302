@@ -192,15 +192,35 @@ public:
 	}
 
 private:
+	struct Chunk
+	{
+	private:
+		friend class Array<T, S>;
+
+		T* data_[S] = new T[S];
+		Chunk* next_ = nullptr;
+
+		~Chunk()
+		{
+			delete[] data_;
+		}
+
+	} *next_ = nullptr;
 
 	Array()
 	{
-
+		next_ = new Chunk();
 	}
 
 	~Array()
 	{
-
+		Chunk node = next_;
+		while (node != nullptr)
+		{
+			next_ = node.next_;
+			delete node;
+			node = next_;
+		}
 	}
 
 	static void Destroy(void* ptr)
