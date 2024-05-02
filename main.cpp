@@ -302,6 +302,7 @@ public:
 	class SpriteSheet* sheet = nullptr;
 	class GameState* game_state = nullptr;
 	class InputSystem* input_system = nullptr;
+	class ControlMapperManager* control_mapper_manager = nullptr;
 
 };
 
@@ -602,13 +603,13 @@ private:
 
 };
 
-class ControllerMapperManager
+class ControlMapperManager
 {
 public:
 
-	static ControllerMapperManager* create(GlobalState* state)
+	static ControlMapperManager* create(GlobalState* state)
 	{
-		ControllerMapperManager* manager = new ControllerMapperManager();
+		ControlMapperManager* manager = new ControlMapperManager();
 		state->destruction_stack.add(manager, destroy);
 		return manager;
 	}
@@ -675,12 +676,12 @@ private:
 		array = new_array;
 	}
 
-	ControllerMapperManager()
+	ControlMapperManager()
 	{
 		expand_array();
 	}
 
-	~ControllerMapperManager()
+	~ControlMapperManager()
 	{
 		delete_array();
 	}
@@ -690,7 +691,7 @@ private:
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Controller mapper manager destruction starts here.");
 #endif
-		ControllerMapperManager* manager = (ControllerMapperManager*)ptr;
+		ControlMapperManager* manager = (ControlMapperManager*)ptr;
 		delete manager;
 #if DEBUG_MESSAGE_DESTROY
 		DebugLog("Controller mapper manager destruction ends here.");
@@ -726,6 +727,11 @@ private:
 	}
 };
 
+class ShipMoveControlMapper : IControlMapper
+{
+
+};
+
 void initialization(GlobalState* state)
 {
 	state->did_init = true;
@@ -755,6 +761,14 @@ void initialization(GlobalState* state)
 		return;
 	}
 
+	state->control_mapper_manager = ControlMapperManager::create(state);
+	if (state->control_mapper_manager == nullptr)
+	{
+		state->did_init = false;
+		Error("ControlMapperManager::create Failed", "state->control_mapper_manager == nullptr");
+		return;
+	}
+
 	state->game_state = GameState::create(state);
 	if (state->game_state == nullptr)
 	{
@@ -762,6 +776,7 @@ void initialization(GlobalState* state)
 		Error("GameState::create Failed", "state->game_state == nullptr");
 		return;
 	}
+
 }
 
 void main_loop(GlobalState* global_state)
