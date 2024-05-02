@@ -907,18 +907,18 @@ void initialization(GlobalState* state)
 
 }
 
-void process_events(InputSystem* input_system);
-void do_game_logic(GameState* game_state);
-void render_to_window(GameState* game_state, SpriteSheet* sheet, Window* window);
+void receive(InputSystem* input_system);
+void think(GameState* game_state);
+void present(GameState* game_state, SpriteSheet* sheet, Window* window);
 
 void main_loop(GlobalState* state)
 {
-	process_events(state->input_system);
-	do_game_logic(state->game_state);
-	render_to_window(state->game_state, state->sheet, state->window);
+	receive(state->input_system);
+	think(state->game_state);
+	present(state->game_state, state->sheet, state->window);
 }
 
-void process_events(InputSystem* input_system)
+void receive(InputSystem* input_system)
 {
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
@@ -927,13 +927,13 @@ void process_events(InputSystem* input_system)
 	}
 }
 
-void do_game_logic(GameState* game_state)
+void think(GameState* game_state)
 {
 	game_state->control_mapper_manager->apply_control();
 
 }
 
-void render_to_window(GameState* game_state, SpriteSheet* sheet, Window* window)
+void present(GameState* game_state, SpriteSheet* sheet, Window* window)
 {
 	window->clear();
 
