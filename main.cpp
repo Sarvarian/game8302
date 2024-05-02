@@ -241,7 +241,7 @@ private:
 		// i32 frame_time_method_1 = from_start_of_frame;
 		i32 frame_time_method_2 = 0;
 
-		if (actual_delay > max_frame_time_in_milliseconds)
+		if (actual_delay > (i32)max_frame_time_in_milliseconds)
 		{
 			frame_time_method_2 = from_last_frame_ended - max_frame_time_in_milliseconds;
 		}
@@ -252,7 +252,7 @@ private:
 
 		i32 frame_time = frame_time_method_2;
 
-		if (frame_time >= max_frame_time_in_milliseconds)
+		if (frame_time >= (i32)max_frame_time_in_milliseconds)
 		{
 			delay_time = 0;
 		}
@@ -562,7 +562,7 @@ public:
 		{
 			node = &((*node)->next_);
 		}
-		(*node)->next_ = new_node;
+		(*node) = new_node;
 	}
 
 private:
@@ -592,6 +592,110 @@ private:
 #endif
 	}
 
+};
+
+class IControlMapper
+{
+public:
+
+private:
+
+};
+
+class ControllerMapperManager
+{
+public:
+
+	static ControllerMapperManager* create(GlobalState* state)
+	{
+		ControllerMapperManager* manager = new ControllerMapperManager();
+		state->destruction_stack.add(manager, destroy);
+		return manager;
+	}
+
+	/// @brief 
+	/// @tparam T should be of type IControlMapper
+	/// @return 
+	template<typename T>
+	T new_mapper()
+	{
+		T* mapper = new T();
+		add_to_array(mapper);
+		return mapper;
+	}
+
+private:
+	IControlMapper** array = nullptr;
+	size_t array_cap = 0;
+	size_t array_size = 0;
+
+
+	void add_to_array(IControlMapper* mapper)
+	{
+		if (array_size == array_cap)
+		{
+			expand_array();
+		}
+		array[array_size] = mapper;
+		array_size += 1;
+	}
+
+	void delete_array()
+	{
+		if (array != nullptr)
+		{
+			for (int i = ((int)array_size - 1); i > -1; i--)
+			{
+				delete array[i];
+			}
+
+			delete[] array;
+		}
+	}
+
+	void copy_content_to_new_array(IControlMapper** new_array)
+	{
+		if (array != nullptr)
+		{
+			for (int i = 0; i < (int)array_size; i++)
+			{
+				new_array[i] = array[i];
+			}
+		}
+	}
+
+	void expand_array()
+	{
+		static constexpr isize initial_cap = 32;
+		isize new_cap = array_cap + initial_cap;
+		IControlMapper** new_array = new IControlMapper * [new_cap];
+		array_cap = new_cap;
+		copy_content_to_new_array(new_array);
+		delete_array();
+		array = new_array;
+	}
+
+	ControllerMapperManager()
+	{
+		expand_array();
+	}
+
+	~ControllerMapperManager()
+	{
+		delete_array();
+	}
+
+	static void destroy(void* ptr)
+	{
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Controller mapper manager destruction starts here.");
+#endif
+		ControllerMapperManager* manager = (ControllerMapperManager*)ptr;
+		delete manager;
+#if DEBUG_MESSAGE_DESTROY
+		DebugLog("Controller mapper manager destruction ends here.");
+#endif
+	}
 };
 
 class GameState
