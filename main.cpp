@@ -600,6 +600,13 @@ class IControlMapper
 {
 public:
 
+protected:
+	friend class ControlMapperManager;
+
+	virtual void apply_control() = 0;
+
+	virtual ~IControlMapper() = default;
+
 private:
 
 };
@@ -624,6 +631,14 @@ public:
 		T* mapper = new T();
 		add_to_array(mapper);
 		return mapper;
+	}
+
+	void apply_control()
+	{
+		for (size_t i = 0; i < array_size; i++)
+		{
+			array[i]->apply_control();
+		}
 	}
 
 private:
@@ -736,6 +751,13 @@ public:
 	void register_to_input_system(InputSystem* input_system)
 	{
 		input_system->add(this, process_input);
+	}
+
+protected:
+
+	virtual void apply_control() override
+	{
+		ship->move(direction);
 	}
 
 private:
@@ -853,11 +875,6 @@ void initialization(GlobalState* state)
 
 void main_loop(GlobalState* global_state)
 {
-	GameState* game_state = global_state->game_state;
-	Ship* ship = &(game_state->ship);
-
-	static ivec2 ship_move_dir;
-
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
@@ -871,7 +888,10 @@ void main_loop(GlobalState* global_state)
 		}
 	}
 
-	ship->move(ship_move_dir);
+	global_state->control_mapper_manager->apply_control();
+
+	GameState* game_state = global_state->game_state;
+	Ship* ship = &(game_state->ship);
 
 	global_state->window->clear();
 
