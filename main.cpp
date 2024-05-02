@@ -618,7 +618,7 @@ public:
 	/// @tparam T should be of type IControlMapper
 	/// @return 
 	template<typename T>
-	T new_mapper()
+	T* new_mapper()
 	{
 		T* mapper = new T();
 		add_to_array(mapper);
@@ -727,6 +727,77 @@ private:
 	}
 };
 
+class ShipMoveControlMapper : public IControlMapper
+{
+public:
+	Ship* ship = nullptr;
+
+	void register_to_input_system(InputSystem* input_system)
+	{
+		input_system->add(this, process_input);
+	}
+
+private:
+
+	ivec2 direction = ivec2(0, 0);
+
+	void process_input(const SDL_Event* event)
+	{
+		if (event->type == SDL_KEYDOWN)
+		{
+			if (event->key.repeat != 0)
+			{
+				return;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_LEFT)
+			{
+				direction.x -= 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_RIGHT)
+			{
+				direction.x += 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_UP)
+			{
+				direction.y -= 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_DOWN)
+			{
+				direction.y += 1;
+			}
+		}
+		else if (event->type == SDL_KEYUP)
+		{
+			if (event->key.repeat != 0)
+			{
+				return;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_LEFT)
+			{
+				direction.x += 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_RIGHT)
+			{
+				direction.x -= 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_UP)
+			{
+				direction.y += 1;
+			}
+			else if (event->key.keysym.scancode == SDL_SCANCODE_DOWN)
+			{
+				direction.y -= 1;
+			}
+		}
+	}
+
+	static void process_input(void* ptr, const SDL_Event* event)
+	{
+		((ShipMoveControlMapper*)ptr)->process_input(event);
+	}
+
+};
+
 void initialization(GlobalState* state)
 {
 	state->did_init = true;
@@ -772,6 +843,11 @@ void initialization(GlobalState* state)
 		return;
 	}
 
+	ShipMoveControlMapper* ship_move_control_map
+		= state->control_mapper_manager->new_mapper<ShipMoveControlMapper>();
+	ship_move_control_map->ship = &(state->game_state->ship);
+	ship_move_control_map->register_to_input_system(state->input_system);
+
 }
 
 void main_loop(GlobalState* global_state)
@@ -784,57 +860,13 @@ void main_loop(GlobalState* global_state)
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
-		global_state->input_system->process(&event);
-
 		if (event.type == SDL_QUIT)
 		{
 			global_state->do_run_main_loop = false;
 		}
-		else if (event.type == SDL_KEYDOWN)
+		else
 		{
-			if (event.key.repeat != 0)
-			{
-				break;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-			{
-				ship_move_dir.x -= 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-			{
-				ship_move_dir.x += 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-			{
-				ship_move_dir.y -= 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-			{
-				ship_move_dir.y += 1;
-			}
-		}
-		else if (event.type == SDL_KEYUP)
-		{
-			if (event.key.repeat != 0)
-			{
-				break;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_LEFT)
-			{
-				ship_move_dir.x += 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT)
-			{
-				ship_move_dir.x -= 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_UP)
-			{
-				ship_move_dir.y += 1;
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN)
-			{
-				ship_move_dir.y -= 1;
-			}
+			global_state->input_system->process(&event);
 		}
 	}
 
