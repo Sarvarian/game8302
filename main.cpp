@@ -548,6 +548,7 @@ public:
 			{
 				node->input_proc_(node->object_, event);
 			}
+			node = node->next_;
 		}
 
 	}
