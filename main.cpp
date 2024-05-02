@@ -138,7 +138,7 @@ private:
 class Stack
 {
 public:
-	Stack() { }
+	Stack() = default;
 	~Stack()
 	{
 #if DEBUG_MESSAGE_DESTROY
@@ -414,6 +414,14 @@ private:
 
 };
 
+class IControlMapper
+{
+public:
+
+private:
+
+};
+
 struct GameObject
 {
 public:
@@ -432,7 +440,7 @@ protected:
 	uvec2 sprite_index_ = {};
 };
 
-struct Ship : public GameObject
+struct Ship : public GameObject, IControlMapper
 {
 public:
 
@@ -442,7 +450,7 @@ public:
 		position_.y = 100;
 	}
 
-	void move(ivec2 dir)
+	void move(const ivec2& dir)
 	{
 		position_ += speed_ * dir;
 	}
@@ -595,14 +603,6 @@ private:
 
 };
 
-class IControlMapper
-{
-public:
-
-private:
-
-};
-
 class ControlMapperManager
 {
 public:
@@ -725,11 +725,6 @@ private:
 		DebugLog("Game state destruction ends here.");
 #endif
 	}
-};
-
-class ShipMoveControlMapper : IControlMapper
-{
-
 };
 
 void initialization(GlobalState* state)
