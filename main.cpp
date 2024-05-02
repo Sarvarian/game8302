@@ -302,7 +302,6 @@ public:
 	class SpriteSheet* sheet = nullptr;
 	class GameState* game_state = nullptr;
 	class InputSystem* input_system = nullptr;
-	class ControlMapperManager* control_mapper_manager = nullptr;
 
 };
 
@@ -635,7 +634,7 @@ public:
 
 	void apply_control()
 	{
-		for (size_t i = 0; i < array_size; i++)
+		for (int i = 0; i < array_size; i++)
 		{
 			array[i]->apply_control();
 		}
@@ -643,8 +642,8 @@ public:
 
 private:
 	IControlMapper** array = nullptr;
-	size_t array_cap = 0;
-	size_t array_size = 0;
+	isize array_cap = 0;
+	isize array_size = 0;
 
 
 	void add_to_array(IControlMapper* mapper)
@@ -661,7 +660,7 @@ private:
 	{
 		if (array != nullptr)
 		{
-			for (int i = ((int)array_size - 1); i > -1; i--)
+			for (isize i = (array_size - 1); i > -1; i--)
 			{
 				delete array[i];
 			}
@@ -674,7 +673,7 @@ private:
 	{
 		if (array != nullptr)
 		{
-			for (int i = 0; i < (int)array_size; i++)
+			for (int i = 0; i < array_size; i++)
 			{
 				new_array[i] = array[i];
 			}
@@ -726,6 +725,7 @@ public:
 		return game_state;
 	}
 
+	ControlMapperManager* control_mapper_manager = nullptr;
 	Ship ship = {};
 
 private:
@@ -741,6 +741,35 @@ private:
 		DebugLog("Game state destruction ends here.");
 #endif
 	}
+};
+
+class AppQuitControlMapper : public IControlMapper
+{
+public:
+	bool* do_run_main_loop_variable;
+
+	void register_to_input_system(InputSystem* input_system)
+	{
+		input_system->add(this, process_input);
+	}
+
+protected:
+	virtual void apply_control() override { }
+
+private:
+	void process_input(const SDL_Event* event)
+	{
+		if (event->type == SDL_QUIT)
+		{
+			(*do_run_main_loop_variable) = false;
+		}
+	}
+
+	static void process_input(void* ptr, const SDL_Event* event)
+	{
+		((AppQuitControlMapper*)ptr)->process_input(event);
+	}
+
 };
 
 class ShipMoveControlMapper : public IControlMapper
@@ -850,14 +879,6 @@ void initialization(GlobalState* state)
 		return;
 	}
 
-	state->control_mapper_manager = ControlMapperManager::create(state);
-	if (state->control_mapper_manager == nullptr)
-	{
-		state->did_init = false;
-		Error("ControlMapperManager::create Failed", "state->control_mapper_manager == nullptr");
-		return;
-	}
-
 	state->game_state = GameState::create(state);
 	if (state->game_state == nullptr)
 	{
@@ -866,38 +887,59 @@ void initialization(GlobalState* state)
 		return;
 	}
 
+	state->game_state->control_mapper_manager = ControlMapperManager::create(state);
+	if (state->game_state->control_mapper_manager == nullptr)
+	{
+		state->did_init = false;
+		Error("ControlMapperManager::create Failed", "state->game_state->control_mapper_manager == nullptr");
+		return;
+	}
+
+	AppQuitControlMapper* app_quit_control_map =
+		state->game_state->control_mapper_manager->new_mapper<AppQuitControlMapper>();
+	app_quit_control_map->do_run_main_loop_variable = &(state->do_run_main_loop);
+	app_quit_control_map->register_to_input_system(state->input_system);
+
 	ShipMoveControlMapper* ship_move_control_map
-		= state->control_mapper_manager->new_mapper<ShipMoveControlMapper>();
+		= state->game_state->control_mapper_manager->new_mapper<ShipMoveControlMapper>();
 	ship_move_control_map->ship = &(state->game_state->ship);
 	ship_move_control_map->register_to_input_system(state->input_system);
 
 }
 
-void main_loop(GlobalState* global_state)
+void process_events(InputSystem* input_system);
+void do_game_logic(GameState* game_state);
+void render_to_window();
+
+void main_loop(GlobalState* state)
+{
+	process_events(state->input_system);
+	do_game_logic(state->game_state);
+
+	GameState* game_state = state->game_state;
+	Ship* ship = &(game_state->ship);
+
+	state->window->clear();
+
+	state->sheet->blit(ship, state->window);
+
+	state->window->update();
+
+}
+
+void process_events(InputSystem* input_system)
 {
 	SDL_Event event = {};
 	while (SDL_PollEvent(&event))
 	{
-		if (event.type == SDL_QUIT)
-		{
-			global_state->do_run_main_loop = false;
-		}
-		else
-		{
-			global_state->input_system->process(&event);
-		}
+		input_system->process(&event);
 	}
+}
 
-	global_state->control_mapper_manager->apply_control();
-
-	GameState* game_state = global_state->game_state;
-	Ship* ship = &(game_state->ship);
-
-	global_state->window->clear();
-
-	global_state->sheet->blit(ship, global_state->window);
-
-	global_state->window->update();
+void do_game_logic(GameState* game_state)
+{
+	game_state->control_mapper_manager->apply_control();
 
 }
+
 
