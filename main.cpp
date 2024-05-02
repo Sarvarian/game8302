@@ -32,6 +32,9 @@ typedef uintptr_t  usize;
 typedef glm::lowp_fvec2 fvec2;
 typedef glm::lowp_i32vec2 ivec2;
 typedef glm::lowp_u32vec2 uvec2;
+typedef glm::lowp_fmat2x2 fmat22;
+typedef glm::lowp_i32mat2x2 imat22;
+typedef glm::lowp_u32mat2x2 umat22;
 
 class CMDLine
 {
