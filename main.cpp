@@ -909,22 +909,13 @@ void initialization(GlobalState* state)
 
 void process_events(InputSystem* input_system);
 void do_game_logic(GameState* game_state);
-void render_to_window();
+void render_to_window(GameState* game_state, SpriteSheet* sheet, Window* window);
 
 void main_loop(GlobalState* state)
 {
 	process_events(state->input_system);
 	do_game_logic(state->game_state);
-
-	GameState* game_state = state->game_state;
-	Ship* ship = &(game_state->ship);
-
-	state->window->clear();
-
-	state->sheet->blit(ship, state->window);
-
-	state->window->update();
-
+	render_to_window(state->game_state, state->sheet, state->window);
 }
 
 void process_events(InputSystem* input_system)
@@ -940,6 +931,15 @@ void do_game_logic(GameState* game_state)
 {
 	game_state->control_mapper_manager->apply_control();
 
+}
+
+void render_to_window(GameState* game_state, SpriteSheet* sheet, Window* window)
+{
+	window->clear();
+
+	sheet->blit(&(game_state->ship), window);
+
+	window->update();
 }
 
 
