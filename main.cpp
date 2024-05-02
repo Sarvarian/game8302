@@ -486,8 +486,9 @@ public:
 	}
 
 protected:
-	ivec2 position_ = {};
-	uvec2 sprite_index_ = {};
+	ivec2 position_ = { 0, 0 };
+	fvec2 position_extra_ = { 0.0f, 0.0f };
+	uvec2 sprite_index_ = { 0, 0 };
 };
 
 struct Ship : public GameObject
