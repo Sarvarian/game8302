@@ -414,14 +414,6 @@ private:
 
 };
 
-class IControlMapper
-{
-public:
-
-private:
-
-};
-
 struct GameObject
 {
 public:
@@ -440,7 +432,7 @@ protected:
 	uvec2 sprite_index_ = {};
 };
 
-struct Ship : public GameObject, IControlMapper
+struct Ship : public GameObject
 {
 public:
 
@@ -600,6 +592,14 @@ private:
 		DebugLog("Input system destruction ends here.");
 #endif
 	}
+
+};
+
+class IControlMapper
+{
+public:
+
+private:
 
 };
 
