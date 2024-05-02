@@ -1,6 +1,15 @@
 {
-  "spellright.language": ["en", "fa"],
-  "spellright.documentTypes": ["markdown", "latex", "plaintext", "cpp"],
+  "spellright.language": [
+    "en",
+    "fa"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext",
+    "cpp",
+    "shellscript"
+  ],
   "files.associations": {
     "atomic": "cpp",
     "bit": "cpp",
@@ -53,13 +62,20 @@
     "vector": "cpp"
   },
   "cSpell.words": [
+    "-lmingw",
+    "-lsdl2main",
+    "-lsdl2",
+    "-mconsole",
     "blit",
-    "key.keysym.scancode",
     "isize",
+    "key.keysym.scancode",
     "SDL_BlitSurface",
     "SDL_MESSAGEBOX_ERROR",
     "SDL_WINDOWPOS_UNDEFINED",
     "tparam",
     "uvec"
+  ],
+  "cSpell.enableFiletypes": [
+    "shellscript"
   ]
 }
