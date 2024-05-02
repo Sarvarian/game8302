@@ -214,10 +214,10 @@ private:
 
 	~Array()
 	{
-		Chunk node = next_;
+		Chunk* node = next_;
 		while (node != nullptr)
 		{
-			next_ = node.next_;
+			next_ = node->next_;
 			delete node;
 			node = next_;
 		}
@@ -801,7 +801,7 @@ private:
 class AppQuitControlMapper : public IControlMapper
 {
 public:
-	bool* do_run_main_loop_variable;
+	bool* do_run_main_loop_variable = nullptr;
 
 	void register_to_input_system(InputSystem* input_system)
 	{
