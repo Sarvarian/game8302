@@ -177,6 +177,37 @@ private:
 
 };
 
+template <typename DataType, unsigned ChunkSize>
+class Array
+{
+public:
+	static Array* Create(Stack* destruction_stack)
+	{
+		Array* array = new Array();
+		destruction_stack->add(array, Destroy);
+		return array;
+	}
+
+private:
+
+	Array()
+	{
+
+	}
+
+	~Array()
+	{
+
+	}
+
+	static void Destroy(void* ptr)
+	{
+		Array* array = ptr;
+		delete array;
+	}
+
+};
+
 class MainLoopTiming
 {
 public:
