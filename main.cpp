@@ -625,7 +625,7 @@ public:
 	/// @brief 
 	/// @tparam T should be of type IControlMapper
 	/// @return 
-	template<typename T>
+	template<class T>
 	T* new_mapper()
 	{
 		T* mapper = new T();
