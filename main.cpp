@@ -177,7 +177,10 @@ private:
 
 };
 
-template <typename DataType, unsigned ChunkSize>
+/// @brief 
+/// @tparam T DataType
+/// @tparam S ChunkSize
+template <typename T, unsigned S>
 class Array
 {
 public:
