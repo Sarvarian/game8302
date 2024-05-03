@@ -131,9 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ab\actor.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ab\actor.hpp" />
+    <ClInclude Include="ab\math.hpp" />
     <ClInclude Include="pch.hpp" />
     <ClInclude Include="primes.hpp" />
     <ClInclude Include="SDL2\begin_code.h" />
