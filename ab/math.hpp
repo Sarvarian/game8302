@@ -28,17 +28,17 @@ inline long double cpp_std_powl(long double base, long double exponent)
 
 inline float cpp_std_sqrtf(float arg)
 {
-	sqrtf(arg);
+	return sqrtf(arg);
 }
 
 inline double cpp_std_sqrt(double arg)
 {
-	sqrt(arg);
+	return sqrt(arg);
 }
 
 inline long double cpp_std_sqrtl(long double arg)
 {
-	sqrtl(arg);
+	return sqrtl(arg);
 }
 
 } // namespace
