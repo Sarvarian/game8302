@@ -122,6 +122,26 @@ public:
 		return value > rhs.value;
 	}
 
+	bool is_less_then(Type rhs) const
+	{
+		return value < rhs.value;
+	}
+
+	bool is_equal_to(Type rhs) const
+	{
+		return value == rhs.value;
+	}
+
+	bool is_greater_then_or_equal_to(Type rhs) const
+	{
+		return value >= rhs.value;
+	}
+
+	bool is_less_then_or_equal_to(Type rhs) const
+	{
+		return value <= rhs.value;
+	}
+
 	Raw raw() const
 	{
 		return value;
@@ -194,6 +214,7 @@ struct u64 : public TNumber<u64, primitives::raw_u64>
 {
 public:
 	u64(Raw value) : Base(value) {}
+	i32 to_i32() const;
 };
 
 namespace
@@ -308,9 +329,12 @@ public:
 class Convertor
 {
 private:
-	friend struct i32;
 	friend struct f32;
 	friend struct f64;
+	friend struct i32;
+	friend struct u16;
+	friend struct u32;
+	friend struct u64;
 	friend struct vec2f32;
 	friend struct vec2i16;
 	friend struct vec2i32;
@@ -318,6 +342,11 @@ private:
 	static f32 i32_to_f32(i32 i)
 	{
 		return f32((f32::Raw)(i.value));
+	}
+
+	static i32 u64_to_i32(u64 i)
+	{
+		return i32((i32::Raw)(i.value));
 	}
 
 	static vec2f32 vec2i32_to_vec2f32(vec2i32 v)
@@ -330,6 +359,11 @@ private:
 inline f32 i32::to_f32() const
 {
 	return Convertor::i32_to_f32(*this);
+}
+
+inline i32 u64::to_i32() const
+{
+	return Convertor::u64_to_i32(*this);
 }
 
 inline vec2f32 vec2i32::to_vec2f32() const
