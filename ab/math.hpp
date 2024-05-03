@@ -1,9 +1,48 @@
 #pragma once
 
+#ifdef pow
+#endif
+
 namespace ab
 {
 namespace math
 {
+
+namespace
+{
+
+inline float cpp_std_powf(float base, float exponent)
+{
+	return powf(base, exponent);
+}
+
+inline double cpp_std_pow(double base, double exponent)
+{
+	return pow(base, exponent);
+}
+
+inline long double cpp_std_powl(long double base, long double exponent)
+{
+	return powl(base, exponent);
+}
+
+inline float cpp_std_sqrtf(float arg)
+{
+	sqrtf(arg);
+}
+
+inline double cpp_std_sqrt(double arg)
+{
+	sqrt(arg);
+}
+
+inline long double cpp_std_sqrtl(long double arg)
+{
+	sqrtl(arg);
+}
+
+} // namespace
+
 namespace primitives
 {
 typedef float      raw_f32;
@@ -100,9 +139,31 @@ struct f32 : public TNumber<f32, primitives::raw_f32>
 public:
 	f32(Raw value) : Base(value) {}
 
+	f32 pow(f32 exponent)
+	{
+		return cpp_std_powf(get_raw(), exponent.get_raw());
+	}
+
 	f32 sqrt()
 	{
-		return sqrtf(get_raw());
+		return cpp_std_sqrtf(get_raw());
+	}
+
+};
+
+struct f64 : public TNumber<f64, primitives::raw_f64>
+{
+public:
+	f64(Raw value) : Base(value) {}
+
+	f64 pow(f64 exponent)
+	{
+		return cpp_std_pow(get_raw(), exponent.get_raw());
+	}
+
+	f64 sqrt()
+	{
+		return cpp_std_sqrt(get_raw());
 	}
 
 };
@@ -185,8 +246,8 @@ public:
 	Raw length_squared()
 	{
 		// --- (x * x) + (y * y) ---
-		x = x.mul(x);
-		y = y.mul(y);
+		x = x.pow(2.0f);
+		y = y.pow(2.0f);
 		return x.add(y);
 	}
 
@@ -255,7 +316,7 @@ private:
 
 };
 
-f32 i32::to_float()
+inline f32 i32::to_float()
 {
 	return Convertor::i32tof32(*this);
 }
