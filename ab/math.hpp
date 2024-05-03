@@ -23,76 +23,101 @@ typedef intptr_t   raw_isize;
 typedef uintptr_t  raw_usize;
 } // namespace primitives
 
-struct f32
+
+/// @brief 
+/// @tparam T FinalType
+/// @tparam R RawType
+template<typename T, typename R>
+struct TNumber
 {
 public:
-	typedef primitives::raw_f32 raw;
-	typedef f32 T;
+	typedef TNumber<T, R> Base; // Base Type (TNumber Type)
+	typedef T             Type; // Final Type
+	typedef R              Raw; // Raw Type
 
-	f32(raw value) : value(value) {}
+	TNumber(Raw v) : value(v) {}
+	TNumber(Type v) : value(v.value) {}
+	TNumber() : value(0) {}
 
-	f32 add(f32 rhs)
+	Type add(Type rhs)
 	{
-		return f32(value + rhs.value);
+		return Type(value + rhs.value);
 	}
 
-	void add_inplace(f32 rhs)
+	void add_inplace(Type rhs)
 	{
 		value = value + rhs.value;
 	}
 
-	f32 sub(f32 rhs)
+	Type sub(Type rhs)
 	{
-		return f32(value - rhs.value);
+		return Type(value - rhs.value);
 	}
 
-	void sub_inplace(f32 rhs)
+	void sub_inplace(Type rhs)
 	{
 		value = value - rhs.value;
 	}
 
-	f32 mul(f32 rhs)
+	Type mul(Type rhs)
 	{
-		return f32(value * rhs.value);
+		return Type(value * rhs.value);
 	}
 
-	void mul_inplace(f32 rhs)
+	void mul_inplace(Type rhs)
 	{
 		value = value * rhs.value;
 	}
 
-	f32 div(f32 rhs)
+	Type div(Type rhs)
 	{
-		return f32(value / rhs.value);
+		return Type(value / rhs.value);
 	}
 
-	void div_inplace(f32 rhs)
+	void div_inplace(Type rhs)
 	{
 		value = value / rhs.value;
 	}
 
-	bool is_greater_then(f32 rhs)
+	bool is_greater_then(Type rhs)
 	{
 		return value > rhs.value;
 	}
 
+protected:
+	Raw get_raw()
+	{
+		return value;
+	}
+
 private:
 	friend class Convertor;
-	raw value = 0;
+	Raw value;
+
 };
 
-struct i32
+struct f32 : public TNumber<f32, primitives::raw_f32>
 {
 public:
-	typedef primitives::raw_i32 raw;
+	f32(Raw value) : Base(value) {}
 
-	i32(raw value) : value(value) {}
+	f32 sqrt()
+	{
+		return sqrtf(get_raw());
+	}
+
+private:
+
+};
+
+struct i32 : public TNumber<i32, primitives::raw_i32>
+{
+public:
+	i32(Raw value) : Base(value) {}
 
 	f32 to_float();
 
 private:
-	friend class Convertor;
-	raw value = 0;
 };
 
 struct u16
@@ -143,7 +168,7 @@ T vec2_length_squared(T x, T y)
 template<typename T>
 T vec2_length(T x, T y)
 {
-	return std::sqrt(vec2_length_squared(x, y));
+	return vec2_length_squared(x, y).sqrt();
 }
 
 } // namespace
@@ -254,12 +279,12 @@ private:
 class Convertor
 {
 private:
-	friend class i32;
-	friend class f32;
+	friend struct i32;
+	friend struct f32;
 
-	static f32 i32tof32(const i32& i)
+	static f32 i32tof32(i32 i)
 	{
-		return f32((f32::raw)(i.value));
+		return f32((f32::Raw)(i.value));
 	}
 
 };
