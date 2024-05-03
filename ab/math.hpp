@@ -8,6 +8,9 @@ namespace ab
 namespace math
 {
 
+namespace internal
+{
+
 namespace
 {
 
@@ -56,6 +59,7 @@ inline long double cpp_std_floorl(long double arg)
 	return floorl(arg);
 }
 
+} // namespace
 
 namespace primitives
 {
@@ -237,15 +241,18 @@ public:
 	u64(Raw value) : Base(value) {}
 };
 
-template<typename T, typename R>
+namespace
+{
+
+template<typename T, typename C>
 struct TVector2
 {
 public:
-	typedef TVector2<T, R> Base; // Base Type (TNumber Type)
+	typedef TVector2<T, C> Base; // Base Type (TNumber Type)
 	typedef T              Type; // Final Type
-	typedef R               Raw; // Raw Type
+	typedef C              Comp; // Component Type
 
-	TVector2(Raw x, Raw y) : x(x), y(y) {}
+	TVector2(Comp x, Comp y) : x(x), y(y) {}
 	TVector2(Type v) : x(v.x), y(v.y) {}
 	TVector2() : x(0), y(0) {}
 
@@ -271,18 +278,18 @@ public:
 		y.sub_inplace(rhs.y);
 	}
 
-	Type scale(Raw rhs) const
+	Type scale(Comp rhs) const
 	{
 		return Type(x.mul(rhs), y.mul(rhs));
 	}
 
-	void scale_inplace(Raw rhs) const
+	void scale_inplace(Comp rhs) const
 	{
 		x.mul_inplace(rhs);
 		y.mul_inplace(rhs);
 	}
 
-	Raw length_squared() const
+	Comp length_squared() const
 	{
 		// --- (x * x) + (y * y) ---
 		x = x.pow(2.0f);
@@ -290,7 +297,7 @@ public:
 		return x.add(y);
 	}
 
-	Raw length() const
+	Comp length() const
 	{
 		return vec2_length_squared(x, y).sqrt();
 	}
@@ -315,14 +322,17 @@ public:
 
 private:
 	friend class Convertor;
-	Raw x;
-	Raw y;
+	Comp x;
+	Comp y;
 
 };
+
+} // namespace
 
 struct vec2f32 : public TVector2<vec2f32, f32>
 {
 public:
+	typedef vec2f32 SecondBase;
 	vec2f32(f32 x, f32 y) : Base(x, y) {}
 	vec2f32() : Base(0, 0) {};
 };
@@ -330,19 +340,22 @@ public:
 struct vec2i32 : public TVector2<vec2i32, i32>
 {
 public:
-	vec2i32(Raw x, Raw y) : Base(x, y) {}
+	typedef vec2i32 SecondBase;
+	vec2i32(Comp x, Comp y) : Base(x, y) {}
 };
 
 struct vec2u16 : public TVector2<vec2u16, u16>
 {
 public:
-	vec2u16(Raw x, Raw y) : Base(x, y) {}
+	typedef vec2u16 SecondBase;
+	vec2u16(Comp x, Comp y) : Base(x, y) {}
 };
 
 struct vec2u32 : public TVector2<vec2u32, u32>
 {
 public:
-	vec2u32(Raw x, Raw y) : Base(x, y) {}
+	typedef vec2u32 SecondBase;
+	vec2u32(Comp x, Comp y) : Base(x, y) {}
 };
 
 class Convertor
@@ -381,37 +394,63 @@ public:
 
 };
 
-} // namespace
+} // namespace internal
 
-inline f32 i32_to_f32(i32 i)
+struct f32 : public internal::f32
 {
-	return Convertor::i32_to_f32(i);
-}
+};
 
-inline u32 i32_to_u32(i32 i)
+struct f64 : public internal::f64
 {
-	return Convertor::i32_to_u32(i);
-}
+};
 
-inline i32 u64_to_i32(u64 i)
+struct i32 : public internal::i32
 {
-	return Convertor::u64_to_i32(i);
-}
+	internal::f32 to_f32() { return internal::Convertor::i32_to_f32(*this); }
+};
 
-inline vec2i32 vec2f32_to_vec2i32(vec2f32 v)
+struct u16 : public internal::u16
 {
-	return Convertor::vec2f32_to_vec2i32(v);
-}
+};
 
-inline vec2f32 vec2i32_to_vec2f32(vec2i32 v)
+struct u32 : public internal::u32
 {
-	return Convertor::vec2i32_to_vec2f32(v);
-}
+};
+
+struct u64 : public internal::u64
+{
+	internal::i32 to_i32() { internal::Convertor::u64_to_i32(*this); }
+};
+
+struct vec2f32 : public internal::vec2f32
+{
+	vec2f32(SecondBase value) : SecondBase(value) {}
+	vec2f32(Comp x, Comp y) : SecondBase(x, y) {}
+	internal::vec2i32 vec2f32_to_vec2i32() { return internal::Convertor::vec2f32_to_vec2i32(*this); }
+};
+
+struct vec2i32 : public internal::vec2i32
+{
+	vec2i32(SecondBase value) : SecondBase(value) {}
+	vec2i32(Comp x, Comp y) : SecondBase(x, y) {}
+	internal::vec2f32 to_vec2f32() { return internal::Convertor::vec2i32_to_vec2f32(*this); }
+};
+
+struct vec2u16 : public internal::vec2u16
+{
+	vec2u16(SecondBase value) : SecondBase(value) {}
+	vec2u16(Comp x, Comp y) : SecondBase(x, y) {}
+};
+
+struct vec2u32 : public internal::vec2u32
+{
+	vec2u32(SecondBase value) : SecondBase(value) {}
+	vec2u32(Comp x, Comp y) : SecondBase(x, y) {}
+};
 
 } // namespace math
 
 using math::f32;
-using math::f64;
 using math::i32;
 using math::u16;
 using math::u32;

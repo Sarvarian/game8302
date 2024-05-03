@@ -63,7 +63,6 @@ struct PositionTail
 {
 public:
 	PositionTail(f32 x, f32 y) : value(x, y) {}
-	PositionTail(vec2f32 value) : value(value) {}
 	vec2f32 vec() const { return value; }
 private:
 	vec2f32 value;
@@ -83,11 +82,7 @@ private:
 struct Velocity
 {
 public:
-	Velocity(Speed speed, Direction direction)
-	{
-		value = direction.vec().scale(math::i32_to_f32(speed.scalar()));
-	}
-
+	Velocity(Speed speed, Direction direction) : value(direction.vec().scale(speed.scalar().to_f32())) {}
 	vec2f32 vec() { return value; }
 private:
 	vec2f32 value;
@@ -98,8 +93,8 @@ struct PositionTemp
 {
 public:
 	PositionTemp(Position position, PositionTail extra, Velocity vel)
+		: value(position.vec().to_vec2f32().add(extra.vec()).add(vel.vec()))
 	{
-		value = math::vec2i32_to_vec2f32(position.vec()).add(extra.vec()).add(vel.vec());
 	}
 
 	PositionTail tail()
@@ -133,7 +128,7 @@ private:
 	Position position_ = { 100, 100 };
 	PositionTail position_extra_ = { 0.0f, 0.0f };
 	SpriteIndex sprite_index_ = { 0, 0 };
-	Speed speed_ = { 5 };
+	Speed speed_ = 5;
 
 };
 
