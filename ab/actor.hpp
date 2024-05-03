@@ -63,6 +63,7 @@ struct PositionTail
 {
 public:
 	PositionTail(f32 x, f32 y) : value(x, y) {}
+	PositionTail(vec2f32 value) : value(value) {}
 	vec2f32 vec() const { return value; }
 private:
 	vec2f32 value;
@@ -103,7 +104,8 @@ public:
 
 	PositionTail tail()
 	{
-		PositionTail res = PositionTail();
+		vec2f32 high = value.floor();
+		PositionTail res = PositionTail(value.sub(high));
 	}
 
 	Position position()
