@@ -41,6 +41,21 @@ inline long double cpp_std_sqrtl(long double arg)
 	return sqrtl(arg);
 }
 
+inline float cpp_std_floorf(float arg)
+{
+	return floorf(arg);
+}
+
+inline double cpp_std_floor(double arg)
+{
+	return floor(arg);
+}
+
+inline long double cpp_std_floorl(long double arg)
+{
+	return floorl(arg);
+}
+
 } // namespace
 
 namespace primitives
@@ -170,6 +185,11 @@ public:
 		return cpp_std_sqrtf(raw());
 	}
 
+	f32 floor() const
+	{
+		return cpp_std_floorf(raw());
+	}
+
 };
 
 struct f64 : public TNumber<f64, primitives::raw_f64>
@@ -185,6 +205,11 @@ public:
 	f64 sqrt()
 	{
 		return cpp_std_sqrt(raw());
+	}
+
+	f64 floor() const
+	{
+		return cpp_std_floor(raw());
 	}
 
 };
