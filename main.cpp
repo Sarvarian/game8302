@@ -271,16 +271,16 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		i32 actual_delay = (i32)(frame_started_at - previous_frame_ended_at);
-		i32 from_start_of_frame = (i32)(frame_ended_at - frame_started_at);
-		i32 from_last_frame_ended = (i32)(frame_ended_at - previous_frame_ended_at);
+		i32 actual_delay = frame_started_at.sub(previous_frame_ended_at).to_i32();
+		i32 from_start_of_frame = frame_ended_at.sub(frame_started_at).to_i32();
+		i32 from_last_frame_ended = frame_ended_at.sub(previous_frame_ended_at).to_i32();
 
 		// i32 frame_time_method_1 = from_start_of_frame;
 		i32 frame_time_method_2 = 0;
 
-		if (actual_delay > (i32)max_frame_time_in_milliseconds)
+		if (actual_delay.is_greater_then((i32::Raw)max_frame_time_in_milliseconds))
 		{
-			frame_time_method_2 = from_last_frame_ended - max_frame_time_in_milliseconds;
+			frame_time_method_2 = from_last_frame_ended.sub(max_frame_time_in_milliseconds);
 		}
 		else
 		{
@@ -289,13 +289,13 @@ private:
 
 		i32 frame_time = frame_time_method_2;
 
-		if (frame_time >= (i32)max_frame_time_in_milliseconds)
+		if (frame_time.is_greater_then_or_equal_to((i32::Raw)max_frame_time_in_milliseconds))
 		{
 			delay_time = 0;
 		}
 		else
 		{
-			delay_time = max_frame_time_in_milliseconds - frame_time;
+			delay_time = i32(max_frame_time_in_milliseconds).sub(frame_time).to_u32();
 		}
 	}
 

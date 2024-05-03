@@ -195,6 +195,7 @@ public:
 	i32(Raw value) : Base(value) {}
 
 	f32 to_f32() const;
+	u32 to_u32() const;
 
 };
 
@@ -344,6 +345,11 @@ private:
 		return f32((f32::Raw)(i.value));
 	}
 
+	static u32 i32_to_u32(i32 i)
+	{
+		return u32((u32::Raw)(i.value));
+	}
+
 	static i32 u64_to_i32(u64 i)
 	{
 		return i32((i32::Raw)(i.value));
@@ -359,6 +365,11 @@ private:
 inline f32 i32::to_f32() const
 {
 	return Convertor::i32_to_f32(*this);
+}
+
+inline u32 i32::to_u32()const
+{
+	return Convertor::i32_to_u32(*this);
 }
 
 inline i32 u64::to_i32() const
