@@ -645,7 +645,6 @@ private:
 	isize array_cap = 0;
 	isize array_size = 0;
 
-
 	void add_to_array(IControlMapper* mapper)
 	{
 		if (array_size == array_cap)
@@ -726,7 +725,7 @@ public:
 	}
 
 	ControlMapperManager* control_mapper_manager = nullptr;
-	Ship ship = {};
+	actor::Ship ship = {};
 
 private:
 
@@ -775,7 +774,7 @@ private:
 class ShipMoveControlMapper : public IControlMapper
 {
 public:
-	Ship* ship = nullptr;
+	actor::Ship* ship = nullptr;
 
 	void register_to_input_system(InputSystem* input_system)
 	{
@@ -791,7 +790,7 @@ protected:
 
 private:
 
-	fvec2 direction = fvec2(0, 0);
+	actor::Direction direction = actor::Direction(0, 0);
 
 	void process_input(const SDL_Event* event)
 	{
