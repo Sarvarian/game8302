@@ -151,88 +151,93 @@ private:
 namespace
 {
 
-template<typename T>
-T vec2_length_squared(T x, T y)
-{
-	// --- (x * x) + (y * y) ---
-	x = x.mul(x);
-	y = y.mul(y);
-	return x.add(y);
-}
-
-template<typename T>
-T vec2_length(T x, T y)
-{
-	return vec2_length_squared(x, y).sqrt();
-}
-
-} // namespace
-
-struct vec2f32
+template<typename T, typename R>
+struct TVector2
 {
 public:
-	vec2f32(f32 x, f32 y) : x(x), y(y) {}
+	typedef TVector2<T, R> Base; // Base Type (TNumber Type)
+	typedef T              Type; // Final Type
+	typedef R               Raw; // Raw Type
 
-	vec2f32 add(vec2f32 rhs)
+	TVector2(Raw x, Raw y) : x(x), y(y) {}
+	TVector2(Type v) : x(v.x), y(v.y) {}
+	TVector2() : x(0), y(0) {}
+
+	Type add(Type rhs)
 	{
-		return vec2f32(x.add(rhs.x), y.add(rhs.y));
+		return Type(x.add(rhs.x), y.add(rhs.y));
 	}
 
-	void add_inplace(vec2f32 rhs)
+	void add_inplace(Type rhs)
 	{
 		x.add_inplace(rhs.x);
 		y.add_inplace(rhs.y);
 	}
 
-	vec2f32 sub(vec2f32 rhs)
+	Type sub(Type rhs)
 	{
-		return vec2f32(x.sub(rhs.x), y.sub(rhs.y));
+		return Type(x.sub(rhs.x), y.sub(rhs.y));
 	}
 
-	void sub_inplace(vec2f32 rhs)
+	void sub_inplace(Type rhs)
 	{
 		x.sub_inplace(rhs.x);
 		y.sub_inplace(rhs.y);
 	}
 
-	vec2f32 mul(f32 rhs)
+	Type mul(Raw rhs)
 	{
-		return vec2f32(x.mul(rhs), y.mul(rhs));
+		return Type(x.mul(rhs), y.mul(rhs));
 	}
 
-	void mul_inplace(f32 rhs)
+	void mul_inplace(Raw rhs)
 	{
 		x.mul_inplace(rhs);
 		y.mul_inplace(rhs);
 	}
 
-	f32 length_squared()
+	Raw length_squared()
 	{
-		return vec2_length_squared(x, y);
+		// --- (x * x) + (y * y) ---
+		x = x.mul(x);
+		y = y.mul(y);
+		return x.add(y);
 	}
 
-	f32 length()
+	Raw length()
 	{
-		return vec2_length(x, y);
+		return vec2_length_squared(x, y).sqrt();
 	}
 
-	vec2f32 normalize()
+	Type normalize()
 	{
-		f32 len = length();
-		return vec2f32(x.div(len), y.div(len));
+		Raw len = length();
+		return Type(x.div(len), y.div(len));
 	}
 
 	void normalize_inplace()
 	{
-		f32 len = length();
+		Raw len = length();
 		x.div_inplace(len);
 		y.div_inplace(len);
 	}
 
+
 private:
 	friend class Convertor;
-	f32 x;
-	f32 y;
+	Raw x;
+	Raw y;
+
+};
+
+} // namespace
+
+struct vec2f32 : public TVector2<vec2f32, f32>
+{
+public:
+	vec2f32(f32 x, f32 y) : Base(x, y) {}
+
+private:
 
 };
 
