@@ -173,7 +173,7 @@ struct i32 : public TNumber<i32, primitives::raw_i32>
 public:
 	i32(Raw value) : Base(value) {}
 
-	f32 to_float();
+	f32 to_f32() const;
 
 };
 
@@ -210,40 +210,40 @@ public:
 	TVector2(Type v) : x(v.x), y(v.y) {}
 	TVector2() : x(0), y(0) {}
 
-	Type add(Type rhs)
+	Type add(Type rhs) const
 	{
 		return Type(x.add(rhs.x), y.add(rhs.y));
 	}
 
-	void add_inplace(Type rhs)
+	void add_inplace(Type rhs) const
 	{
 		x.add_inplace(rhs.x);
 		y.add_inplace(rhs.y);
 	}
 
-	Type sub(Type rhs)
+	Type sub(Type rhs) const
 	{
 		return Type(x.sub(rhs.x), y.sub(rhs.y));
 	}
 
-	void sub_inplace(Type rhs)
+	void sub_inplace(Type rhs) const
 	{
 		x.sub_inplace(rhs.x);
 		y.sub_inplace(rhs.y);
 	}
 
-	Type mul(Raw rhs)
+	Type scale(Raw rhs) const
 	{
 		return Type(x.mul(rhs), y.mul(rhs));
 	}
 
-	void mul_inplace(Raw rhs)
+	void scale_inplace(Raw rhs) const
 	{
 		x.mul_inplace(rhs);
 		y.mul_inplace(rhs);
 	}
 
-	Raw length_squared()
+	Raw length_squared() const
 	{
 		// --- (x * x) + (y * y) ---
 		x = x.pow(2.0f);
@@ -251,18 +251,18 @@ public:
 		return x.add(y);
 	}
 
-	Raw length()
+	Raw length() const
 	{
 		return vec2_length_squared(x, y).sqrt();
 	}
 
-	Type normalize()
+	Type normalize() const
 	{
 		Raw len = length();
 		return Type(x.div(len), y.div(len));
 	}
 
-	void normalize_inplace()
+	void normalize_inplace() const
 	{
 		Raw len = length();
 		x.div_inplace(len);
@@ -289,6 +289,7 @@ struct vec2i32 : public TVector2<vec2i32, i32>
 {
 public:
 	vec2i32(Raw x, Raw y) : Base(x, y) {}
+	vec2f32 to_vec2f32() const;
 };
 
 struct vec2u16 : public TVector2<vec2u16, u16>
@@ -308,17 +309,31 @@ class Convertor
 private:
 	friend struct i32;
 	friend struct f32;
+	friend struct f64;
+	friend struct vec2f32;
+	friend struct vec2i16;
+	friend struct vec2i32;
 
-	static f32 i32tof32(i32 i)
+	static f32 i32_to_f32(i32 i)
 	{
 		return f32((f32::Raw)(i.value));
 	}
 
+	static vec2f32 vec2i32_to_vec2f32(vec2i32 v)
+	{
+		return vec2f32(v.x.to_f32(), v.y.to_f32());
+	}
+
 };
 
-inline f32 i32::to_float()
+inline f32 i32::to_f32() const
 {
-	return Convertor::i32tof32(*this);
+	return Convertor::i32_to_f32(*this);
+}
+
+inline vec2f32 vec2i32::to_vec2f32() const
+{
+	return Convertor::vec2i32_to_vec2f32(*this);
 }
 
 } // namespace math
