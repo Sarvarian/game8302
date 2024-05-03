@@ -12,45 +12,67 @@ struct Direction
 public:
 	Direction(f32 x, f32 y) : value(x, y) {}
 
+	vec2f32 mul(f32 rhs)
+	{
+		return value.mul(rhs);
+	}
+
+	bool is_longer_then_one()
+	{
+		return value.length_squared().is_greater_then(1.0f);
+	}
+
+	void normalize_if_longer_then_one()
+	{
+		if (is_longer_then_one())
+		{
+			value.normalize_inplace();
+		}
+	}
+
 private:
 	vec2f32 value;
 };
 
 struct SpriteIndex
 {
-	u16 x, y;
+public:
+	SpriteIndex() = default;
+	SpriteIndex(u16 x, u16 y) : value(x, y) {}
+
+private:
+	vec2u16 value;
 };
 
 struct Position
 {
+public:
+	Position() = default;
+	Position(i32 x, i32 y) : value(x, y) {}
+
 private:
-	i32 x, y;
+	vec2i32 value;
 };
 
-struct PositionExtra
-{
-private:
-	float x, y;
-};
-
-struct Velocity
+struct PositionTail
 {
 public:
-	Velocity(i32 speed, vec2f32 direction)
-	{
-		x =
-	}
+	PositionTail() = default;
+	PositionTail(f32 x, f32 y) : value(x, y) {}
 
 private:
-	vec2f32 = ;
-
-	Velocity() = default;
+	vec2f32 value;
 };
 
 struct Speed
 {
 public:
 	Speed(i32 value) : value(value) {}
+
+	i32 amount()
+	{
+		return value;
+	}
 
 	f32 to_float()
 	{
@@ -61,33 +83,24 @@ private:
 	i32 value;
 };
 
-struct GameObject
+struct Velocity
 {
 public:
-	Position position() const
-	{
-		return position_;
-	}
+	Velocity(Speed speed, Direction direction)
+		: value(direction.mul(speed.to_float())) {}
 
-	SpriteIndex sprite_index() const
-	{
-		return sprite_index_;
-	}
+private:
+	vec2f32 value;
 
-protected:
-	Position position_ = { 0, 0 };
-	PositionExtra position_extra_ = { 0.0f, 0.0f };
-	SpriteIndex sprite_index_ = { 0, 0 };
+	Velocity() = default;
 };
 
-struct Ship : public GameObject
+struct Ship
 {
 public:
-
 	Ship()
 	{
-		position_.x = 100;
-		position_.y = 100;
+		position_ = ;
 	}
 
 	void move(vec2f32 direction)
@@ -105,6 +118,9 @@ public:
 	}
 
 private:
+	Position position_ = { 100, 100 };
+	PositionTail tail_ = { 0.0f, 0.0f };
+	SpriteIndex sprite_index_ = { 0, 0 };
 	Speed speed_ = 5;
 
 };

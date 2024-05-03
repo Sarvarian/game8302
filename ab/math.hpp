@@ -104,6 +104,15 @@ private:
 
 };
 
+struct u32
+{
+public:
+	u32(Uint32 value) : value(value) {}
+private:
+	friend class Convertor;
+	Uint32 value = 0;
+};
+
 namespace
 {
 
@@ -151,6 +160,17 @@ public:
 		y.sub_inplace(rhs.y);
 	}
 
+	vec2f32 mul(f32 rhs)
+	{
+		return vec2f32(x.mul(rhs), y.mul(rhs));
+	}
+
+	vec2f32 mul_inplace(f32 rhs)
+	{
+		x.mul_inplace(rhs);
+		y.mul_inplace(rhs);
+	}
+
 	f32 length_squared()
 	{
 		return vec2_length_squared(x, y);
@@ -176,22 +196,44 @@ public:
 		y.div_inplace(len);
 	}
 
-	bool is_longer_then_one()
-	{
-		return length_squared().is_greater_then(1.0f);
-	}
+private:
+	friend class Convertor;
+	f32 x;
+	f32 y;
 
-	void normalize_if_longer_then_one()
-	{
-		if (is_longer_then_one())
-		{
-			normalize_inplace();
-		}
-	}
+};
+
+struct vec2i32
+{
+public:
+	vec2i32(i32 x, i32 y) : x(x), y(y) {}
 
 private:
-	f32 x, y;
+	friend class Convertor;
+	i32 x;
+	i32 y;
+};
 
+struct vec2u16
+{
+public:
+	vec2u16(u16 x, u16 y) : x(x), y(y) {}
+
+private:
+	friend class Convertor;
+	u16 x;
+	u16 y;
+};
+
+struct vec2u32
+{
+public:
+	vec2u32(u32 x, u32 y) : x(x), y(y) {}
+
+private:
+	friend class Convertor;
+	u32 x;
+	u32 y;
 };
 
 class Convertor
@@ -217,7 +259,11 @@ f32 i32::to_float()
 using math::f32;
 using math::i32;
 using math::u16;
+using math::u32;
 using math::vec2f32;
+using math::vec2i32;
+using math::vec2u16;
+using math::vec2u32;
 
 } // namespace ab
 
