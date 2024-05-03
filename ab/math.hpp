@@ -179,114 +179,6 @@ protected:
 	Raw value;
 };
 
-struct vec2f32
-{
-public:
-	typedef f32 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2f64
-{
-public:
-	typedef f64 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2i8
-{
-public:
-	typedef i8 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2i16
-{
-public:
-	typedef i16 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2i32
-{
-public:
-	typedef i32 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2i64
-{
-public:
-	typedef i64 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2u8
-{
-public:
-	typedef u8 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2u16
-{
-public:
-	typedef u16 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2u32
-{
-public:
-	typedef u32 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2u64
-{
-public:
-	typedef u64 Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2isize
-{
-public:
-	typedef isize Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
-struct vec2usize
-{
-public:
-	typedef usize Comp;
-protected:
-	Comp x;
-	Comp y;
-};
-
 } // namespace core
 
 namespace
@@ -456,16 +348,14 @@ public:
 
 namespace
 {
-/// @brief 
-/// @tparam T FinalType
-/// @tparam C CoreType
+
 template<typename T, typename C>
-struct TVector2 : C
+struct TVector2
 {
 public:
 	typedef TVector2<T, C> Base; // Base Type (TNumber Type)
 	typedef T              Type; // Final Type
-	typedef C              Core; // Core Type
+	typedef C              Comp; // Component Type
 
 	TVector2(Comp x, Comp y) : x(x), y(y) {}
 	TVector2(Type v) : x(v.x), y(v.y) {}
@@ -535,12 +425,16 @@ public:
 		return Type(x.floor(), y.floor());
 	}
 
-	Raw comp_x() { return x; }
-	Raw comp_y() { return y; }
+private:
+	friend class Convertor;
+	Comp x;
+	Comp y;
+
 };
+
 } // namespace
 
-struct vec2f32 : public TVector2<vec2f32, core::vec2f32>
+struct vec2f32 : public TVector2<vec2f32, f32>
 {
 public:
 	typedef vec2f32 SecondBase;
@@ -548,21 +442,21 @@ public:
 	vec2f32() : Base(0, 0) {};
 };
 
-struct vec2i32 : public TVector2<vec2i32, core::vec2i32>
+struct vec2i32 : public TVector2<vec2i32, i32>
 {
 public:
 	typedef vec2i32 SecondBase;
 	vec2i32(Comp x, Comp y) : Base(x, y) {}
 };
 
-struct vec2u16 : public TVector2<vec2u16, core::vec2u16>
+struct vec2u16 : public TVector2<vec2u16, u16>
 {
 public:
 	typedef vec2u16 SecondBase;
 	vec2u16(Comp x, Comp y) : Base(x, y) {}
 };
 
-struct vec2u32 : public TVector2<vec2u32, core::vec2u32>
+struct vec2u32 : public TVector2<vec2u32, u32>
 {
 public:
 	typedef vec2u32 SecondBase;
