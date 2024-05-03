@@ -271,9 +271,9 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		i32 actual_delay = frame_started_at.sub(previous_frame_ended_at).to_i32();
-		i32 from_start_of_frame = frame_ended_at.sub(frame_started_at).to_i32();
-		i32 from_last_frame_ended = frame_ended_at.sub(previous_frame_ended_at).to_i32();
+		i32 actual_delay = math::u64_to_i32(frame_started_at.sub(previous_frame_ended_at));
+		i32 from_start_of_frame = math::u64_to_i32(frame_ended_at.sub(frame_started_at));
+		i32 from_last_frame_ended = math::u64_to_i32(frame_ended_at.sub(previous_frame_ended_at));
 
 		// i32 frame_time_method_1 = from_start_of_frame;
 		i32 frame_time_method_2 = 0;
@@ -295,7 +295,7 @@ private:
 		}
 		else
 		{
-			delay_time = ab::math::Convertor::i32_to_u32(i32(max_frame_time_in_milliseconds).sub(frame_time));
+			delay_time = ab::math::i32_to_u32(i32(max_frame_time_in_milliseconds).sub(frame_time));
 		}
 	}
 

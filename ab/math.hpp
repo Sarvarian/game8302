@@ -197,12 +197,12 @@ struct f64 : public TNumber<f64, primitives::raw_f64>
 public:
 	f64(Raw value) : Base(value) {}
 
-	f64 pow(f64 exponent)
+	f64 pow(f64 exponent) const
 	{
 		return cpp_std_pow(raw(), exponent.raw());
 	}
 
-	f64 sqrt()
+	f64 sqrt() const
 	{
 		return cpp_std_sqrt(raw());
 	}
@@ -218,7 +218,6 @@ struct i32 : public TNumber<i32, primitives::raw_i32>
 {
 public:
 	i32(Raw value) : Base(value) {}
-	f32 to_f32() const;
 };
 
 struct u16 : public TNumber<u16, primitives::raw_u16>
@@ -237,7 +236,6 @@ struct u64 : public TNumber<u64, primitives::raw_u64>
 {
 public:
 	u64(Raw value) : Base(value) {}
-	i32 to_i32() const;
 };
 
 namespace
@@ -314,6 +312,11 @@ public:
 		y.div_inplace(len);
 	}
 
+	Type floor()
+	{
+		return Type(x.floor(), y.floor());
+	}
+
 private:
 	friend class Convertor;
 	Raw x;
@@ -334,7 +337,6 @@ struct vec2i32 : public TVector2<vec2i32, i32>
 {
 public:
 	vec2i32(Raw x, Raw y) : Base(x, y) {}
-	vec2f32 to_vec2f32() const;
 };
 
 struct vec2u16 : public TVector2<vec2u16, u16>
@@ -353,41 +355,61 @@ class Convertor
 {
 public:
 
-	static f32 i32_to_f32(i32 i)
+	inline static i32 f32_to_i32(f32 f)
+	{
+		return i32((i32::Raw)(f.value));
+	}
+
+	inline static f32 i32_to_f32(i32 i)
 	{
 		return f32((f32::Raw)(i.value));
 	}
 
-	static u32 i32_to_u32(i32 i)
+	inline static u32 i32_to_u32(i32 i)
 	{
 		return u32((u32::Raw)(i.value));
 	}
 
-	static i32 u64_to_i32(u64 i)
+	inline static i32 u64_to_i32(u64 i)
 	{
 		return i32((i32::Raw)(i.value));
 	}
 
-	static vec2f32 vec2i32_to_vec2f32(vec2i32 v)
+	inline static vec2i32 vec2f32_to_vec2i32(vec2f32 v)
 	{
-		return vec2f32(v.x.to_f32(), v.y.to_f32());
+		return vec2i32(f32_to_i32(v.x), f32_to_i32(v.y));
+	}
+
+	inline static vec2f32 vec2i32_to_vec2f32(vec2i32 v)
+	{
+		return vec2f32(i32_to_f32(v.x), i32_to_f32(v.y));
 	}
 
 };
 
-inline f32 i32::to_f32() const
+inline f32 i32_to_f32(i32 i)
 {
-	return Convertor::i32_to_f32(*this);
+	return Convertor::i32_to_f32(i);
 }
 
-inline i32 u64::to_i32() const
+inline u32 i32_to_u32(i32 i)
 {
-	return Convertor::u64_to_i32(*this);
+	return Convertor::i32_to_u32(i);
 }
 
-inline vec2f32 vec2i32::to_vec2f32() const
+inline i32 u64_to_i32(u64 i)
 {
-	return Convertor::vec2i32_to_vec2f32(*this);
+	Convertor::u64_to_i32(i);
+}
+
+inline vec2i32 vec2f32_to_vec2i32(vec2f32 v)
+{
+	return Convertor::vec2f32_to_vec2i32(v);
+}
+
+inline vec2f32 vec2i32_to_vec2f32(vec2i32 v)
+{
+	return Convertor::vec2i32_to_vec2f32(v);
 }
 
 } // namespace math

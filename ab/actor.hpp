@@ -52,6 +52,7 @@ struct Position
 {
 public:
 	Position(i32 x, i32 y) : value(x, y) {}
+	Position(vec2i32 value) : value(value) {}
 	vec2i32 vec() const { return value; }
 private:
 	vec2i32 value;
@@ -93,7 +94,7 @@ struct PositionTemp
 public:
 	PositionTemp(Position position, PositionTail extra, Velocity vel)
 	{
-		value = position.vec().to_vec2f32().add(extra.vec()).add(vel.vec());
+		value = vec2i32_to_vec2f32(position.vec()).add(extra.vec()).add(vel.vec());
 	}
 
 	PositionTail tail()
@@ -103,7 +104,7 @@ public:
 
 	Position position()
 	{
-		Position res = Position();
+		Position res = Position(vec2f32_to_vec2i32(value.floor()));
 	}
 
 private:
