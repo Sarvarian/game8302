@@ -56,7 +56,6 @@ inline long double cpp_std_floorl(long double arg)
 	return floorl(arg);
 }
 
-} // namespace
 
 namespace primitives
 {
@@ -238,9 +237,6 @@ public:
 	u64(Raw value) : Base(value) {}
 };
 
-namespace
-{
-
 template<typename T, typename R>
 struct TVector2
 {
@@ -324,8 +320,6 @@ private:
 
 };
 
-} // namespace
-
 struct vec2f32 : public TVector2<vec2f32, f32>
 {
 public:
@@ -387,6 +381,8 @@ public:
 
 };
 
+} // namespace
+
 inline f32 i32_to_f32(i32 i)
 {
 	return Convertor::i32_to_f32(i);
@@ -399,7 +395,7 @@ inline u32 i32_to_u32(i32 i)
 
 inline i32 u64_to_i32(u64 i)
 {
-	Convertor::u64_to_i32(i);
+	return Convertor::u64_to_i32(i);
 }
 
 inline vec2i32 vec2f32_to_vec2i32(vec2f32 v)
@@ -415,6 +411,7 @@ inline vec2f32 vec2i32_to_vec2f32(vec2i32 v)
 } // namespace math
 
 using math::f32;
+using math::f64;
 using math::i32;
 using math::u16;
 using math::u32;
