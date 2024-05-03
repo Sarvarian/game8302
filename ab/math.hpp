@@ -1,35 +1,35 @@
 #pragma once
 
-// namespace ab
-// {
-// namespace primitives
-// {
-
-// typedef Sint8      i8;
-// typedef Sint16     i16;
-// typedef Sint32     i32;
-// typedef Sint64     i64;
-// typedef Uint8      u8;
-// typedef Uint16     u16;
-// typedef Uint32     u32;
-// typedef Uint64     u64;
-
-// typedef intptr_t   isize;
-// typedef uintptr_t  usize;
-
-// } // namespace primitives
-// using namespace primitives;
-// } // namespace ab
-
 namespace ab
 {
 namespace math
 {
+namespace primitives
+{
+typedef float      raw_f32;
+typedef double     raw_f64;
+
+typedef Sint8      raw_i8;
+typedef Sint16     raw_i16;
+typedef Sint32     raw_i32;
+typedef Sint64     raw_i64;
+
+typedef Uint8      raw_u8;
+typedef Uint16     raw_u16;
+typedef Uint32     raw_u32;
+typedef Uint64     raw_u64;
+
+typedef intptr_t   raw_isize;
+typedef uintptr_t  raw_usize;
+} // namespace primitives
 
 struct f32
 {
 public:
-	f32(float value) : value(value) {}
+	typedef primitives::raw_f32 raw;
+	typedef f32 T;
+
+	f32(raw value) : value(value) {}
 
 	f32 add(f32 rhs)
 	{
@@ -78,39 +78,54 @@ public:
 
 private:
 	friend class Convertor;
-	float value = 0;
+	raw value = 0;
 };
 
 struct i32
 {
 public:
-	i32(Sint32 value) : value(value) {}
+	typedef primitives::raw_i32 raw;
+
+	i32(raw value) : value(value) {}
 
 	f32 to_float();
 
 private:
 	friend class Convertor;
-	Sint32 value = 0;
+	raw value = 0;
 };
 
 struct u16
 {
 public:
-	u16(Uint16 value) : value(value) {}
+	typedef primitives::raw_u16 raw;
+
+	u16(raw value) : value(value) {}
 
 private:
 	friend class Convertor;
-	Uint16 value = 0;
+	raw value = 0;
 
 };
 
 struct u32
 {
 public:
-	u32(Uint32 value) : value(value) {}
+	typedef primitives::raw_u32 raw;
+
+	u32(raw value) : value(value) {}
 private:
 	friend class Convertor;
-	Uint32 value = 0;
+	raw value = 0;
+};
+
+struct u64
+{
+public:
+	u64(primitives::raw_u64 value) : value(value) {}
+private:
+	friend class Convertor;
+	primitives::raw_u64 value = 0;
 };
 
 namespace
@@ -244,7 +259,7 @@ private:
 
 	static f32 i32tof32(const i32& i)
 	{
-		return f32((float)(i.value));
+		return f32((f32::raw)(i.value));
 	}
 
 };
@@ -260,6 +275,7 @@ using math::f32;
 using math::i32;
 using math::u16;
 using math::u32;
+using math::u64;
 using math::vec2f32;
 using math::vec2i32;
 using math::vec2u16;

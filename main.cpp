@@ -169,7 +169,7 @@ public:
 private:
 	StackNode* last_node_ = nullptr;
 
-	};
+};
 
 /// @brief 
 /// @tparam T DataType
@@ -267,7 +267,7 @@ public:
 #endif
 			SDL_Delay(delay_time);
 		}
-}
+	}
 
 private:
 
@@ -334,7 +334,7 @@ private:
 			SDL_Log("FPS: %lld", average_fps);
 			last_print = frame_ended_at;
 			fps_data.clear();
-	}
+		}
 	}
 #endif
 
