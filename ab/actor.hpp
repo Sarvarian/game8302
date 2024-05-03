@@ -63,6 +63,7 @@ struct PositionTail
 {
 public:
 	PositionTail(f32 x, f32 y) : value(x, y) {}
+	PositionTail(vec2f32 value) : value(value) {}
 	vec2f32 vec() const { return value; }
 private:
 	vec2f32 value;
@@ -105,7 +106,7 @@ public:
 
 	Position position()
 	{
-		Position res = Position(math::vec2f32_to_vec2i32(value.floor()));
+		Position res = Position(value.floor().to_vec2i32());
 	}
 
 private:
@@ -128,7 +129,7 @@ private:
 	Position position_ = { 100, 100 };
 	PositionTail position_extra_ = { 0.0f, 0.0f };
 	SpriteIndex sprite_index_ = { 0, 0 };
-	Speed speed_ = 5;
+	Speed speed_ = { 5 };
 
 };
 

@@ -323,7 +323,7 @@ public:
 		y.div_inplace(len);
 	}
 
-	Type floor()
+	Type floor() const
 	{
 		return Type(x.floor(), y.floor());
 	}
@@ -417,7 +417,8 @@ struct f64 : public internal::f64
 struct i32 : public internal::i32
 {
 	i32(Raw value) : SecondBase(value) {}
-	internal::f32 to_f32() { return internal::Convertor::i32_to_f32(*this); }
+	i32(SecondBase value) : SecondBase(value) {}
+	internal::f32 to_f32() const { return internal::Convertor::i32_to_f32(*this); }
 };
 
 struct u16 : public internal::u16
@@ -433,22 +434,23 @@ struct u32 : public internal::u32
 struct u64 : public internal::u64
 {
 	u64(Raw value) : SecondBase(value) {}
-	internal::i32 to_i32() { internal::Convertor::u64_to_i32(*this); }
+	u64 sub(u64 rhs) const { return internal::u64::sub(rhs); }
+	internal::i32 to_i32() const { internal::Convertor::u64_to_i32(*this); }
 };
 
 struct vec2f32 : public internal::vec2f32
 {
 	vec2f32(SecondBase value) : SecondBase(value) {}
 	vec2f32(Comp x, Comp y) : SecondBase(x, y) {}
-	vec2f32 floor() { return internal::vec2f32::floor(); }
-	internal::vec2i32 to_vec2i32() { return internal::Convertor::vec2f32_to_vec2i32(*this); }
+	vec2f32 floor() const { return internal::vec2f32::floor(); }
+	internal::vec2i32 to_vec2i32() const { return internal::Convertor::vec2f32_to_vec2i32(*this); }
 };
 
 struct vec2i32 : public internal::vec2i32
 {
 	vec2i32(SecondBase value) : SecondBase(value) {}
 	vec2i32(Comp x, Comp y) : SecondBase(x, y) {}
-	internal::vec2f32 to_vec2f32() { return internal::Convertor::vec2i32_to_vec2f32(*this); }
+	internal::vec2f32 to_vec2f32() const { return internal::Convertor::vec2i32_to_vec2f32(*this); }
 };
 
 struct vec2u16 : public internal::vec2u16

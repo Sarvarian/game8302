@@ -271,7 +271,7 @@ private:
 	{
 		previous_delay_time = delay_time;
 
-		i32 actual_delay = math::u64_to_i32(frame_started_at.sub(previous_frame_ended_at));
+		i32 actual_delay = frame_started_at.sub(previous_frame_ended_at).to_i32();
 		i32 from_start_of_frame = math::u64_to_i32(frame_ended_at.sub(frame_started_at));
 		i32 from_last_frame_ended = math::u64_to_i32(frame_ended_at.sub(previous_frame_ended_at));
 
