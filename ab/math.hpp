@@ -80,119 +80,16 @@ typedef intptr_t   raw_isize;
 typedef uintptr_t  raw_usize;
 } // namespace primitives
 
-namespace core
-{
-
-struct f32
-{
-public:
-	typedef primitives::raw_f32 Raw;
-protected:
-	Raw value;
-};
-
-struct f64
-{
-public:
-	typedef primitives::raw_f64 Raw;
-protected:
-	Raw value;
-};
-
-struct i8
-{
-public:
-	typedef primitives::raw_i8 Raw;
-protected:
-	Raw value;
-};
-
-struct i16
-{
-public:
-	typedef primitives::raw_i16 Raw;
-protected:
-	Raw value;
-};
-
-struct i32
-{
-public:
-	typedef primitives::raw_i32 Raw;
-protected:
-	Raw value;
-};
-
-struct i64
-{
-public:
-	typedef primitives::raw_i64 Raw;
-protected:
-	Raw value;
-};
-
-struct u8
-{
-public:
-	typedef primitives::raw_u8 Raw;
-protected:
-	Raw value;
-};
-
-struct u16
-{
-public:
-	typedef primitives::raw_u16 Raw;
-protected:
-	Raw value;
-};
-
-struct u32
-{
-public:
-	typedef primitives::raw_u32 Raw;
-protected:
-	Raw value;
-};
-
-struct u64
-{
-public:
-	typedef primitives::raw_u64 Raw;
-protected:
-	Raw value;
-};
-
-struct isize
-{
-public:
-	typedef primitives::raw_isize Raw;
-protected:
-	Raw value;
-};
-
-struct usize
-{
-public:
-	typedef primitives::raw_usize Raw;
-protected:
-	Raw value;
-};
-
-} // namespace core
-
-namespace
-{
 /// @brief 
 /// @tparam T FinalType
-/// @tparam C CoreType
-template<typename T, typename C>
-struct TNumber : C
+/// @tparam R RawType
+template<typename T, typename R>
+struct TNumber
 {
 public:
-	typedef TNumber<T, C> Base; // Base Type (TNumber Type)
+	typedef TNumber<T, R> Base; // Base Type (TNumber Type)
 	typedef T             Type; // Final Type
-	typedef C             Core; // Core Type
+	typedef R              Raw; // Raw Type
 
 	TNumber(Raw v) : value(v) {}
 	TNumber(Type v) : value(v.value) {}
@@ -267,10 +164,16 @@ public:
 	{
 		return value;
 	}
-};
-} // namespace
 
-struct f32 : public TNumber<f32, core::f32>
+protected:
+
+private:
+	friend class Convertor;
+	Raw value;
+
+};
+
+struct f32 : public TNumber<f32, primitives::raw_f32>
 {
 public:
 	typedef f32 SecondBase;
@@ -294,7 +197,7 @@ public:
 
 };
 
-struct f64 : public TNumber<f64, core::f64>
+struct f64 : public TNumber<f64, primitives::raw_f64>
 {
 public:
 	typedef f64 SecondBase;
@@ -318,28 +221,28 @@ public:
 
 };
 
-struct i32 : public TNumber<i32, core::i32>
+struct i32 : public TNumber<i32, primitives::raw_i32>
 {
 public:
 	typedef i32 SecondBase;
 	i32(Raw value) : Base(value) {}
 };
 
-struct u16 : public TNumber<u16, core::u16>
+struct u16 : public TNumber<u16, primitives::raw_u16>
 {
 public:
 	typedef u16 SecondBase;
 	u16(Raw value) : Base(value) {}
 };
 
-struct u32 : public TNumber<u32, core::u32>
+struct u32 : public TNumber<u32, primitives::raw_u32>
 {
 public:
 	typedef u32 SecondBase;
 	u32(Raw value) : Base(value) {}
 };
 
-struct u64 : public TNumber<u64, core::u64>
+struct u64 : public TNumber<u64, primitives::raw_u64>
 {
 public:
 	typedef u64 SecondBase;
@@ -469,22 +372,22 @@ public:
 
 	inline static i32 f32_to_i32(f32 f)
 	{
-		return i32((i32::Raw)(f.raw()));
+		return i32((i32::Raw)(f.value));
 	}
 
 	inline static f32 i32_to_f32(i32 i)
 	{
-		return f32((f32::Raw)(i.raw()));
+		return f32((f32::Raw)(i.value));
 	}
 
 	inline static u32 i32_to_u32(i32 i)
 	{
-		return u32((u32::Raw)(i.raw()));
+		return u32((u32::Raw)(i.value));
 	}
 
 	inline static i32 u64_to_i32(u64 i)
 	{
-		return i32((i32::Raw)(i.raw()));
+		return i32((i32::Raw)(i.value));
 	}
 
 	inline static vec2i32 vec2f32_to_vec2i32(vec2f32 v)
