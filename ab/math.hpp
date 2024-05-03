@@ -77,53 +77,53 @@ public:
 	TNumber(Type v) : value(v.value) {}
 	TNumber() : value(0) {}
 
-	Type add(Type rhs)
+	Type add(Type rhs) const
 	{
 		return Type(value + rhs.value);
 	}
 
-	void add_inplace(Type rhs)
+	void add_inplace(Type rhs) const
 	{
 		value = value + rhs.value;
 	}
 
-	Type sub(Type rhs)
+	Type sub(Type rhs) const
 	{
 		return Type(value - rhs.value);
 	}
 
-	void sub_inplace(Type rhs)
+	void sub_inplace(Type rhs) const
 	{
 		value = value - rhs.value;
 	}
 
-	Type mul(Type rhs)
+	Type mul(Type rhs) const
 	{
 		return Type(value * rhs.value);
 	}
 
-	void mul_inplace(Type rhs)
+	void mul_inplace(Type rhs) const
 	{
 		value = value * rhs.value;
 	}
 
-	Type div(Type rhs)
+	Type div(Type rhs) const
 	{
 		return Type(value / rhs.value);
 	}
 
-	void div_inplace(Type rhs)
+	void div_inplace(Type rhs) const
 	{
 		value = value / rhs.value;
 	}
 
-	bool is_greater_then(Type rhs)
+	bool is_greater_then(Type rhs) const
 	{
 		return value > rhs.value;
 	}
 
 protected:
-	Raw get_raw()
+	Raw get_raw() const
 	{
 		return value;
 	}
@@ -139,12 +139,12 @@ struct f32 : public TNumber<f32, primitives::raw_f32>
 public:
 	f32(Raw value) : Base(value) {}
 
-	f32 pow(f32 exponent)
+	f32 pow(f32 exponent) const
 	{
 		return cpp_std_powf(get_raw(), exponent.get_raw());
 	}
 
-	f32 sqrt()
+	f32 sqrt() const
 	{
 		return cpp_std_sqrtf(get_raw());
 	}
