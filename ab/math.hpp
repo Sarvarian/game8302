@@ -118,39 +118,34 @@ public:
 	f32 to_float();
 
 private:
-};
-
-struct u16
-{
-public:
-	typedef primitives::raw_u16 raw;
-
-	u16(raw value) : value(value) {}
-
-private:
-	friend class Convertor;
-	raw value = 0;
 
 };
 
-struct u32
+struct u16 : public TNumber<u16, primitives::raw_u16>
 {
 public:
-	typedef primitives::raw_u32 raw;
+	u16(Raw value) : Base(value) {}
 
-	u32(raw value) : value(value) {}
 private:
-	friend class Convertor;
-	raw value = 0;
+
 };
 
-struct u64
+struct u32 : public TNumber<u32, primitives::raw_u32>
 {
 public:
-	u64(primitives::raw_u64 value) : value(value) {}
+	u32(Raw value) : Base(value) {}
+
 private:
-	friend class Convertor;
-	primitives::raw_u64 value = 0;
+
+};
+
+struct u64 : public TNumber<u64, primitives::raw_u64>
+{
+public:
+	u64(Raw value) : Base(value) {}
+
+private:
+
 };
 
 namespace
@@ -205,7 +200,7 @@ public:
 		return vec2f32(x.mul(rhs), y.mul(rhs));
 	}
 
-	vec2f32 mul_inplace(f32 rhs)
+	void mul_inplace(f32 rhs)
 	{
 		x.mul_inplace(rhs);
 		y.mul_inplace(rhs);
@@ -224,12 +219,10 @@ public:
 	vec2f32 normalize()
 	{
 		f32 len = length();
-		f32 x = x.div(len);
-		f32 y = y.div(len);
-		return vec2f32(x, y);
+		return vec2f32(x.div(len), y.div(len));
 	}
 
-	vec2f32 normalize_inplace()
+	void normalize_inplace()
 	{
 		f32 len = length();
 		x.div_inplace(len);
