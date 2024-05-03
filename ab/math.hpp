@@ -23,7 +23,6 @@ typedef intptr_t   raw_isize;
 typedef uintptr_t  raw_usize;
 } // namespace primitives
 
-
 /// @brief 
 /// @tparam T FinalType
 /// @tparam R RawType
@@ -106,8 +105,6 @@ public:
 		return sqrtf(get_raw());
 	}
 
-private:
-
 };
 
 struct i32 : public TNumber<i32, primitives::raw_i32>
@@ -117,35 +114,24 @@ public:
 
 	f32 to_float();
 
-private:
-
 };
 
 struct u16 : public TNumber<u16, primitives::raw_u16>
 {
 public:
 	u16(Raw value) : Base(value) {}
-
-private:
-
 };
 
 struct u32 : public TNumber<u32, primitives::raw_u32>
 {
 public:
 	u32(Raw value) : Base(value) {}
-
-private:
-
 };
 
 struct u64 : public TNumber<u64, primitives::raw_u64>
 {
 public:
 	u64(Raw value) : Base(value) {}
-
-private:
-
 };
 
 namespace
@@ -222,7 +208,6 @@ public:
 		y.div_inplace(len);
 	}
 
-
 private:
 	friend class Convertor;
 	Raw x;
@@ -236,42 +221,25 @@ struct vec2f32 : public TVector2<vec2f32, f32>
 {
 public:
 	vec2f32(f32 x, f32 y) : Base(x, y) {}
-
-private:
-
+	vec2f32() : Base(0, 0) {};
 };
 
-struct vec2i32
+struct vec2i32 : public TVector2<vec2i32, i32>
 {
 public:
-	vec2i32(i32 x, i32 y) : x(x), y(y) {}
-
-private:
-	friend class Convertor;
-	i32 x;
-	i32 y;
+	vec2i32(Raw x, Raw y) : Base(x, y) {}
 };
 
-struct vec2u16
+struct vec2u16 : public TVector2<vec2u16, u16>
 {
 public:
-	vec2u16(u16 x, u16 y) : x(x), y(y) {}
-
-private:
-	friend class Convertor;
-	u16 x;
-	u16 y;
+	vec2u16(Raw x, Raw y) : Base(x, y) {}
 };
 
-struct vec2u32
+struct vec2u32 : public TVector2<vec2u32, u32>
 {
 public:
-	vec2u32(u32 x, u32 y) : x(x), y(y) {}
-
-private:
-	friend class Convertor;
-	u32 x;
-	u32 y;
+	vec2u32(Raw x, Raw y) : Base(x, y) {}
 };
 
 class Convertor
