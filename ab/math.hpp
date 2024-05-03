@@ -176,6 +176,8 @@ private:
 struct f32 : public TNumber<f32, primitives::raw_f32>
 {
 public:
+	typedef f32 SecondBase;
+
 	f32(Raw value) : Base(value) {}
 
 	f32 pow(f32 exponent) const
@@ -198,6 +200,8 @@ public:
 struct f64 : public TNumber<f64, primitives::raw_f64>
 {
 public:
+	typedef f64 SecondBase;
+
 	f64(Raw value) : Base(value) {}
 
 	f64 pow(f64 exponent) const
@@ -220,24 +224,28 @@ public:
 struct i32 : public TNumber<i32, primitives::raw_i32>
 {
 public:
+	typedef i32 SecondBase;
 	i32(Raw value) : Base(value) {}
 };
 
 struct u16 : public TNumber<u16, primitives::raw_u16>
 {
 public:
+	typedef u16 SecondBase;
 	u16(Raw value) : Base(value) {}
 };
 
 struct u32 : public TNumber<u32, primitives::raw_u32>
 {
 public:
+	typedef u32 SecondBase;
 	u32(Raw value) : Base(value) {}
 };
 
 struct u64 : public TNumber<u64, primitives::raw_u64>
 {
 public:
+	typedef u64 SecondBase;
 	u64(Raw value) : Base(value) {}
 };
 
@@ -398,27 +406,33 @@ public:
 
 struct f32 : public internal::f32
 {
+	f32(Raw value) : SecondBase(value) {}
 };
 
 struct f64 : public internal::f64
 {
+	f64(Raw value) : SecondBase(value) {}
 };
 
 struct i32 : public internal::i32
 {
+	i32(Raw value) : SecondBase(value) {}
 	internal::f32 to_f32() { return internal::Convertor::i32_to_f32(*this); }
 };
 
 struct u16 : public internal::u16
 {
+	u16(Raw value) : SecondBase(value) {}
 };
 
 struct u32 : public internal::u32
 {
+	u32(Raw value) : SecondBase(value) {}
 };
 
 struct u64 : public internal::u64
 {
+	u64(Raw value) : SecondBase(value) {}
 	internal::i32 to_i32() { internal::Convertor::u64_to_i32(*this); }
 };
 
@@ -426,7 +440,8 @@ struct vec2f32 : public internal::vec2f32
 {
 	vec2f32(SecondBase value) : SecondBase(value) {}
 	vec2f32(Comp x, Comp y) : SecondBase(x, y) {}
-	internal::vec2i32 vec2f32_to_vec2i32() { return internal::Convertor::vec2f32_to_vec2i32(*this); }
+	vec2f32 floor() { return internal::vec2f32::floor(); }
+	internal::vec2i32 to_vec2i32() { return internal::Convertor::vec2f32_to_vec2i32(*this); }
 };
 
 struct vec2i32 : public internal::vec2i32
