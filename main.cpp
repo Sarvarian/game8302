@@ -218,10 +218,10 @@ class MainLoopTiming
 {
 public:
 
-	static constexpr u64 one_second = 1;
-	static constexpr u64 miliseconds_per_seconds = 1000;
-	static constexpr u64 max_frame_time_in_milliseconds =
-		(u64)(
+	static constexpr u64::Raw one_second = 1;
+	static constexpr u64::Raw miliseconds_per_seconds = 1000;
+	static constexpr u64::Raw max_frame_time_in_milliseconds =
+		(u64::Raw)(
 			(((double)(one_second)) / ((double)(MAIN_LOOP_RATE_PER_SECOND)))
 			* ((double)(miliseconds_per_seconds))
 			);
@@ -249,12 +249,12 @@ public:
 		print_fps_every_second();
 #endif
 
-		if (delay_time > 0)
+		if (delay_time.is_greater_then(0))
 		{
 #if DEBUG_LOG_MAIN_LOOP_DELAY_TIME
 			SDL_Log("delay time: %u", delay_time);
 #endif
-			SDL_Delay(delay_time);
+			SDL_Delay(delay_time.raw());
 		}
 	}
 

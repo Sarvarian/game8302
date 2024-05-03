@@ -95,6 +95,17 @@ public:
 	{
 		value = position.vec().to_vec2f32().add(extra.vec()).add(vel.vec());
 	}
+
+	PositionTail tail()
+	{
+		PositionTail res = PositionTail();
+	}
+
+	Position position()
+	{
+		Position res = Position();
+	}
+
 private:
 	vec2f32 value;
 	PositionTemp();
@@ -107,10 +118,8 @@ public:
 	{
 		Velocity vel = Velocity(speed_, direction);
 		PositionTemp pos = PositionTemp(position_, position_extra_, vel);
-
-		// position_extra_;
-
-		// position_ += speed_ * dir;
+		position_extra_ = pos.tail();
+		position_ = pos.position();
 	}
 
 private:

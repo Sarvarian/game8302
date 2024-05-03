@@ -122,11 +122,12 @@ public:
 		return value > rhs.value;
 	}
 
-protected:
-	Raw get_raw() const
+	Raw raw() const
 	{
 		return value;
 	}
+
+protected:
 
 private:
 	friend class Convertor;
@@ -141,12 +142,12 @@ public:
 
 	f32 pow(f32 exponent) const
 	{
-		return cpp_std_powf(get_raw(), exponent.get_raw());
+		return cpp_std_powf(raw(), exponent.raw());
 	}
 
 	f32 sqrt() const
 	{
-		return cpp_std_sqrtf(get_raw());
+		return cpp_std_sqrtf(raw());
 	}
 
 };
@@ -158,12 +159,12 @@ public:
 
 	f64 pow(f64 exponent)
 	{
-		return cpp_std_pow(get_raw(), exponent.get_raw());
+		return cpp_std_pow(raw(), exponent.raw());
 	}
 
 	f64 sqrt()
 	{
-		return cpp_std_sqrt(get_raw());
+		return cpp_std_sqrt(raw());
 	}
 
 };
