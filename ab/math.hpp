@@ -193,10 +193,7 @@ struct i32 : public TNumber<i32, primitives::raw_i32>
 {
 public:
 	i32(Raw value) : Base(value) {}
-
 	f32 to_f32() const;
-	u32 to_u32() const;
-
 };
 
 struct u16 : public TNumber<u16, primitives::raw_u16>
@@ -329,16 +326,7 @@ public:
 
 class Convertor
 {
-private:
-	friend struct f32;
-	friend struct f64;
-	friend struct i32;
-	friend struct u16;
-	friend struct u32;
-	friend struct u64;
-	friend struct vec2f32;
-	friend struct vec2i16;
-	friend struct vec2i32;
+public:
 
 	static f32 i32_to_f32(i32 i)
 	{
@@ -365,11 +353,6 @@ private:
 inline f32 i32::to_f32() const
 {
 	return Convertor::i32_to_f32(*this);
-}
-
-inline u32 i32::to_u32()const
-{
-	return Convertor::i32_to_u32(*this);
 }
 
 inline i32 u64::to_i32() const

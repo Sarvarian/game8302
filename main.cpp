@@ -295,7 +295,7 @@ private:
 		}
 		else
 		{
-			delay_time = i32(max_frame_time_in_milliseconds).sub(frame_time).to_u32();
+			delay_time = ab::math::Convertor::i32_to_u32(i32(max_frame_time_in_milliseconds).sub(frame_time));
 		}
 	}
 
