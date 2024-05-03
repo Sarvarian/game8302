@@ -1,3 +1,17 @@
+
+
+
+
+// TODO: support c++98;
+
+
+
+
+#include "pch.hpp"
+
+#include "ab/actor.hpp"
+
+
 #define MAIN_LOOP_RATE_PER_SECOND 60
 #define WINDOW_SCREEN_WIDTH 800
 #define WINDOW_SCREEN_HEIGHT 600
@@ -9,32 +23,8 @@
 #define DEBUG_LOG_MAIN_LOOP_DELAY_TIME 0
 #define DEBUG_MESSAGE_DESTROY 0
 
-#if DEBUG_PRINT_MAIN_LOOP_FPS_EVERY_SECOND
-#include <vector>
-#endif
 
-#include <iostream>
-#include "SDL2/SDL.h"
-#include "glm/glm.hpp"
-
-typedef Sint8      i8;
-typedef Sint16     i16;
-typedef Sint32     i32;
-typedef Sint64     i64;
-typedef Uint8      u8;
-typedef Uint16     u16;
-typedef Uint32     u32;
-typedef Uint64     u64;
-
-typedef intptr_t   isize;
-typedef uintptr_t  usize;
-
-typedef glm::lowp_fvec2 fvec2;
-typedef glm::lowp_i32vec2 ivec2;
-typedef glm::lowp_u32vec2 uvec2;
-typedef glm::lowp_fmat2x2 fmat22;
-typedef glm::lowp_i32mat2x2 imat22;
-typedef glm::lowp_u32mat2x2 umat22;
+using namespace ab;
 
 class CMDLine
 {
@@ -179,7 +169,7 @@ public:
 private:
 	StackNode* last_node_ = nullptr;
 
-};
+	};
 
 /// @brief 
 /// @tparam T DataType
@@ -277,7 +267,7 @@ public:
 #endif
 			SDL_Delay(delay_time);
 		}
-	}
+}
 
 private:
 
@@ -344,7 +334,7 @@ private:
 			SDL_Log("FPS: %lld", average_fps);
 			last_print = frame_ended_at;
 			fps_data.clear();
-		}
+	}
 	}
 #endif
 
@@ -469,45 +459,6 @@ private:
 		DebugLog("window destruction ends here.");
 #endif
 	}
-
-};
-
-struct GameObject
-{
-public:
-	ivec2 position() const
-	{
-		return position_;
-	}
-
-	uvec2 sprite_index() const
-	{
-		return sprite_index_;
-	}
-
-protected:
-	ivec2 position_ = { 0, 0 };
-	fvec2 position_extra_ = { 0.0f, 0.0f };
-	uvec2 sprite_index_ = { 0, 0 };
-};
-
-struct Ship : public GameObject
-{
-public:
-
-	Ship()
-	{
-		position_.x = 100;
-		position_.y = 100;
-	}
-
-	void move(const ivec2& dir)
-	{
-		position_ += speed_ * dir;
-	}
-
-private:
-	i32 speed_ = 5;
 
 };
 
@@ -851,7 +802,7 @@ protected:
 
 private:
 
-	ivec2 direction = ivec2(0, 0);
+	fvec2 direction = fvec2(0, 0);
 
 	void process_input(const SDL_Event* event)
 	{
@@ -863,15 +814,15 @@ private:
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
-				direction.x -= 1;
+				direction.x -= 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_RIGHT)
 			{
-				direction.x += 1;
+				direction.x += 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_UP)
 			{
-				direction.y -= 1;
+				direction.y -= 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_DOWN)
 			{
@@ -886,19 +837,19 @@ private:
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_LEFT)
 			{
-				direction.x += 1;
+				direction.x += 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_RIGHT)
 			{
-				direction.x -= 1;
+				direction.x -= 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_UP)
 			{
-				direction.y += 1;
+				direction.y += 1.0f;
 			}
 			else if (event->key.keysym.scancode == SDL_SCANCODE_DOWN)
 			{
-				direction.y -= 1;
+				direction.y -= 1.0f;
 			}
 		}
 	}

@@ -1,3 +1,3 @@
 #! /bin/bash
 
-clang++ -W -mconsole main.cpp -L/./ -lmingw32 -lsdl2main -lsdl2 -o game.exe
+clang++ -W -mconsole pch.cpp main.cpp ab/actor.cpp -L/./ -lmingw32 -lsdl2main -lsdl2 -o game.exe

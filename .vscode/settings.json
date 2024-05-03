@@ -60,7 +60,10 @@
     "xstring": "cpp",
     "xtr1common": "cpp",
     "xutility": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "algorithm": "cpp",
+    "functional": "cpp",
+    "optional": "cpp"
   },
   "cSpell.words": [
     "-lmingw",
@@ -89,5 +92,6 @@
   "cSpell.enableFiletypes": [
     "powershell",
     "shellscript"
-  ]
+  ],
+  "C_Cpp.vcFormat.indent.namespaceContents": false
 }
