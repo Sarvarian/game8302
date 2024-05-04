@@ -13,6 +13,8 @@ int main(int argc, char** argv)
 	cmdline_argc = argc;
 	cmdline_argv = argv;
 
+	auto x = 0.0;
+
 	return 0;
 }
 

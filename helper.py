@@ -1,9 +1,13 @@
 """ Helper function for code c++ generator """
 
+from genericpath import isdir
+import os
+import os.path
+
 
 def read_content(file_path):
     """Returns content of a text file.
-    file_path: Give full path.
+    file_path: Give a full path. (relative or absolute does not matter.)
     """
     with open(file_path, 'rt', encoding='utf-8') as file:
         content = file.read()
@@ -13,7 +17,7 @@ def read_content(file_path):
 
 def write_content(file_path, content):
     """Write content to a text file.
-    file_path: Give full path to types list file.
+    file_path: Give a full path. (relative or absolute does not matter.)
     content: String of text.
     """
     with open(file_path, 'w', encoding='utf-8') as file:
@@ -23,7 +27,7 @@ def write_content(file_path, content):
 
 def read_types(file_path):
     """Returns a list of dictionaries of types.
-    file_path: Give full path to types list file.
+    file_path: Give full path to types list file. (relative or absolute does not matter.)
     """
     types = read_content(file_path).split()
     res = []
@@ -33,3 +37,15 @@ def read_types(file_path):
             {'raw': types[i], 'type': types[i+1], 'default': types[i+2]})
         i += 3
     return res
+
+
+def read_routine_templates(dir_path):
+    """
+    dir_path: Give full path to routine template directory. (relative or absolute does not matter.)
+    """
+    paths = os.listdir(dir_path)
+    for path in paths:
+        path = os.path.join(dir_path, path)
+        if os.path.isdir(path):
+            continue
+        print(path)
