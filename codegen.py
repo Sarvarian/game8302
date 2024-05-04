@@ -36,11 +36,11 @@ if __name__ == '__main__':
     types = read_types(TYPES_LIST_FILE_PATH)
     struct = read_content(STRUCT_FILE_PATH)
     routines = read_routine_templates(ROUTINES_TEMPLATES_DIR_PTAH)
-    structs = []
-    conversions_bodies = []
+    structs: list[str] = []
+    conversions: list[Conversion] = []
     for t in types:
         conversions_heads = []
-        c = struct
+        c: str = struct
         r = routines[EVERY_TYPE_ROUTINES_FILE_NAME_WITHOUT_EXTENSION]
         r += '\n\n'
         if t.name in routines:
@@ -51,10 +51,10 @@ if __name__ == '__main__':
                 continue
             conv: Conversion = Conversion(t.name, ot.name)
             conv.generate()
-            conversions_heads.append(conv.head)
-            conversions_bodies.append(conv.body)
-        for h in conversions_heads:
-            r += h + '\n'
+            conversions.append(conv)
+        for conv in conversions:
+            if conv.type == t.name:
+                r += conv.head + '\n'
         r = r.removesuffix('\n')
         c = c.replace(ROUTINES_PLACEHOLDER_STRING, r)
         c = c.replace(TYPE_NAME_PLACEHOLDER_STRING, t.name)
@@ -62,6 +62,9 @@ if __name__ == '__main__':
         c = c.replace(DEFAULT_VALUE_PLACEHOLDER_STRING, t.default)
         c += '\n'
         structs.append(c)
+    conversions_bodies: list[str] = []
+    for conv in conversions:
+        conversions_bodies.append(conv.body)
     RES = ''.join(structs)
     RES += '\n'
     RES += ''.join(conversions_bodies)
