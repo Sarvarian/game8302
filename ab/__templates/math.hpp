@@ -21,8 +21,6 @@ inline double cpp_std_trunc(double arg) { return trunc(arg); }
 inline long double cpp_std_truncl(long double arg) { return truncl(arg); }
 } // namespace
 
-//_PREDEFINE_TYPE_HERE
-
 //_GENERATE_TYPE_HERE
 
 } // namespace math
