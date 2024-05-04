@@ -171,6 +171,7 @@ private:
 	Raw value_;
 
 };
+
 struct f64
 {
 public:
@@ -306,6 +307,7 @@ private:
 	Raw value_;
 
 };
+
 struct i8
 {
 public:
@@ -401,6 +403,7 @@ private:
 	Raw value_;
 
 };
+
 struct i16
 {
 public:
@@ -496,6 +499,7 @@ private:
 	Raw value_;
 
 };
+
 struct i32
 {
 public:
@@ -591,6 +595,7 @@ private:
 	Raw value_;
 
 };
+
 struct i64
 {
 public:
@@ -686,6 +691,7 @@ private:
 	Raw value_;
 
 };
+
 struct u8
 {
 public:
@@ -781,6 +787,7 @@ private:
 	Raw value_;
 
 };
+
 struct u16
 {
 public:
@@ -876,6 +883,7 @@ private:
 	Raw value_;
 
 };
+
 struct u32
 {
 public:
@@ -971,6 +979,7 @@ private:
 	Raw value_;
 
 };
+
 struct u64
 {
 public:
@@ -1066,6 +1075,7 @@ private:
 	Raw value_;
 
 };
+
 struct isize
 {
 public:
@@ -1161,6 +1171,7 @@ private:
 	Raw value_;
 
 };
+
 struct usize
 {
 public:
@@ -1256,6 +1267,7 @@ private:
 	Raw value_;
 
 };
+
 
 inline f64 f32::to_f64() const
 {

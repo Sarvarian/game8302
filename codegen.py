@@ -148,7 +148,7 @@ def generate_structs(types: dict[Type, None], conversion_generator: ConversionGe
     """
     struct: str = ''
     struct = read_content(struct_template_file)
-    structs: list[str] = []
+    result = ''
     for t in types:
         c: str = struct
         r = Type.routines
@@ -166,9 +166,8 @@ def generate_structs(types: dict[Type, None], conversion_generator: ConversionGe
         c = c.replace('_TYPE_NAME', t.name)
         c = c.replace('_RAW_TYPE', t.raw)
         c = c.replace('_DEFAULT_VALUE', t.default)
-        c += '\n'
-        structs.append(c)
-    result = ''.join(structs)
+        c += '\n\n'
+        result += c
     result += '\n'
     return result
 
