@@ -19,7 +19,7 @@ def write_content(file_path, content):
     file_path: Give a full path. (relative or absolute does not matter.)
     content: String of text.
     """
-    with open(file_path, 'w', encoding='utf-8') as file:
+    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
         file.write(content)
         file.close()
 
