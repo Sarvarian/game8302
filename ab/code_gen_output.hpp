@@ -1143,5 +1143,3 @@ private:
 };
 
 } // namespace math
-} // namespace ab
-

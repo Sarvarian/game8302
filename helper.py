@@ -1,6 +1,5 @@
 """ Helper function for code c++ generator """
 
-from genericpath import isdir
 import os
 import os.path
 
@@ -10,7 +9,7 @@ def read_content(file_path):
     file_path: Give a full path. (relative or absolute does not matter.)
     """
     with open(file_path, 'rt', encoding='utf-8') as file:
-        content = file.read()
+        content = file.read().strip()
         file.close()
         return content
 
