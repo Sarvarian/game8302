@@ -3,15 +3,6 @@
 import os
 import os.path
 
-templates_dir: str = 'ab/__templates'
-output_dir: str = 'ab/'
-output_file: str = 'code_gen_output.hpp'
-main_template_file: str = 'math.hpp'
-types_list_file: str = 'types.txt'
-struct_template_file: str = 'struct.hpp'
-routines_templates_dir: str = 'routines'
-conversions_dir: str = 'conversions'
-
 
 def read_content(file_path: str) -> str:
     """Returns content of a text file.
@@ -81,19 +72,14 @@ class FileSystem:
     """ To Work With Files And Directories """
 
     def __init__(self) -> None:
-        self.templates_dir: str = templates_dir
-        self.output_dir: str = output_dir
-        self.output_file: str = os.path.join(output_dir, output_file)
-        self.main_template_file: str = os.path.join(
-            templates_dir, main_template_file)
-        self.types_list_file: str = os.path.join(
-            templates_dir, types_list_file)
-        self.struct_template_file: str = os.path.join(
-            templates_dir, struct_template_file)
-        self.routines_templates_dir: str = os.path.join(
-            templates_dir, routines_templates_dir)
-        self.conversions_dir_name: str = os.path.join(
-            templates_dir, conversions_dir)
+        self.output_dir: str = 'ab/'
+        self.output_file: str = 'ab/code_gen_output.hpp'
+        self.templates_dir: str = 'ab/__templates'
+        self.main_template_file: str = 'ab/__templates/math.hpp'
+        self.types_list_file: str = 'ab/__templates/types.txt'
+        self.struct_template_file: str = 'ab/__templates/struct.hpp'
+        self.routines_templates_dir: str = 'ab/__templates/routines'
+        self.conversions_dir_name: str = 'ab/__templates/conversions'
 
     def read_types(self) -> list[Type]:
         """Returns a list of dictionaries of types.
