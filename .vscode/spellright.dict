@@ -9,3 +9,5 @@ src_rect
 dist_rect
 isize
 usize
+intptr_t
+uintptr_t

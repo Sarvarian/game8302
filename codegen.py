@@ -1,7 +1,7 @@
 """" To generate c++ code. """
 
 import os
-from helper import read_content
+from helper import read_types
 
 TEMPLATES_DIR = 'ab/__templates'
 OUTPUT_DIR = 'ab/'
@@ -13,4 +13,5 @@ TYPES_LIST_FILE_NAME = 'types.txt'
 TYPES_LIST_FILE_PATH = os.path.join(TEMPLATES_DIR, TYPES_LIST_FILE_NAME)
 
 if __name__ == '__main__':
-    types = read_content(TYPES_LIST_FILE_PATH)
+    types = read_types(TYPES_LIST_FILE_PATH)
+    print(types)
