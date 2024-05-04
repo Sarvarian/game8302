@@ -1281,6 +1281,665 @@ private:
 
 };
 
+inline f64 f32::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 f32::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 f32::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 f32::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 f32::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 f32::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 f32::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 f32::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 f32::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize f32::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize f32::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 f64::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline i8 f64::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 f64::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 f64::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 f64::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 f64::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 f64::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 f64::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 f64::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize f64::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize f64::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 i8::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 i8::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i16 i8::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 i8::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 i8::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 i8::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 i8::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 i8::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 i8::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize i8::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize i8::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 i16::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 i16::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 i16::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i32 i16::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 i16::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 i16::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 i16::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 i16::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 i16::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize i16::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize i16::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 i32::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 i32::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 i32::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 i32::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i64 i32::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 i32::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 i32::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 i32::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 i32::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize i32::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize i32::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 i64::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 i64::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 i64::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 i64::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 i64::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline u8 i64::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 i64::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 i64::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 i64::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize i64::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize i64::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 u8::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 u8::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 u8::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 u8::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 u8::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 u8::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u16 u8::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 u8::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 u8::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize u8::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize u8::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 u16::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 u16::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 u16::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 u16::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 u16::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 u16::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 u16::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u32 u16::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 u16::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize u16::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize u16::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 u32::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 u32::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 u32::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 u32::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 u32::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 u32::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 u32::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 u32::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u64 u32::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize u32::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize u32::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 u64::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 u64::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 u64::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 u64::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 u64::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 u64::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 u64::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 u64::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 u64::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline isize u64::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
+
+inline usize u64::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 isize::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 isize::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 isize::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 isize::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 isize::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 isize::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 isize::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 isize::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 isize::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 isize::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline usize isize::to_usize() const
+{
+	return usize((usize::Raw)(value_));
+}
+
+inline f32 usize::to_f32() const
+{
+	return f32((f32::Raw)(value_));
+}
+
+inline f64 usize::to_f64() const
+{
+	return f64((f64::Raw)(value_));
+}
+
+inline i8 usize::to_i8() const
+{
+	return i8((i8::Raw)(value_));
+}
+
+inline i16 usize::to_i16() const
+{
+	return i16((i16::Raw)(value_));
+}
+
+inline i32 usize::to_i32() const
+{
+	return i32((i32::Raw)(value_));
+}
+
+inline i64 usize::to_i64() const
+{
+	return i64((i64::Raw)(value_));
+}
+
+inline u8 usize::to_u8() const
+{
+	return u8((u8::Raw)(value_));
+}
+
+inline u16 usize::to_u16() const
+{
+	return u16((u16::Raw)(value_));
+}
+
+inline u32 usize::to_u32() const
+{
+	return u32((u32::Raw)(value_));
+}
+
+inline u64 usize::to_u64() const
+{
+	return u64((u64::Raw)(value_));
+}
+
+inline isize usize::to_isize() const
+{
+	return isize((isize::Raw)(value_));
+}
 
 } // namespace math
 } // namespace ab
