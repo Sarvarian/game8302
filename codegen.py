@@ -4,6 +4,16 @@ import os
 import os.path
 
 
+output_dir: str = 'ab/'
+output_file: str = 'ab/code_gen_output.hpp'
+templates_dir: str = 'ab/__templates'
+main_template_file: str = 'ab/__templates/math.hpp'
+types_list_file: str = 'ab/__templates/types.txt'
+struct_template_file: str = 'ab/__templates/struct.hpp'
+routines_templates_dir: str = 'ab/__templates/routines'
+conversions_templates_dir: str = 'ab/__templates/conversions'
+
+
 def read_content(file_path: str) -> str:
     """Returns content of a text file.
     file_path: Give a full path. (relative or absolute does not matter.)
@@ -91,19 +101,12 @@ class FileSystem:
     """ To Work With Files And Directories """
 
     def __init__(self) -> None:
-        self.output_dir: str = 'ab/'
-        self.output_file: str = 'ab/code_gen_output.hpp'
-        self.templates_dir: str = 'ab/__templates'
-        self.main_template_file: str = 'ab/__templates/math.hpp'
-        self.types_list_file: str = 'ab/__templates/types.txt'
-        self.struct_template_file: str = 'ab/__templates/struct.hpp'
-        self.routines_templates_dir: str = 'ab/__templates/routines'
-        self.conversions_templates_dir: str = 'ab/__templates/conversions'
+        pass
 
     def read_types(self) -> dict[Type, None]:
         """ Returns a list of dictionaries of types.
         """
-        item = read_content(self.types_list_file).split()
+        item = read_content(types_list_file).split()
         res: dict[Type, None] = {}
         i = 0
         while i < len(item):
@@ -114,9 +117,9 @@ class FileSystem:
     def read_routine_templates(self, types: dict[Type, None]) -> None:
         """ Update routines variables of Type and Types in the list given.
         """
-        names = os.listdir(self.routines_templates_dir)
+        names = os.listdir(routines_templates_dir)
         for name in names:
-            path = os.path.join(self.routines_templates_dir, name)
+            path = os.path.join(routines_templates_dir, name)
             if os.path.isdir(path):
                 continue
             name = name.removesuffix('.hpp')
@@ -131,9 +134,9 @@ class FileSystem:
                         ty.routines = content
 
     def read_conversion_templates(self, types: dict[Type, None]) -> None:
-        names = os.listdir(self.conversions_templates_dir)
+        names = os.listdir(conversions_templates_dir)
         for name in names:
-            path = os.path.join(self.conversions_templates_dir, name)
+            path = os.path.join(conversions_templates_dir, name)
             if os.path.isdir(path):
                 continue
             name = name.removesuffix('.hpp')
@@ -150,44 +153,15 @@ class FileSystem:
     def read_struct_template(self) -> str:
         """ Returns string of struct template text file
         """
-        return read_content(self.struct_template_file)
+        return read_content(struct_template_file)
 
 
-class TypesPredefine:
-    """ Types Predefine """
+class Structs:
+    """ Structs """
 
-    def __init__(self, types: dict[Type, None]) -> None:
-        self.result: str = ''
-        for t in types:
-            self.result += f'struct {t};\n'
-        self.result = self.result.removesuffix('\n')
-        self.result += '\n\n'
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
-class Body:
-    """ Body Of Code
-    """
-
-    def __init__(self, fs: FileSystem) -> None:
-        types: dict[Type, None] = {}
+    def __init__(self, fs: FileSystem, types: dict[Type, None]) -> None:
         struct: str = ''
-        types = fs.read_types()
         struct = fs.read_struct_template()
-        fs.read_routine_templates(types)
-        fs.read_conversion_templates(types)
-
-        self.result: str = ''
-        self.result += TypesPredefine(types).result
-        # generate predefine
-        # generate structures
-        # generate conversion bodies
-
         structs: list[str] = []
         conversions: list[Conversion] = []
         for t in types:
@@ -213,12 +187,52 @@ class Body:
             c = c.replace('_DEFAULT_VALUE', t.default)
             c += '\n'
             structs.append(c)
-
-        self.result += ''.join(structs)
+        self.result = ''.join(structs)
         self.result += '\n'
         for conv in conversions:
             self.result += conv.body
         self.result = self.result.removesuffix('\n\n')
+
+    def public_method(self) -> None:
+        """ public method """
+
+    def public_method_2(self) -> None:
+        """ public method """
+
+
+class TypesPredefine:
+    """ Types Predefine """
+
+    def __init__(self, types: dict[Type, None]) -> None:
+        self.result: str = ''
+        for t in types:
+            self.result += f'struct {t};\n'
+        self.result = self.result.removesuffix('\n')
+        self.result += '\n\n'
+
+    def public_method(self) -> None:
+        """ public method """
+
+    def public_method_2(self) -> None:
+        """ public method """
+
+
+class Body:
+    """ Body Of Code
+    """
+
+    def __init__(self, fs: FileSystem) -> None:
+        types: dict[Type, None] = {}
+        types = fs.read_types()
+        fs.read_routine_templates(types)
+        fs.read_conversion_templates(types)
+
+        self.result: str = ''
+        self.result += TypesPredefine(types).result
+        self.result += Structs(fs, types).result
+        # generate predefine
+        # generate structures
+        # generate conversion bodies
 
     def public_method(self) -> None:
         """ public method """
@@ -233,11 +247,11 @@ class Main:
     def __init__(self) -> None:
         fs = FileSystem()
         body = Body(fs)
-        result = read_content(fs.main_template_file).replace(
+        result = read_content(main_template_file).replace(
             "//_GENERATE_TYPE_HERE", body.result)
         result = '// This file is generated by a python script and some templates .\n\n' + result
         result += "\n"
-        write_content(fs.output_file, result)
+        write_content(output_file, result)
 
     def public_method(self) -> None:
         """ public method """
