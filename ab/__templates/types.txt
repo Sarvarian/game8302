@@ -1,12 +1,12 @@
-float      f32
-double     f64
-Sint8      i8
-Sint16     i16
-Sint32     i32
-Sint64     i64
-Uint8      u8
-Uint16     u16
-Uint32     u32
-Uint64     u64
-intptr_t   isize
-uintptr_t  usize
+float      f32    0.0f
+double     f64    0.0
+Sint8      i8     0
+Sint16     i16    0
+Sint32     i32    0
+Sint64     i64    0
+Uint8      u8     0
+Uint16     u16    0
+Uint32     u32    0
+Uint64     u64    0
+intptr_t   isize  0
+uintptr_t  usize  0
