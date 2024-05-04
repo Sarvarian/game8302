@@ -130,7 +130,8 @@ class FileSystem:
 
     def read_routine_templates(self) -> dict[str, str]:
         """Returns a dictionary of types and their routines.
-        dir_path: Give full path to routine template directory. (relative or absolute does not matter.)
+        dir_path: Give full path to routine template directory.
+        (relative or absolute does not matter.)
         """
         names = os.listdir(self.routines_templates_dir)
         res: dict[str, str] = {}
