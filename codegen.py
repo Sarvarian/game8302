@@ -146,9 +146,9 @@ class ConversionGenerator:
         return result
 
 
-def struct_replacement(type: Type, content: str, r: str) -> str:
+def struct_replacement(type: Type, content: str) -> str:
     result = content
-    result = result.replace('//_GENERATE_ROUTINES_HERE', r)
+    result = result.replace('//_GENERATE_ROUTINES_HERE', type.routines)
     result = result.replace('_TYPE_NAME', type.name)
     result = result.replace('_RAW_TYPE', type.raw)
     result = result.replace('_DEFAULT_VALUE', type.default)
@@ -163,18 +163,17 @@ def generate_structs(types: list[Type], conversion_generator: ConversionGenerato
     result = ''
     for t in types:
         c: str = struct
-        r = Type.routines
-        r += '\n\n'
         if t.routines != '':
-            r = r + '\t' + t.routines + '\n\n'
+            t.routines = '\t' + t.routines + '\n\n'
+        t.routines = Type.routines + '\n\n' + t.routines
         conversion_generator.type = t
         for ot in types:
             if t == ot:
                 continue
             conversion_generator.other = ot
-            r += conversion_generator.generate_head() + '\n'
-        r = r.removesuffix('\n')
-        c = struct_replacement(t, c, r)
+            t.routines += conversion_generator.generate_head() + '\n'
+        t.routines = t.routines.removesuffix('\n')
+        c = struct_replacement(t, c)
         c += '\n\n'
         result += c
     return result
