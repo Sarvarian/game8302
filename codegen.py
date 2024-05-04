@@ -69,19 +69,19 @@ class ConversionTemplate:
         """ public method """
 
 
-def read_types() -> dict[Type, None]:
+def read_types() -> list[Type]:
     """ Returns a list of dictionaries of types.
     """
     item = read_content(types_list_file).split()
-    res: dict[Type, None] = {}
+    res: list[Type] = []
     i = 0
     while i < len(item):
-        res[Type(item[i], item[i+1], item[i+2])] = None
+        res.append(Type(item[i], item[i+1], item[i+2]))
         i += 3
     return res
 
 
-def read_routine_templates(types: dict[Type, None]) -> None:
+def read_routine_templates(types: list[Type]) -> None:
     """ Update routines variables of Type and Types in the list given.
     """
     names = os.listdir(routines_templates_dir)
@@ -146,7 +146,29 @@ class ConversionGenerator:
         return result
 
 
-def generate_structs(types: dict[Type, None], conversion_generator: ConversionGenerator) -> str:
+class VectorType:
+    """ Vector Type """
+
+    def __init__(self, component_type: Type, dimensions: int) -> None:
+        self.type: Type = component_type
+        self.dimensions: int = dimensions
+
+
+def create_a_list_of_vector_types(types: list[Type]) -> list[VectorType]:
+    """ Whatever the name says.
+    """
+    res: list[VectorType] = []
+    for i in range(1, 5):
+        for t in types:
+            res.append(VectorType(t, i))
+    return res
+
+
+# def generate_vector_types_predefine(list[VectorType]) -> str
+    # pass
+
+
+def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
     """ Structs
     """
     struct: str = ''
@@ -175,7 +197,7 @@ def generate_structs(types: dict[Type, None], conversion_generator: ConversionGe
     return result
 
 
-def generate_conversions(types: dict[Type, None], conversion_generator: ConversionGenerator) -> str:
+def generate_conversions(types: list[Type], conversion_generator: ConversionGenerator) -> str:
     """ Generate Conversions
     """
     result: str = ''
@@ -190,7 +212,7 @@ def generate_conversions(types: dict[Type, None], conversion_generator: Conversi
     return result
 
 
-def generate_types_predefine(types: dict[Type, None]) -> str:
+def generate_types_predefine(types: list[Type]) -> str:
     """ Types Predefine
     """
     result: str = ''
@@ -204,7 +226,6 @@ def generate_types_predefine(types: dict[Type, None]) -> str:
 def generate_body() -> str:
     """ Body Of Code
     """
-    types: dict[Type, None] = {}
     types = read_types()
     read_routine_templates(types)
     conversion_generator = ConversionGenerator(read_conversion_templates())
@@ -212,7 +233,8 @@ def generate_body() -> str:
     result += generate_types_predefine(types)
     result += generate_structs(types, conversion_generator)
     result += generate_conversions(types, conversion_generator)
-    # generate vector types
+    vector_types = create_a_list_of_vector_types(types)
+    # result += generate_vector_types_predefine(vector_types)
     return result
 
 
