@@ -59,7 +59,7 @@ public:
 
 	f32 sub(f32 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return f32(value_ - rhs.value_);
 	}
 
 	void sub_inplace(f32 rhs) const
@@ -69,7 +69,7 @@ public:
 
 	f32 mul(f32 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return f32(value_ * rhs.value_);
 	}
 
 	void mul_inplace(f32 rhs) const
@@ -79,7 +79,7 @@ public:
 
 	f32 div(f32 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return f32(value_ / rhs.value_);
 	}
 
 	void div_inplace(f32 rhs) const
@@ -110,7 +110,9 @@ public:
 	bool is_less_then_or_equal_to(f32 rhs) const
 	{
 		return value_ <= rhs.value_;
-	}f32 pow(f32 exponent) const
+	}
+
+	f32 pow(f32 exponent) const
 	{
 		return cpp_std_powf(value_, exponent.value_);
 	}
@@ -150,6 +152,18 @@ public:
 		value_ = cpp_std_truncf(value_);
 	}
 
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -159,7 +173,6 @@ private:
 	Raw value_;
 
 };
-
 struct f64
 {
 public:
@@ -183,7 +196,7 @@ public:
 
 	f64 sub(f64 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return f64(value_ - rhs.value_);
 	}
 
 	void sub_inplace(f64 rhs) const
@@ -193,7 +206,7 @@ public:
 
 	f64 mul(f64 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return f64(value_ * rhs.value_);
 	}
 
 	void mul_inplace(f64 rhs) const
@@ -203,7 +216,7 @@ public:
 
 	f64 div(f64 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return f64(value_ / rhs.value_);
 	}
 
 	void div_inplace(f64 rhs) const
@@ -234,7 +247,9 @@ public:
 	bool is_less_then_or_equal_to(f64 rhs) const
 	{
 		return value_ <= rhs.value_;
-	}f64 pow(f64 exponent) const
+	}
+
+	f64 pow(f64 exponent) const
 	{
 		return cpp_std_pow(value_, exponent.value_);
 	}
@@ -274,6 +289,18 @@ public:
 		value_ = cpp_std_trunc(value_);
 	}
 
+	f32 to_f32() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -283,7 +310,6 @@ private:
 	Raw value_;
 
 };
-
 struct i8
 {
 public:
@@ -307,7 +333,7 @@ public:
 
 	i8 sub(i8 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return i8(value_ - rhs.value_);
 	}
 
 	void sub_inplace(i8 rhs) const
@@ -317,7 +343,7 @@ public:
 
 	i8 mul(i8 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return i8(value_ * rhs.value_);
 	}
 
 	void mul_inplace(i8 rhs) const
@@ -327,7 +353,7 @@ public:
 
 	i8 div(i8 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return i8(value_ / rhs.value_);
 	}
 
 	void div_inplace(i8 rhs) const
@@ -360,6 +386,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -369,7 +407,6 @@ private:
 	Raw value_;
 
 };
-
 struct i16
 {
 public:
@@ -393,7 +430,7 @@ public:
 
 	i16 sub(i16 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return i16(value_ - rhs.value_);
 	}
 
 	void sub_inplace(i16 rhs) const
@@ -403,7 +440,7 @@ public:
 
 	i16 mul(i16 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return i16(value_ * rhs.value_);
 	}
 
 	void mul_inplace(i16 rhs) const
@@ -413,7 +450,7 @@ public:
 
 	i16 div(i16 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return i16(value_ / rhs.value_);
 	}
 
 	void div_inplace(i16 rhs) const
@@ -446,6 +483,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -455,7 +504,6 @@ private:
 	Raw value_;
 
 };
-
 struct i32
 {
 public:
@@ -479,7 +527,7 @@ public:
 
 	i32 sub(i32 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return i32(value_ - rhs.value_);
 	}
 
 	void sub_inplace(i32 rhs) const
@@ -489,7 +537,7 @@ public:
 
 	i32 mul(i32 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return i32(value_ * rhs.value_);
 	}
 
 	void mul_inplace(i32 rhs) const
@@ -499,7 +547,7 @@ public:
 
 	i32 div(i32 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return i32(value_ / rhs.value_);
 	}
 
 	void div_inplace(i32 rhs) const
@@ -532,6 +580,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -541,7 +601,6 @@ private:
 	Raw value_;
 
 };
-
 struct i64
 {
 public:
@@ -565,7 +624,7 @@ public:
 
 	i64 sub(i64 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return i64(value_ - rhs.value_);
 	}
 
 	void sub_inplace(i64 rhs) const
@@ -575,7 +634,7 @@ public:
 
 	i64 mul(i64 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return i64(value_ * rhs.value_);
 	}
 
 	void mul_inplace(i64 rhs) const
@@ -585,7 +644,7 @@ public:
 
 	i64 div(i64 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return i64(value_ / rhs.value_);
 	}
 
 	void div_inplace(i64 rhs) const
@@ -618,6 +677,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -627,7 +698,6 @@ private:
 	Raw value_;
 
 };
-
 struct u8
 {
 public:
@@ -651,7 +721,7 @@ public:
 
 	u8 sub(u8 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return u8(value_ - rhs.value_);
 	}
 
 	void sub_inplace(u8 rhs) const
@@ -661,7 +731,7 @@ public:
 
 	u8 mul(u8 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return u8(value_ * rhs.value_);
 	}
 
 	void mul_inplace(u8 rhs) const
@@ -671,7 +741,7 @@ public:
 
 	u8 div(u8 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return u8(value_ / rhs.value_);
 	}
 
 	void div_inplace(u8 rhs) const
@@ -704,6 +774,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -713,7 +795,6 @@ private:
 	Raw value_;
 
 };
-
 struct u16
 {
 public:
@@ -737,7 +818,7 @@ public:
 
 	u16 sub(u16 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return u16(value_ - rhs.value_);
 	}
 
 	void sub_inplace(u16 rhs) const
@@ -747,7 +828,7 @@ public:
 
 	u16 mul(u16 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return u16(value_ * rhs.value_);
 	}
 
 	void mul_inplace(u16 rhs) const
@@ -757,7 +838,7 @@ public:
 
 	u16 div(u16 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return u16(value_ / rhs.value_);
 	}
 
 	void div_inplace(u16 rhs) const
@@ -790,6 +871,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -799,7 +892,6 @@ private:
 	Raw value_;
 
 };
-
 struct u32
 {
 public:
@@ -823,7 +915,7 @@ public:
 
 	u32 sub(u32 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return u32(value_ - rhs.value_);
 	}
 
 	void sub_inplace(u32 rhs) const
@@ -833,7 +925,7 @@ public:
 
 	u32 mul(u32 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return u32(value_ * rhs.value_);
 	}
 
 	void mul_inplace(u32 rhs) const
@@ -843,7 +935,7 @@ public:
 
 	u32 div(u32 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return u32(value_ / rhs.value_);
 	}
 
 	void div_inplace(u32 rhs) const
@@ -876,6 +968,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -885,7 +989,6 @@ private:
 	Raw value_;
 
 };
-
 struct u64
 {
 public:
@@ -909,7 +1012,7 @@ public:
 
 	u64 sub(u64 rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return u64(value_ - rhs.value_);
 	}
 
 	void sub_inplace(u64 rhs) const
@@ -919,7 +1022,7 @@ public:
 
 	u64 mul(u64 rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return u64(value_ * rhs.value_);
 	}
 
 	void mul_inplace(u64 rhs) const
@@ -929,7 +1032,7 @@ public:
 
 	u64 div(u64 rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return u64(value_ / rhs.value_);
 	}
 
 	void div_inplace(u64 rhs) const
@@ -962,6 +1065,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	isize to_isize() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -971,7 +1086,6 @@ private:
 	Raw value_;
 
 };
-
 struct isize
 {
 public:
@@ -995,7 +1109,7 @@ public:
 
 	isize sub(isize rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return isize(value_ - rhs.value_);
 	}
 
 	void sub_inplace(isize rhs) const
@@ -1005,7 +1119,7 @@ public:
 
 	isize mul(isize rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return isize(value_ * rhs.value_);
 	}
 
 	void mul_inplace(isize rhs) const
@@ -1015,7 +1129,7 @@ public:
 
 	isize div(isize rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return isize(value_ / rhs.value_);
 	}
 
 	void div_inplace(isize rhs) const
@@ -1048,6 +1162,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	usize to_usize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -1057,7 +1183,6 @@ private:
 	Raw value_;
 
 };
-
 struct usize
 {
 public:
@@ -1081,7 +1206,7 @@ public:
 
 	usize sub(usize rhs) const
 	{
-		return Type(value_ - rhs.value_);
+		return usize(value_ - rhs.value_);
 	}
 
 	void sub_inplace(usize rhs) const
@@ -1091,7 +1216,7 @@ public:
 
 	usize mul(usize rhs) const
 	{
-		return Type(value_ * rhs.value_);
+		return usize(value_ * rhs.value_);
 	}
 
 	void mul_inplace(usize rhs) const
@@ -1101,7 +1226,7 @@ public:
 
 	usize div(usize rhs) const
 	{
-		return Type(value_ / rhs.value_);
+		return usize(value_ / rhs.value_);
 	}
 
 	void div_inplace(usize rhs) const
@@ -1134,6 +1259,18 @@ public:
 		return value_ <= rhs.value_;
 	}
 
+	f32 to_f32() const;
+	f64 to_f64() const;
+	i8 to_i8() const;
+	i16 to_i16() const;
+	i32 to_i32() const;
+	i64 to_i64() const;
+	u8 to_u8() const;
+	u16 to_u16() const;
+	u32 to_u32() const;
+	u64 to_u64() const;
+	isize to_isize() const;
+
 	Raw raw() const
 	{
 		return value_;
@@ -1143,6 +1280,7 @@ private:
 	Raw value_;
 
 };
+
 
 } // namespace math
 } // namespace ab
