@@ -4,18 +4,47 @@ import os
 import os.path
 
 
+class Conversion:
+    """ Conversion Routine """
+
+    def __init__(self, main_type: str, other_type: str):
+        self.type: str = main_type
+        self.other: str = other_type
+        self.head: str
+        self.body: str
+
+    def generate_head(self) -> None:
+        """ Generate head of conversion routine. """
+        self.head = '\t' + self.other + \
+            ' to_' + self.other + '() const;'
+
+    def generate_body(self) -> None:
+        """ Generate body of conversion routine. """
+        self.body = 'inline ' + self.other + ' ' + self.type + \
+            '::to_' + self.other + '() const\n'
+        self.body += '{\n'
+        self.body += '\treturn ' + \
+            self.other + '((' + self.other + '::Raw)(value_));\n'
+        self.body += '}\n\n'
+
+    def generate(self) -> None:
+        """ Generate head and body of conversion routine. """
+        self.generate_head()
+        self.generate_body()
+
+
 class Type:
     """ Just Type """
 
-    def __init__(self, raw_type_name: str, type_name: str, default_value: str):
+    def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
         self.raw: str = raw_type_name
         self.name: str = type_name
         self.default: str = default_value
 
-    def public_method(self):
+    def public_method(self) -> None:
         """ public method """
 
-    def public_method2(self):
+    def public_method2(self) -> None:
         """ public method """
 
 
