@@ -4,6 +4,21 @@ import os
 import os.path
 
 
+class Type:
+    """ Just Type """
+
+    def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
+        self.raw: str = raw_type_name
+        self.name: str = type_name
+        self.default: str = default_value
+
+    def public_method(self) -> None:
+        """ public method """
+
+    def public_method2(self) -> None:
+        """ public method """
+
+
 class Conversion:
     """ Conversion Routine """
 
@@ -31,21 +46,6 @@ class Conversion:
         """ Generate head and body of conversion routine. """
         self.generate_head()
         self.generate_body()
-
-
-class Type:
-    """ Just Type """
-
-    def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
-        self.raw: str = raw_type_name
-        self.name: str = type_name
-        self.default: str = default_value
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method2(self) -> None:
-        """ public method """
 
 
 def read_content(file_path: str) -> str:
