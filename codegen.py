@@ -146,6 +146,15 @@ class ConversionGenerator:
         return result
 
 
+def struct_replacement(type: Type, content: str, r: str) -> str:
+    result = content
+    result = result.replace('//_GENERATE_ROUTINES_HERE', r)
+    result = result.replace('_TYPE_NAME', type.name)
+    result = result.replace('_RAW_TYPE', type.raw)
+    result = result.replace('_DEFAULT_VALUE', type.default)
+    return result
+
+
 def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
     """ Structs
     """
@@ -165,10 +174,7 @@ def generate_structs(types: list[Type], conversion_generator: ConversionGenerato
             conversion_generator.other = ot
             r += conversion_generator.generate_head() + '\n'
         r = r.removesuffix('\n')
-        c = c.replace('//_GENERATE_ROUTINES_HERE', r)
-        c = c.replace('_TYPE_NAME', t.name)
-        c = c.replace('_RAW_TYPE', t.raw)
-        c = c.replace('_DEFAULT_VALUE', t.default)
+        c = struct_replacement(t, c, r)
         c += '\n\n'
         result += c
     return result
@@ -231,9 +237,9 @@ def generate_vector_types_predefine(types: list[VectorType]) -> str:
     return res
 
 
-def generate_vector_structs(types: list[VectorType]) -> str:
-    """ Whatever the name says.
-    """
+# def generate_vector_structs(types: list[VectorType]) -> str:
+#     """ Whatever the name says.
+#     """
 
 
 def generate_body() -> str:
@@ -251,7 +257,7 @@ def generate_body() -> str:
     result += '\n\n\n'
     vector_types = create_a_list_of_vector_types(types)
     result += generate_vector_types_predefine(vector_types)
-    result += generate_vector_structs(vector_types)
+    # result += generate_vector_structs(vector_types)
 
     result = result.removesuffix('\n')
     return result
