@@ -153,8 +153,32 @@ class FileSystem:
         return read_content(self.struct_template_file)
 
 
+class Main:
+    """ Main Template """
+
+    def __init__(self) -> None:
+        self.types: dict[Type, None] = {}
+        self.result: str = ''
+
+    def setup(self, fs: FileSystem):
+        """ Setup """
+
+        self.types = fs.read_types()
+
+    def run(self):
+        """ Run """
+
+        pass
+        # generate predefine
+        # generate structures
+        # generate conversion bodies
+
+
 if __name__ == '__main__':
     fs = FileSystem()
+    main = Main()
+    main.setup(fs)
+    main.run()
 
     types = fs.read_types()
     struct = fs.read_struct_template()
