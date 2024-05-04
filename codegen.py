@@ -57,6 +57,10 @@ class Type:
 class Conversion:
     """ Conversion Routine """
 
+    every_type_conversion_template_head: str = ''
+    every_type_conversion_template_body: str = ''
+    conversion_bodies: str = ''
+
     def __init__(self, main_type: Type, other_type: Type) -> None:
         self.type: str = main_type.name
         self.other: str = other_type.name
@@ -94,7 +98,7 @@ class FileSystem:
         self.types_list_file: str = 'ab/__templates/types.txt'
         self.struct_template_file: str = 'ab/__templates/struct.hpp'
         self.routines_templates_dir: str = 'ab/__templates/routines'
-        self.conversions_dir_name: str = 'ab/__templates/conversions'
+        self.conversions_templates_dir: str = 'ab/__templates/conversions'
 
     def read_types(self) -> dict[Type, None]:
         """ Returns a list of dictionaries of types.
@@ -126,6 +130,23 @@ class FileSystem:
                     if ty == name:
                         ty.routines = content
 
+    def read_conversion_templates(self, types: dict[Type, None]) -> None:
+        names = os.listdir(self.conversions_templates_dir)
+        for name in names:
+            path = os.path.join(self.conversions_templates_dir, name)
+            if os.path.isdir(path):
+                continue
+            name = name.removesuffix('.hpp')
+            content = read_content(path).strip()
+            content = content.replace('\n', '\n\t')
+            content = content.replace('\n\t\n', '\n\n')
+            content = content.split('\n', 1)
+            head = content[0].strip()
+            body = content[1].strip()
+            if name == 'every':
+                Conversion.every_type_conversion_template_head = head
+                Conversion.every_type_conversion_template_head = body
+
     def read_struct_template(self) -> str:
         """ Returns string of struct template text file
         """
@@ -138,6 +159,7 @@ if __name__ == '__main__':
     types = fs.read_types()
     struct = fs.read_struct_template()
     fs.read_routine_templates(types)
+    fs.read_conversion_templates(types)
 
     structs: list[str] = []
     conversions: list[Conversion] = []
