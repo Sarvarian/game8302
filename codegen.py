@@ -2,7 +2,19 @@
 
 import os.path
 
-from helper import Conversion, read_content, read_types, write_content, read_routine_templates
+from helper import Conversion, FileSystem, \
+    read_content, read_types, write_content, read_routine_templates
+
+templates_dir: str = ''
+output_dir: str = ''
+output_file: str = ''
+main_template_file: str = ''
+types_list_file: str = ''
+struct_template_file: str = ''
+routines_templates_dir: str = ''
+every_type_routines_file_name_without_extension: str = ''
+conversions_dir: str = ''
+every_type_conversion_template_file_name: str = ''
 
 TEMPLATES_DIR = 'ab/__templates'
 OUTPUT_DIR = 'ab/'
@@ -38,6 +50,8 @@ CONVERSIONS_DIR_PATH = os.path.join(TEMPLATES_DIR, CONVERSIONS_DIR_NAME)
 EVERY_TYPE_CONVERSION_TEMPLATE_FILE_NAME = '_every'
 
 if __name__ == '__main__':
+    fs = FileSystem()
+
     types = read_types(TYPES_LIST_FILE_PATH)
     struct = read_content(STRUCT_FILE_PATH)
     routines = read_routine_templates(ROUTINES_TEMPLATES_DIR_PTAH)
