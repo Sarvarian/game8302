@@ -66,32 +66,6 @@ class ConversionTemplate:
         """ public method """
 
 
-class ConversionGenerator:
-    """ Conversion Routine """
-
-    def __init__(self, templates: list[ConversionTemplate]) -> None:
-        self.templates: list[ConversionTemplate] = templates
-        self.type: Type
-        self.other: Type
-
-    def __replace(self, text: str) -> str:
-        return text.replace('_TYPE_NAME', self.type.name).replace('_OTHER_TYPE', self.other.name)
-
-    def generate_head(self) -> str:
-        """ Generate head of conversion routine. """
-        result = ''
-        for template in self.templates:
-            result += '\t' + self.__replace(template.head)
-        return result
-
-    def generate_body(self) -> str:
-        """ Generate body of conversion routine. """
-        result = ''
-        for template in self.templates:
-            result = self.__replace(template.body) + '\n\n'
-        return result
-
-
 def read_types() -> dict[Type, None]:
     """ Returns a list of dictionaries of types.
     """
@@ -141,6 +115,32 @@ def read_conversion_templates() -> list[ConversionTemplate]:
         body = content[1].strip()
         templates.append(ConversionTemplate(head, body))
     return templates
+
+
+class ConversionGenerator:
+    """ Conversion Routine """
+
+    def __init__(self, templates: list[ConversionTemplate]) -> None:
+        self.templates: list[ConversionTemplate] = templates
+        self.type: Type
+        self.other: Type
+
+    def __replace(self, text: str) -> str:
+        return text.replace('_TYPE_NAME', self.type.name).replace('_OTHER_TYPE', self.other.name)
+
+    def generate_head(self) -> str:
+        """ Generate head of conversion routine. """
+        result = ''
+        for template in self.templates:
+            result += '\t' + self.__replace(template.head)
+        return result
+
+    def generate_body(self) -> str:
+        """ Generate body of conversion routine. """
+        result = ''
+        for template in self.templates:
+            result = self.__replace(template.body) + '\n\n'
+        return result
 
 
 def generate_structs(types: dict[Type, None], conversion_generator: ConversionGenerator) -> str:
