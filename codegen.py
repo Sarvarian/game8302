@@ -12,6 +12,9 @@ types_list_file: str = 'ab/__templates/types.txt'
 struct_template_file: str = 'ab/__templates/struct.hpp'
 routines_templates_dir: str = 'ab/__templates/routines'
 conversions_templates_dir: str = 'ab/__templates/conversions'
+vec2_template_file: str = 'ab/__templates/vec2'
+vec3_template_file: str = 'ab/__templates/vec3'
+vec4_template_file: str = 'ab/__templates/vec4'
 
 
 def read_content(file_path: str) -> str:
