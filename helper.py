@@ -1,7 +1,46 @@
 """ Helper function for code c++ generator """
 
+from dataclasses import dataclass
 import os
 import os.path
+
+
+@dataclass()
+class FSData:
+    """ Data For File System Use """
+    templates_dir: str = ''
+    output_dir: str = ''
+    output_file: str = ''
+    main_template_file: str = ''
+    types_list_file: str = ''
+    struct_template_file: str = ''
+    routines_templates_dir: str = ''
+    every_type_routines_file_name_without_extension: str = ''
+    conversions_dir: str = ''
+    every_type_conversion_template_file_name: str = ''
+
+
+class FileSystem:
+    """ To Work With Files And Directories """
+
+    def __init__(self, data: FSData) -> None:
+        self.templates_dir: str = data.templates_dir
+        self.output_dir: str = data.output_dir
+        self.output_file: str = os.path.join(data.output_dir, data.output_file)
+        self.main_template_file: str = os.path.join(
+            data.templates_dir, data.main_template_file)
+        self.types_list_file: str = os.path.join(
+            data.templates_dir, data.types_list_file)
+        self.struct_template_file: str = os.path.join(
+            data.templates_dir, data.struct_template_file)
+        self.routines_templates_dir: str = os.path.join(
+            data.templates_dir, data.routines_templates_dir)
+        self.every_type_routines_file_name_without_extension: str = \
+            data.every_type_routines_file_name_without_extension
+        self.conversions_dir_name: str = os.path.join(
+            data.templates_dir, data.conversions_dir)
+        self.every_type_conversion_template_file_name: str = \
+            data.every_type_routines_file_name_without_extension
 
 
 class Type:
@@ -22,7 +61,7 @@ class Type:
 class Conversion:
     """ Conversion Routine """
 
-    def __init__(self, main_type: str, other_type: str):
+    def __init__(self, main_type: str, other_type: str) -> None:
         self.type: str = main_type
         self.other: str = other_type
         self.head: str = ''
