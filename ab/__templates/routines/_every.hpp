@@ -17,7 +17,7 @@ void add_inplace(_TYPE_NAME rhs) const
 
 _TYPE_NAME sub(_TYPE_NAME rhs) const
 {
-	return Type(value_ - rhs.value_);
+	return _TYPE_NAME(value_ - rhs.value_);
 }
 
 void sub_inplace(_TYPE_NAME rhs) const
@@ -27,7 +27,7 @@ void sub_inplace(_TYPE_NAME rhs) const
 
 _TYPE_NAME mul(_TYPE_NAME rhs) const
 {
-	return Type(value_ * rhs.value_);
+	return _TYPE_NAME(value_ * rhs.value_);
 }
 
 void mul_inplace(_TYPE_NAME rhs) const
@@ -37,7 +37,7 @@ void mul_inplace(_TYPE_NAME rhs) const
 
 _TYPE_NAME div(_TYPE_NAME rhs) const
 {
-	return Type(value_ / rhs.value_);
+	return _TYPE_NAME(value_ / rhs.value_);
 }
 
 void div_inplace(_TYPE_NAME rhs) const
