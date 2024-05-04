@@ -110,11 +110,9 @@ class FileSystem:
             if os.path.isdir(path):
                 continue
             name = name.removesuffix('.hpp')
-
             content = read_content(path)
             content = content.replace('\n', '\n\t')
             content = content.replace('\n\t\n', '\n\n')
-
             if name == '_every':
                 Type.routines = content
             else:
