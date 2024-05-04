@@ -27,16 +27,25 @@ def write_content(file_path: str, content: str) -> None:
 class Type:
     """ Just Type """
 
+    routines: str = ''
+
     def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
         self.raw: str = raw_type_name
         self.name: str = type_name
         self.default: str = default_value
+        self.routines: str = ''
 
     def public_method(self) -> None:
         """ public method """
 
     def public_method2(self) -> None:
         """ public method """
+
+    def __str__(self) -> str:
+        return self.name  # TODO: Try removing return and see if it works.
+
+    def __repr__(self) -> str:
+        return self.name  # TODO: Try removing return and see if it works.
 
 
 class Conversion:
@@ -92,20 +101,26 @@ class FileSystem:
             i += 3
         return res
 
-    def read_routine_templates(self) -> dict[str, str]:
-        """ Returns a dictionary of types and their routines.
+    def read_routine_templates(self, types: list[Type]) -> None:
+        """ Update routines variables of Type and Types in the list given.
         """
         names = os.listdir(self.routines_templates_dir)
-        res: dict[str, str] = {}
         for name in names:
             path = os.path.join(self.routines_templates_dir, name)
             if os.path.isdir(path):
                 continue
             name = name.removesuffix('.hpp')
-            res[name] = read_content(path)
-            res[name] = res[name].replace('\n', '\n\t')
-            res[name] = res[name].replace('\n\t\n', '\n\n')
-        return res
+
+            content = read_content(path)
+            content = content.replace('\n', '\n\t')
+            content = content.replace('\n\t\n', '\n\n')
+
+            if name == '_every':
+                Type.routines = content
+            else:
+                for ty in types:
+                    if ty.name == name:
+                        ty.routines = content
 
     def read_struct_template(self) -> str:
         """ Returns string of struct template text file
@@ -118,16 +133,17 @@ if __name__ == '__main__':
 
     types = fs.read_types()
     struct = fs.read_struct_template()
-    routines = fs.read_routine_templates()
+    fs.read_routine_templates(types)
+
     structs: list[str] = []
     conversions: list[Conversion] = []
     for t in types:
         conversions_heads = []
         c: str = struct
-        r = routines['_every']
+        r = Type.routines
         r += '\n\n'
-        if t.name in routines:
-            r = r + '\t' + routines[t.name] + '\n\n'
+        if t.routines != '':
+            r = r + '\t' + t.routines + '\n\n'
         # Generate conversions routines here.
         for ot in types:
             if ot.name == t.name:
