@@ -43,8 +43,6 @@ public:
 
 	f32(Raw value) : value_(value) {}
 
-	f32(f32 other) : value_(other.value_) {}
-
 	f32() : value_(0.0f) {}
 
 	f32 add(f32 rhs) const
@@ -52,7 +50,7 @@ public:
 		return f32(value_ + rhs.value_);
 	}
 
-	void add_inplace(f32 rhs) const
+	void add_inplace(f32 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -62,7 +60,7 @@ public:
 		return f32(value_ - rhs.value_);
 	}
 
-	void sub_inplace(f32 rhs) const
+	void sub_inplace(f32 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -72,7 +70,7 @@ public:
 		return f32(value_ * rhs.value_);
 	}
 
-	void mul_inplace(f32 rhs) const
+	void mul_inplace(f32 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -82,7 +80,7 @@ public:
 		return f32(value_ / rhs.value_);
 	}
 
-	void div_inplace(f32 rhs) const
+	void div_inplace(f32 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -117,7 +115,7 @@ public:
 		return cpp_std_powf(value_, exponent.value_);
 	}
 
-	void pow_inplace(f32 exponent) const
+	void pow_inplace(f32 exponent)
 	{
 		value_ = cpp_std_powf(value_, exponent.value_);
 	}
@@ -127,7 +125,7 @@ public:
 		return cpp_std_sqrtf(value_);
 	}
 
-	void sqrt_inplace() const
+	void sqrt_inplace()
 	{
 		value_ = cpp_std_sqrtf(value_);
 	}
@@ -137,7 +135,7 @@ public:
 		return cpp_std_floorf(value_);
 	}
 
-	void floor_inplace() const
+	void floor_inplace()
 	{
 		value_ = cpp_std_floorf(value_);
 	}
@@ -147,7 +145,7 @@ public:
 		return cpp_std_truncf(value_);
 	}
 
-	void trunc_inplace() const
+	void trunc_inplace()
 	{
 		value_ = cpp_std_truncf(value_);
 	}
@@ -180,8 +178,6 @@ public:
 
 	f64(Raw value) : value_(value) {}
 
-	f64(f64 other) : value_(other.value_) {}
-
 	f64() : value_(0.0) {}
 
 	f64 add(f64 rhs) const
@@ -189,7 +185,7 @@ public:
 		return f64(value_ + rhs.value_);
 	}
 
-	void add_inplace(f64 rhs) const
+	void add_inplace(f64 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -199,7 +195,7 @@ public:
 		return f64(value_ - rhs.value_);
 	}
 
-	void sub_inplace(f64 rhs) const
+	void sub_inplace(f64 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -209,7 +205,7 @@ public:
 		return f64(value_ * rhs.value_);
 	}
 
-	void mul_inplace(f64 rhs) const
+	void mul_inplace(f64 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -219,7 +215,7 @@ public:
 		return f64(value_ / rhs.value_);
 	}
 
-	void div_inplace(f64 rhs) const
+	void div_inplace(f64 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -254,7 +250,7 @@ public:
 		return cpp_std_pow(value_, exponent.value_);
 	}
 
-	void pow_inplace(f64 exponent) const
+	void pow_inplace(f64 exponent)
 	{
 		value_ = cpp_std_pow(value_, exponent.value_);
 	}
@@ -264,7 +260,7 @@ public:
 		return cpp_std_sqrt(value_);
 	}
 
-	void sqrt() const
+	void sqrt_inplace()
 	{
 		value_ = cpp_std_sqrt(value_);
 	}
@@ -274,7 +270,7 @@ public:
 		return cpp_std_floor(value_);
 	}
 
-	void floor() const
+	void floor_inplace()
 	{
 		value_ = cpp_std_floor(value_);
 	}
@@ -284,7 +280,7 @@ public:
 		return cpp_std_trunc(value_);
 	}
 
-	void trunc() const
+	void trunc_inplace()
 	{
 		value_ = cpp_std_trunc(value_);
 	}
@@ -317,8 +313,6 @@ public:
 
 	i8(Raw value) : value_(value) {}
 
-	i8(i8 other) : value_(other.value_) {}
-
 	i8() : value_(0) {}
 
 	i8 add(i8 rhs) const
@@ -326,7 +320,7 @@ public:
 		return i8(value_ + rhs.value_);
 	}
 
-	void add_inplace(i8 rhs) const
+	void add_inplace(i8 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -336,7 +330,7 @@ public:
 		return i8(value_ - rhs.value_);
 	}
 
-	void sub_inplace(i8 rhs) const
+	void sub_inplace(i8 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -346,7 +340,7 @@ public:
 		return i8(value_ * rhs.value_);
 	}
 
-	void mul_inplace(i8 rhs) const
+	void mul_inplace(i8 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -356,7 +350,7 @@ public:
 		return i8(value_ / rhs.value_);
 	}
 
-	void div_inplace(i8 rhs) const
+	void div_inplace(i8 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -414,8 +408,6 @@ public:
 
 	i16(Raw value) : value_(value) {}
 
-	i16(i16 other) : value_(other.value_) {}
-
 	i16() : value_(0) {}
 
 	i16 add(i16 rhs) const
@@ -423,7 +415,7 @@ public:
 		return i16(value_ + rhs.value_);
 	}
 
-	void add_inplace(i16 rhs) const
+	void add_inplace(i16 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -433,7 +425,7 @@ public:
 		return i16(value_ - rhs.value_);
 	}
 
-	void sub_inplace(i16 rhs) const
+	void sub_inplace(i16 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -443,7 +435,7 @@ public:
 		return i16(value_ * rhs.value_);
 	}
 
-	void mul_inplace(i16 rhs) const
+	void mul_inplace(i16 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -453,7 +445,7 @@ public:
 		return i16(value_ / rhs.value_);
 	}
 
-	void div_inplace(i16 rhs) const
+	void div_inplace(i16 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -511,8 +503,6 @@ public:
 
 	i32(Raw value) : value_(value) {}
 
-	i32(i32 other) : value_(other.value_) {}
-
 	i32() : value_(0) {}
 
 	i32 add(i32 rhs) const
@@ -520,7 +510,7 @@ public:
 		return i32(value_ + rhs.value_);
 	}
 
-	void add_inplace(i32 rhs) const
+	void add_inplace(i32 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -530,7 +520,7 @@ public:
 		return i32(value_ - rhs.value_);
 	}
 
-	void sub_inplace(i32 rhs) const
+	void sub_inplace(i32 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -540,7 +530,7 @@ public:
 		return i32(value_ * rhs.value_);
 	}
 
-	void mul_inplace(i32 rhs) const
+	void mul_inplace(i32 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -550,7 +540,7 @@ public:
 		return i32(value_ / rhs.value_);
 	}
 
-	void div_inplace(i32 rhs) const
+	void div_inplace(i32 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -608,8 +598,6 @@ public:
 
 	i64(Raw value) : value_(value) {}
 
-	i64(i64 other) : value_(other.value_) {}
-
 	i64() : value_(0) {}
 
 	i64 add(i64 rhs) const
@@ -617,7 +605,7 @@ public:
 		return i64(value_ + rhs.value_);
 	}
 
-	void add_inplace(i64 rhs) const
+	void add_inplace(i64 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -627,7 +615,7 @@ public:
 		return i64(value_ - rhs.value_);
 	}
 
-	void sub_inplace(i64 rhs) const
+	void sub_inplace(i64 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -637,7 +625,7 @@ public:
 		return i64(value_ * rhs.value_);
 	}
 
-	void mul_inplace(i64 rhs) const
+	void mul_inplace(i64 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -647,7 +635,7 @@ public:
 		return i64(value_ / rhs.value_);
 	}
 
-	void div_inplace(i64 rhs) const
+	void div_inplace(i64 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -705,8 +693,6 @@ public:
 
 	u8(Raw value) : value_(value) {}
 
-	u8(u8 other) : value_(other.value_) {}
-
 	u8() : value_(0) {}
 
 	u8 add(u8 rhs) const
@@ -714,7 +700,7 @@ public:
 		return u8(value_ + rhs.value_);
 	}
 
-	void add_inplace(u8 rhs) const
+	void add_inplace(u8 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -724,7 +710,7 @@ public:
 		return u8(value_ - rhs.value_);
 	}
 
-	void sub_inplace(u8 rhs) const
+	void sub_inplace(u8 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -734,7 +720,7 @@ public:
 		return u8(value_ * rhs.value_);
 	}
 
-	void mul_inplace(u8 rhs) const
+	void mul_inplace(u8 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -744,7 +730,7 @@ public:
 		return u8(value_ / rhs.value_);
 	}
 
-	void div_inplace(u8 rhs) const
+	void div_inplace(u8 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -802,8 +788,6 @@ public:
 
 	u16(Raw value) : value_(value) {}
 
-	u16(u16 other) : value_(other.value_) {}
-
 	u16() : value_(0) {}
 
 	u16 add(u16 rhs) const
@@ -811,7 +795,7 @@ public:
 		return u16(value_ + rhs.value_);
 	}
 
-	void add_inplace(u16 rhs) const
+	void add_inplace(u16 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -821,7 +805,7 @@ public:
 		return u16(value_ - rhs.value_);
 	}
 
-	void sub_inplace(u16 rhs) const
+	void sub_inplace(u16 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -831,7 +815,7 @@ public:
 		return u16(value_ * rhs.value_);
 	}
 
-	void mul_inplace(u16 rhs) const
+	void mul_inplace(u16 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -841,7 +825,7 @@ public:
 		return u16(value_ / rhs.value_);
 	}
 
-	void div_inplace(u16 rhs) const
+	void div_inplace(u16 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -899,8 +883,6 @@ public:
 
 	u32(Raw value) : value_(value) {}
 
-	u32(u32 other) : value_(other.value_) {}
-
 	u32() : value_(0) {}
 
 	u32 add(u32 rhs) const
@@ -908,7 +890,7 @@ public:
 		return u32(value_ + rhs.value_);
 	}
 
-	void add_inplace(u32 rhs) const
+	void add_inplace(u32 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -918,7 +900,7 @@ public:
 		return u32(value_ - rhs.value_);
 	}
 
-	void sub_inplace(u32 rhs) const
+	void sub_inplace(u32 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -928,7 +910,7 @@ public:
 		return u32(value_ * rhs.value_);
 	}
 
-	void mul_inplace(u32 rhs) const
+	void mul_inplace(u32 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -938,7 +920,7 @@ public:
 		return u32(value_ / rhs.value_);
 	}
 
-	void div_inplace(u32 rhs) const
+	void div_inplace(u32 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -996,8 +978,6 @@ public:
 
 	u64(Raw value) : value_(value) {}
 
-	u64(u64 other) : value_(other.value_) {}
-
 	u64() : value_(0) {}
 
 	u64 add(u64 rhs) const
@@ -1005,7 +985,7 @@ public:
 		return u64(value_ + rhs.value_);
 	}
 
-	void add_inplace(u64 rhs) const
+	void add_inplace(u64 rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -1015,7 +995,7 @@ public:
 		return u64(value_ - rhs.value_);
 	}
 
-	void sub_inplace(u64 rhs) const
+	void sub_inplace(u64 rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -1025,7 +1005,7 @@ public:
 		return u64(value_ * rhs.value_);
 	}
 
-	void mul_inplace(u64 rhs) const
+	void mul_inplace(u64 rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -1035,7 +1015,7 @@ public:
 		return u64(value_ / rhs.value_);
 	}
 
-	void div_inplace(u64 rhs) const
+	void div_inplace(u64 rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -1093,8 +1073,6 @@ public:
 
 	isize(Raw value) : value_(value) {}
 
-	isize(isize other) : value_(other.value_) {}
-
 	isize() : value_(0) {}
 
 	isize add(isize rhs) const
@@ -1102,7 +1080,7 @@ public:
 		return isize(value_ + rhs.value_);
 	}
 
-	void add_inplace(isize rhs) const
+	void add_inplace(isize rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -1112,7 +1090,7 @@ public:
 		return isize(value_ - rhs.value_);
 	}
 
-	void sub_inplace(isize rhs) const
+	void sub_inplace(isize rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -1122,7 +1100,7 @@ public:
 		return isize(value_ * rhs.value_);
 	}
 
-	void mul_inplace(isize rhs) const
+	void mul_inplace(isize rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -1132,7 +1110,7 @@ public:
 		return isize(value_ / rhs.value_);
 	}
 
-	void div_inplace(isize rhs) const
+	void div_inplace(isize rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
@@ -1190,8 +1168,6 @@ public:
 
 	usize(Raw value) : value_(value) {}
 
-	usize(usize other) : value_(other.value_) {}
-
 	usize() : value_(0) {}
 
 	usize add(usize rhs) const
@@ -1199,7 +1175,7 @@ public:
 		return usize(value_ + rhs.value_);
 	}
 
-	void add_inplace(usize rhs) const
+	void add_inplace(usize rhs)
 	{
 		value_ = value_ + rhs.value_;
 	}
@@ -1209,7 +1185,7 @@ public:
 		return usize(value_ - rhs.value_);
 	}
 
-	void sub_inplace(usize rhs) const
+	void sub_inplace(usize rhs)
 	{
 		value_ = value_ - rhs.value_;
 	}
@@ -1219,7 +1195,7 @@ public:
 		return usize(value_ * rhs.value_);
 	}
 
-	void mul_inplace(usize rhs) const
+	void mul_inplace(usize rhs)
 	{
 		value_ = value_ * rhs.value_;
 	}
@@ -1229,7 +1205,7 @@ public:
 		return usize(value_ / rhs.value_);
 	}
 
-	void div_inplace(usize rhs) const
+	void div_inplace(usize rhs)
 	{
 		value_ = value_ / rhs.value_;
 	}
