@@ -2,7 +2,7 @@
 
 
 def read_content(file_path):
-    """Returns content of a text file.   
+    """Returns content of a text file.
     file_path: Give full path.
     """
     with open(file_path, 'rt', encoding='utf-8') as file:
