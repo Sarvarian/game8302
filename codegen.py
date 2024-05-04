@@ -153,6 +153,11 @@ class VectorType:
         self.type: Type = component_type
         self.dimensions: int = dimensions
 
+    def full_vec_type_name(self) -> str:
+        """ Whatever the name says.
+        """
+        return f"vec{self.dimensions}{self.type.name}"
+
 
 def create_a_list_of_vector_types(types: list[Type]) -> list[VectorType]:
     """ Whatever the name says.
@@ -164,8 +169,13 @@ def create_a_list_of_vector_types(types: list[Type]) -> list[VectorType]:
     return res
 
 
-# def generate_vector_types_predefine(list[VectorType]) -> str
-    # pass
+def generate_vector_types_predefine(types: list[VectorType]) -> str:
+    """ Whatever the name says.
+    """
+    res = ''
+    for t in types:
+        res += f"struct {t.full_vec_type_name()};\n"
+    return res
 
 
 def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
@@ -193,7 +203,6 @@ def generate_structs(types: list[Type], conversion_generator: ConversionGenerato
         c = c.replace('_DEFAULT_VALUE', t.default)
         c += '\n\n'
         result += c
-    result += '\n'
     return result
 
 
@@ -219,7 +228,6 @@ def generate_types_predefine(types: list[Type]) -> str:
     for t in types:
         result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
-    result += '\n\n'
     return result
 
 
@@ -231,10 +239,15 @@ def generate_body() -> str:
     conversion_generator = ConversionGenerator(read_conversion_templates())
     result: str = ''
     result += generate_types_predefine(types)
+    result += '\n\n'
     result += generate_structs(types, conversion_generator)
+    result += '\n'
     result += generate_conversions(types, conversion_generator)
+    result += '\n\n\n'
     vector_types = create_a_list_of_vector_types(types)
-    # result += generate_vector_types_predefine(vector_types)
+    result += generate_vector_types_predefine(vector_types)
+
+    result = result.removesuffix('\n')
     return result
 
 
