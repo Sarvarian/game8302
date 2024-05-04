@@ -62,12 +62,11 @@ if __name__ == '__main__':
         c = c.replace(DEFAULT_VALUE_PLACEHOLDER_STRING, t.default)
         c += '\n'
         structs.append(c)
-    conversions_bodies: list[str] = []
-    for conv in conversions:
-        conversions_bodies.append(conv.body)
+
     RES = ''.join(structs)
     RES += '\n'
-    RES += ''.join(conversions_bodies)
+    for conv in conversions:
+        RES += conv.body
     RES = RES.removesuffix('\n\n')
     BODY = read_content(BODY_TEMPLATE_FILE_PATH)
     RES = BODY.replace(GENERATE_TYPES_HERE_PLACEHOLDER_STRING, RES)
