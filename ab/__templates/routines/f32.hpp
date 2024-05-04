@@ -1,3 +1,4 @@
+
 f32 pow(f32 exponent) const
 {
 	return cpp_std_powf(value_, exponent.value_);

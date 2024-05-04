@@ -1,3 +1,4 @@
+
 struct _TYPE_NAME
 {
 public:

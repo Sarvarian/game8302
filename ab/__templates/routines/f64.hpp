@@ -1,3 +1,4 @@
+
 f64 pow(f64 exponent) const
 {
 	return cpp_std_pow(value_, exponent.value_);
