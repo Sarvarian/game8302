@@ -50,6 +50,26 @@ conversions_dir: str = ''
 every_type_conversion_template_file_name: str = ''
 
 
+def read_content(file_path: str) -> str:
+    """Returns content of a text file.
+    file_path: Give a full path. (relative or absolute does not matter.)
+    """
+    with open(file_path, 'rt', encoding='utf-8') as file:
+        content = file.read().strip()
+        file.close()
+        return content
+
+
+def write_content(file_path: str, content: str) -> None:
+    """Write content to a text file.
+    file_path: Give a full path. (relative or absolute does not matter.)
+    content: String of text.
+    """
+    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
+        file.write(content)
+        file.close()
+
+
 class FileSystem:
     """ To Work With Files And Directories """
 
@@ -115,26 +135,6 @@ class Conversion:
         """ Generate head and body of conversion routine. """
         self.generate_head()
         self.generate_body()
-
-
-def read_content(file_path: str) -> str:
-    """Returns content of a text file.
-    file_path: Give a full path. (relative or absolute does not matter.)
-    """
-    with open(file_path, 'rt', encoding='utf-8') as file:
-        content = file.read().strip()
-        file.close()
-        return content
-
-
-def write_content(file_path: str, content: str) -> None:
-    """Write content to a text file.
-    file_path: Give a full path. (relative or absolute does not matter.)
-    content: String of text.
-    """
-    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
-        file.write(content)
-        file.close()
 
 
 def read_types(file_path: str) -> list[Type]:
