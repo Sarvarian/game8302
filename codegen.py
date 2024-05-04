@@ -2,7 +2,7 @@
 
 import os.path
 
-from helper import read_content, read_types, write_content, read_routine_templates
+from helper import Conversion, read_content, read_types, write_content, read_routine_templates
 
 TEMPLATES_DIR = 'ab/__templates'
 OUTPUT_DIR = 'ab/'
@@ -49,16 +49,10 @@ if __name__ == '__main__':
         for ot in types:
             if ot.name == t.name:
                 continue
-            HEAD = '\t' + ot.name + \
-                ' to_' + ot.name + '() const;'
-            BODY = 'inline ' + ot.name + ' ' + t.name + \
-                '::to_' + ot.name + '() const\n'
-            BODY += '{\n'
-            BODY += '\treturn ' + \
-                ot.name + '((' + ot.name + '::Raw)(value_));\n'
-            BODY += '}\n\n'
-            conversions_heads.append(HEAD)
-            conversions_bodies.append(BODY)
+            conv: Conversion = Conversion(t.name, ot.name)
+            conv.generate()
+            conversions_heads.append(conv.head)
+            conversions_bodies.append(conv.body)
         for h in conversions_heads:
             r += h + '\n'
         r = r.removesuffix('\n')

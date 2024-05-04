@@ -10,8 +10,8 @@ class Conversion:
     def __init__(self, main_type: str, other_type: str):
         self.type: str = main_type
         self.other: str = other_type
-        self.head: str
-        self.body: str
+        self.head: str = ''
+        self.body: str = ''
 
     def generate_head(self) -> None:
         """ Generate head of conversion routine. """
