@@ -1,41 +1,39 @@
-
 f32 pow(f32 exponent) const
 {
-	return cpp_std_powf(raw(), exponent.raw());
+	return cpp_std_powf(value_, exponent.value_);
 }
 
 void pow_inplace(f32 exponent) const
 {
-	set_raw(cpp_std_powf(raw(), exponent.raw()));
+	value_ = cpp_std_powf(value_, exponent.value_);
 }
 
 f32 sqrt() const
 {
-	return cpp_std_sqrtf(raw());
+	return cpp_std_sqrtf(value_);
 }
 
 void sqrt_inplace() const
 {
-	set_raw(cpp_std_sqrtf(raw()));
+	value_ = cpp_std_sqrtf(value_);
 }
 
 f32 floor() const
 {
-	return cpp_std_floorf(raw());
+	return cpp_std_floorf(value_);
 }
 
 void floor_inplace() const
 {
-	set_raw(cpp_std_floorf(raw()));
+	value_ = cpp_std_floorf(value_);
 }
 
 f32 trunc() const
 {
-	return cpp_std_truncf(raw());
+	return cpp_std_truncf(value_);
 }
 
 void trunc_inplace() const
 {
-	set_raw(cpp_std_truncf(raw()));
+	value_ = cpp_std_truncf(value_);
 }
-

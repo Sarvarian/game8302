@@ -40,12 +40,17 @@ def read_types(file_path):
 
 
 def read_routine_templates(dir_path):
-    """
+    """Returns a dictionary of types and their routines.
     dir_path: Give full path to routine template directory. (relative or absolute does not matter.)
     """
-    paths = os.listdir(dir_path)
-    for path in paths:
-        path = os.path.join(dir_path, path)
+    names = os.listdir(dir_path)
+    res = {}
+    for name in names:
+        path = os.path.join(dir_path, name)
         if os.path.isdir(path):
             continue
-        print(path)
+        name = name.removesuffix('.hpp')
+        res[name] = read_content(path)
+        res[name] = res[name].replace('\n', '\n\t')
+        res[name] = res[name].replace('\n\t\n', '\n\n')
+    return res

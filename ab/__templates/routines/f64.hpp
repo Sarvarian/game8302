@@ -1,40 +1,39 @@
-
 f64 pow(f64 exponent) const
 {
-	return cpp_std_pow(raw(), exponent.raw());
+	return cpp_std_pow(value_, exponent.value_);
 }
 
 void pow_inplace(f64 exponent) const
 {
-	set_raw(cpp_std_pow(raw(), exponent.raw()));
+	value_ = cpp_std_pow(value_, exponent.value_);
 }
 
 f64 sqrt() const
 {
-	return cpp_std_sqrt(raw());
+	return cpp_std_sqrt(value_);
 }
 
 void sqrt() const
 {
-	set_raw(cpp_std_sqrt(raw()));
+	value_ = cpp_std_sqrt(value_);
 }
 
 f64 floor() const
 {
-	return cpp_std_floor(raw());
+	return cpp_std_floor(value_);
 }
 
 void floor() const
 {
-	set_raw(cpp_std_floor(raw()));
+	value_ = cpp_std_floor(value_);
 }
 
 f64 trunc() const
 {
-	return cpp_std_trunc(raw());
+	return cpp_std_trunc(value_);
 }
 
 void trunc() const
 {
-	set_raw(cpp_std_trunc(raw()));
+	value_ = cpp_std_trunc(value_);
 }
