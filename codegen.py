@@ -146,38 +146,6 @@ class ConversionGenerator:
         return result
 
 
-class VectorType:
-    """ Vector Type """
-
-    def __init__(self, component_type: Type, dimensions: int) -> None:
-        self.type: Type = component_type
-        self.dimensions: int = dimensions
-
-    def full_vec_type_name(self) -> str:
-        """ Whatever the name says.
-        """
-        return f"vec{self.dimensions}{self.type.name}"
-
-
-def create_a_list_of_vector_types(types: list[Type]) -> list[VectorType]:
-    """ Whatever the name says.
-    """
-    res: list[VectorType] = []
-    for i in range(1, 5):
-        for t in types:
-            res.append(VectorType(t, i))
-    return res
-
-
-def generate_vector_types_predefine(types: list[VectorType]) -> str:
-    """ Whatever the name says.
-    """
-    res = ''
-    for t in types:
-        res += f"struct {t.full_vec_type_name()};\n"
-    return res
-
-
 def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
     """ Structs
     """
@@ -231,6 +199,43 @@ def generate_types_predefine(types: list[Type]) -> str:
     return result
 
 
+class VectorType:
+    """ Vector Type """
+
+    def __init__(self, component_type: Type, dimensions: int) -> None:
+        self.type: Type = component_type
+        self.dimensions: int = dimensions
+
+    def full_vec_type_name(self) -> str:
+        """ Whatever the name says.
+        """
+        return f"vec{self.dimensions}{self.type.name}"
+
+
+def create_a_list_of_vector_types(types: list[Type]) -> list[VectorType]:
+    """ Whatever the name says.
+    """
+    res: list[VectorType] = []
+    for i in range(1, 5):
+        for t in types:
+            res.append(VectorType(t, i))
+    return res
+
+
+def generate_vector_types_predefine(types: list[VectorType]) -> str:
+    """ Whatever the name says.
+    """
+    res = ''
+    for t in types:
+        res += f"struct {t.full_vec_type_name()};\n"
+    return res
+
+
+def generate_vector_structs(types: list[VectorType]) -> str:
+    """ Whatever the name says.
+    """
+
+
 def generate_body() -> str:
     """ Body Of Code
     """
@@ -246,6 +251,7 @@ def generate_body() -> str:
     result += '\n\n\n'
     vector_types = create_a_list_of_vector_types(types)
     result += generate_vector_types_predefine(vector_types)
+    result += generate_vector_structs(vector_types)
 
     result = result.removesuffix('\n')
     return result
