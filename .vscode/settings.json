@@ -87,6 +87,7 @@
     "SDL_WINDOWPOS_UNDEFINED",
     "tparam",
     "umat22",
+    "usize",
     "uvec2"
   ],
   "cSpell.enableFiletypes": [

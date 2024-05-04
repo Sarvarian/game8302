@@ -18,43 +18,8 @@ inline double cpp_std_floor(double arg) { return floor(arg); }
 inline long double cpp_std_floorl(long double arg) { return floorl(arg); }
 } // namespace
 
-namespace primitives
-{
-typedef float      raw_f32;
-typedef double     raw_f64;
 
-typedef Sint8      raw_i8;
-typedef Sint16     raw_i16;
-typedef Sint32     raw_i32;
-typedef Sint64     raw_i64;
-
-typedef Uint8      raw_u8;
-typedef Uint16     raw_u16;
-typedef Uint32     raw_u32;
-typedef Uint64     raw_u64;
-
-typedef intptr_t   raw_isize;
-typedef uintptr_t  raw_usize;
-} // namespace primitives
-
-namespace core
-{
-
-struct f32
-{
-	struct i32 to_i32();
-};
-
-struct i32
-{
-};
-
-i32 f32::to_i32()
-{
-	return i32();
-}
-
-} // namespace core
+//_GENERATE_CODE_HERE
 
 
 } // namespace math

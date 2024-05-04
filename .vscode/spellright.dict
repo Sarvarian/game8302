@@ -7,3 +7,5 @@ SDL_BlitSurface
 src_surface
 src_rect
 dist_rect
+isize
+usize
