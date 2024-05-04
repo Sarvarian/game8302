@@ -1,5 +1,5 @@
 
-_TYPE_NAME(Raw value) : value_(value_) {}
+_TYPE_NAME(Raw value) : value_(value) {}
 
 _TYPE_NAME(_TYPE_NAME other) : value_(other.value_) {}
 

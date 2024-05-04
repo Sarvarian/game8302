@@ -41,7 +41,7 @@ struct f32
 public:
 	typedef float Raw;
 
-	f32(Raw value) : value_(value_) {}
+	f32(Raw value) : value_(value) {}
 
 	f32(f32 other) : value_(other.value_) {}
 
@@ -178,7 +178,7 @@ struct f64
 public:
 	typedef double Raw;
 
-	f64(Raw value) : value_(value_) {}
+	f64(Raw value) : value_(value) {}
 
 	f64(f64 other) : value_(other.value_) {}
 
@@ -315,7 +315,7 @@ struct i8
 public:
 	typedef Sint8 Raw;
 
-	i8(Raw value) : value_(value_) {}
+	i8(Raw value) : value_(value) {}
 
 	i8(i8 other) : value_(other.value_) {}
 
@@ -412,7 +412,7 @@ struct i16
 public:
 	typedef Sint16 Raw;
 
-	i16(Raw value) : value_(value_) {}
+	i16(Raw value) : value_(value) {}
 
 	i16(i16 other) : value_(other.value_) {}
 
@@ -509,7 +509,7 @@ struct i32
 public:
 	typedef Sint32 Raw;
 
-	i32(Raw value) : value_(value_) {}
+	i32(Raw value) : value_(value) {}
 
 	i32(i32 other) : value_(other.value_) {}
 
@@ -606,7 +606,7 @@ struct i64
 public:
 	typedef Sint64 Raw;
 
-	i64(Raw value) : value_(value_) {}
+	i64(Raw value) : value_(value) {}
 
 	i64(i64 other) : value_(other.value_) {}
 
@@ -703,7 +703,7 @@ struct u8
 public:
 	typedef Uint8 Raw;
 
-	u8(Raw value) : value_(value_) {}
+	u8(Raw value) : value_(value) {}
 
 	u8(u8 other) : value_(other.value_) {}
 
@@ -800,7 +800,7 @@ struct u16
 public:
 	typedef Uint16 Raw;
 
-	u16(Raw value) : value_(value_) {}
+	u16(Raw value) : value_(value) {}
 
 	u16(u16 other) : value_(other.value_) {}
 
@@ -897,7 +897,7 @@ struct u32
 public:
 	typedef Uint32 Raw;
 
-	u32(Raw value) : value_(value_) {}
+	u32(Raw value) : value_(value) {}
 
 	u32(u32 other) : value_(other.value_) {}
 
@@ -994,7 +994,7 @@ struct u64
 public:
 	typedef Uint64 Raw;
 
-	u64(Raw value) : value_(value_) {}
+	u64(Raw value) : value_(value) {}
 
 	u64(u64 other) : value_(other.value_) {}
 
@@ -1091,7 +1091,7 @@ struct isize
 public:
 	typedef intptr_t Raw;
 
-	isize(Raw value) : value_(value_) {}
+	isize(Raw value) : value_(value) {}
 
 	isize(isize other) : value_(other.value_) {}
 
@@ -1188,7 +1188,7 @@ struct usize
 public:
 	typedef uintptr_t Raw;
 
-	usize(Raw value) : value_(value_) {}
+	usize(Raw value) : value_(value) {}
 
 	usize(usize other) : value_(other.value_) {}
 
