@@ -209,6 +209,7 @@ def generate_body() -> str:
     result += generate_types_predefine(types)
     result += generate_structs(types, conversion_generator)
     result += generate_conversions(types, conversion_generator)
+    # generate vector types
     return result
 
 
