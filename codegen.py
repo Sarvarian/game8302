@@ -47,13 +47,19 @@ class Type:
     def __repr__(self) -> str:
         return self.name  # TODO: Try removing return and see if it works.
 
+    def __eq__(self, value: object) -> bool:
+        return self.name == value
+
+    def __hash__(self) -> int:
+        return hash((self.raw, self.name, self.default))
+
 
 class Conversion:
     """ Conversion Routine """
 
-    def __init__(self, main_type: str, other_type: str) -> None:
-        self.type: str = main_type
-        self.other: str = other_type
+    def __init__(self, main_type: Type, other_type: Type) -> None:
+        self.type: str = main_type.name
+        self.other: str = other_type.name
         self.head: str = ''
         self.body: str = ''
 
@@ -90,18 +96,18 @@ class FileSystem:
         self.routines_templates_dir: str = 'ab/__templates/routines'
         self.conversions_dir_name: str = 'ab/__templates/conversions'
 
-    def read_types(self) -> list[Type]:
+    def read_types(self) -> dict[Type, None]:
         """ Returns a list of dictionaries of types.
         """
         item = read_content(self.types_list_file).split()
-        res: list[Type] = []
+        res: dict[Type, None] = {}
         i = 0
         while i < len(item):
-            res.append(Type(item[i], item[i+1], item[i+2]))
+            res[Type(item[i], item[i+1], item[i+2])] = None
             i += 3
         return res
 
-    def read_routine_templates(self, types: list[Type]) -> None:
+    def read_routine_templates(self, types: dict[Type, None]) -> None:
         """ Update routines variables of Type and Types in the list given.
         """
         names = os.listdir(self.routines_templates_dir)
@@ -117,7 +123,7 @@ class FileSystem:
                 Type.routines = content
             else:
                 for ty in types:
-                    if ty.name == name:
+                    if ty == name:
                         ty.routines = content
 
     def read_struct_template(self) -> str:
@@ -146,7 +152,7 @@ if __name__ == '__main__':
         for ot in types:
             if ot.name == t.name:
                 continue
-            conv: Conversion = Conversion(t.name, ot.name)
+            conv: Conversion = Conversion(t, ot)
             conv.generate()
             conversions.append(conv)
         for conv in conversions:
