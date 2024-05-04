@@ -4,6 +4,21 @@ import os
 import os.path
 
 
+class Type:
+    """ Just Type """
+
+    def __init__(self, raw_type_name: str, type_name: str, default_value: str):
+        self.raw: str = raw_type_name
+        self.name: str = type_name
+        self.default: str = default_value
+
+    def public_method(self):
+        """ public method """
+
+    def public_method2(self):
+        """ public method """
+
+
 def read_content(file_path: str) -> str:
     """Returns content of a text file.
     file_path: Give a full path. (relative or absolute does not matter.)
@@ -24,16 +39,15 @@ def write_content(file_path: str, content: str) -> None:
         file.close()
 
 
-def read_types(file_path: str) -> list[dict[str, str]]:
+def read_types(file_path: str) -> list[Type]:
     """Returns a list of dictionaries of types.
     file_path: Give full path to types list file. (relative or absolute does not matter.)
     """
     types = read_content(file_path).split()
-    res: list[dict[str, str]] = []
+    res: list[Type] = []
     i = 0
     while i < len(types):
-        res.append(
-            {'raw': types[i], 'type': types[i+1], 'default': types[i+2]})
+        res.append(Type(types[i], types[i+1], types[i+2]))
         i += 3
     return res
 
