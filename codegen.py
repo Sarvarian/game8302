@@ -51,214 +51,177 @@ class Type:
     def public_method2(self) -> None:
         """ public method """
 
-    def __str__(self) -> str:
-        return self.name  # TODO: Try removing return and see if it works.
 
-    def __repr__(self) -> str:
-        return self.name  # TODO: Try removing return and see if it works.
+class ConversionTemplate:
+    """ Conversion Template """
 
-    def __eq__(self, value: object) -> bool:
-        return self.name == value
+    def __init__(self, head: str, body: str) -> None:
+        self.head = head
+        self.body = body
 
-    def __hash__(self) -> int:
-        return hash((self.raw, self.name, self.default))
+    def public_method(self) -> None:
+        """ public method """
+
+    def public_method_2(self) -> None:
+        """ public method """
 
 
-class Conversion:
+class ConversionGenerator:
     """ Conversion Routine """
 
-    every_type_conversion_template_head: str = ''
-    every_type_conversion_template_body: str = ''
-    conversion_bodies: str = ''
+    def __init__(self, templates: list[ConversionTemplate]) -> None:
+        self.templates: list[ConversionTemplate] = templates
+        self.type: Type
+        self.other: Type
 
-    def __init__(self, main_type: Type, other_type: Type) -> None:
-        self.type: str = main_type.name
-        self.other: str = other_type.name
-        self.head: str = ''
-        self.body: str = ''
+    def __replace(self, text: str) -> str:
+        return text.replace('_TYPE_NAME', self.type.name).replace('_OTHER_TYPE', self.other.name)
 
-    def generate_head(self) -> None:
+    def generate_head(self) -> str:
         """ Generate head of conversion routine. """
-        self.head = '\t' + self.other + \
-            ' to_' + self.other + '() const;'
+        result = ''
+        for template in self.templates:
+            result += '\t' + self.__replace(template.head)
+        return result
 
-    def generate_body(self) -> None:
+    def generate_body(self) -> str:
         """ Generate body of conversion routine. """
-        self.body = 'inline ' + self.other + ' ' + self.type + \
-            '::to_' + self.other + '() const\n'
-        self.body += '{\n'
-        self.body += '\treturn ' + \
-            self.other + '((' + self.other + '::Raw)(value_));\n'
-        self.body += '}\n\n'
-
-    def generate(self) -> None:
-        """ Generate head and body of conversion routine. """
-        self.generate_head()
-        self.generate_body()
+        result = ''
+        for template in self.templates:
+            result = self.__replace(template.body) + '\n\n'
+        return result
 
 
-class FileSystem:
-    """ To Work With Files And Directories """
+def read_types() -> dict[Type, None]:
+    """ Returns a list of dictionaries of types.
+    """
+    item = read_content(types_list_file).split()
+    res: dict[Type, None] = {}
+    i = 0
+    while i < len(item):
+        res[Type(item[i], item[i+1], item[i+2])] = None
+        i += 3
+    return res
 
-    def __init__(self) -> None:
-        pass
 
-    def read_types(self) -> dict[Type, None]:
-        """ Returns a list of dictionaries of types.
-        """
-        item = read_content(types_list_file).split()
-        res: dict[Type, None] = {}
-        i = 0
-        while i < len(item):
-            res[Type(item[i], item[i+1], item[i+2])] = None
-            i += 3
-        return res
+def read_routine_templates(types: dict[Type, None]) -> None:
+    """ Update routines variables of Type and Types in the list given.
+    """
+    names = os.listdir(routines_templates_dir)
+    for name in names:
+        path = os.path.join(routines_templates_dir, name)
+        if os.path.isdir(path):
+            continue
+        name = name.removesuffix('.hpp')
+        content = read_content(path)
+        content = content.replace('\n', '\n\t')
+        content = content.replace('\n\t\n', '\n\n')
+        if name == '_every':
+            Type.routines = content
+        else:
+            for t in types:
+                if t.name == name:
+                    t.routines = content
 
-    def read_routine_templates(self, types: dict[Type, None]) -> None:
-        """ Update routines variables of Type and Types in the list given.
-        """
-        names = os.listdir(routines_templates_dir)
-        for name in names:
-            path = os.path.join(routines_templates_dir, name)
-            if os.path.isdir(path):
+
+def read_conversion_templates() -> list[ConversionTemplate]:
+    """ Returns list of conversion templates
+    """
+    names = os.listdir(conversions_templates_dir)
+    templates: list[ConversionTemplate] = []
+    for name in names:
+        path = os.path.join(conversions_templates_dir, name)
+        if os.path.isdir(path):
+            continue
+        name = name.removesuffix('.hpp')
+        content = read_content(path).strip()
+        content = content.replace('\n\t\n', '\n\n')
+        content = content.split('\n', 1)
+        head = content[0].strip()
+        body = content[1].strip()
+        templates.append(ConversionTemplate(head, body))
+    return templates
+
+
+def generate_structs(types: dict[Type, None], conversion_generator: ConversionGenerator) -> str:
+    """ Structs
+    """
+    struct: str = ''
+    struct = read_content(struct_template_file)
+    structs: list[str] = []
+    for t in types:
+        c: str = struct
+        r = Type.routines
+        r += '\n\n'
+        if t.routines != '':
+            r = r + '\t' + t.routines + '\n\n'
+        conversion_generator.type = t
+        for ot in types:
+            if t == ot:
                 continue
-            name = name.removesuffix('.hpp')
-            content = read_content(path)
-            content = content.replace('\n', '\n\t')
-            content = content.replace('\n\t\n', '\n\n')
-            if name == '_every':
-                Type.routines = content
-            else:
-                for ty in types:
-                    if ty == name:
-                        ty.routines = content
+            conversion_generator.other = ot
+            r += conversion_generator.generate_head() + '\n'
+        r = r.removesuffix('\n')
+        c = c.replace('//_GENERATE_ROUTINES_HERE', r)
+        c = c.replace('_TYPE_NAME', t.name)
+        c = c.replace('_RAW_TYPE', t.raw)
+        c = c.replace('_DEFAULT_VALUE', t.default)
+        c += '\n'
+        structs.append(c)
+    result = ''.join(structs)
+    result += '\n'
+    return result
 
-    def read_conversion_templates(self, types: dict[Type, None]) -> None:
-        names = os.listdir(conversions_templates_dir)
-        for name in names:
-            path = os.path.join(conversions_templates_dir, name)
-            if os.path.isdir(path):
+
+def generate_conversions(types: dict[Type, None], conversion_generator: ConversionGenerator) -> str:
+    """ Generate Conversions
+    """
+    result: str = ''
+    for t in types:
+        conversion_generator.type = t
+        for ot in types:
+            if t == ot:
                 continue
-            name = name.removesuffix('.hpp')
-            content = read_content(path).strip()
-            content = content.replace('\n', '\n\t')
-            content = content.replace('\n\t\n', '\n\n')
-            content = content.split('\n', 1)
-            head = content[0].strip()
-            body = content[1].strip()
-            if name == 'every':
-                Conversion.every_type_conversion_template_head = head
-                Conversion.every_type_conversion_template_head = body
-
-    def read_struct_template(self) -> str:
-        """ Returns string of struct template text file
-        """
-        return read_content(struct_template_file)
+            conversion_generator.other = ot
+            result += conversion_generator.generate_body()
+    result = result.removesuffix('\n\n')
+    return result
 
 
-class Structs:
-    """ Structs """
-
-    def __init__(self, fs: FileSystem, types: dict[Type, None]) -> None:
-        struct: str = ''
-        struct = fs.read_struct_template()
-        structs: list[str] = []
-        conversions: list[Conversion] = []
-        for t in types:
-            c: str = struct
-            r = Type.routines
-            r += '\n\n'
-            if t.routines != '':
-                r = r + '\t' + t.routines + '\n\n'
-            # Generate conversions routines here.
-            for ot in types:
-                if ot.name == t.name:
-                    continue
-                conv: Conversion = Conversion(t, ot)
-                conv.generate()
-                conversions.append(conv)
-            for conv in conversions:
-                if conv.type == t.name:
-                    r += conv.head + '\n'
-            r = r.removesuffix('\n')
-            c = c.replace('//_GENERATE_ROUTINES_HERE', r)
-            c = c.replace('_TYPE_NAME', t.name)
-            c = c.replace('_RAW_TYPE', t.raw)
-            c = c.replace('_DEFAULT_VALUE', t.default)
-            c += '\n'
-            structs.append(c)
-        self.result = ''.join(structs)
-        self.result += '\n'
-        for conv in conversions:
-            self.result += conv.body
-        self.result = self.result.removesuffix('\n\n')
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
+def generate_types_predefine(types: dict[Type, None]) -> str:
+    """ Types Predefine
+    """
+    result: str = ''
+    for t in types:
+        result += f'struct {t.name};\n'
+    result = result.removesuffix('\n')
+    result += '\n\n'
+    return result
 
 
-class TypesPredefine:
-    """ Types Predefine """
-
-    def __init__(self, types: dict[Type, None]) -> None:
-        self.result: str = ''
-        for t in types:
-            self.result += f'struct {t};\n'
-        self.result = self.result.removesuffix('\n')
-        self.result += '\n\n'
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
-class Body:
+def generate_body() -> str:
     """ Body Of Code
     """
-
-    def __init__(self, fs: FileSystem) -> None:
-        types: dict[Type, None] = {}
-        types = fs.read_types()
-        fs.read_routine_templates(types)
-        fs.read_conversion_templates(types)
-
-        self.result: str = ''
-        self.result += TypesPredefine(types).result
-        self.result += Structs(fs, types).result
-        # generate predefine
-        # generate structures
-        # generate conversion bodies
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
+    types: dict[Type, None] = {}
+    types = read_types()
+    read_routine_templates(types)
+    conversion_generator = ConversionGenerator(read_conversion_templates())
+    result: str = ''
+    result += generate_types_predefine(types)
+    result += generate_structs(types, conversion_generator)
+    result += generate_conversions(types, conversion_generator)
+    return result
 
 
-class Main:
-    """ Main Template """
-
-    def __init__(self) -> None:
-        fs = FileSystem()
-        body = Body(fs)
-        result = read_content(main_template_file).replace(
-            "//_GENERATE_TYPE_HERE", body.result)
-        result = '// This file is generated by a python script and some templates .\n\n' + result
-        result += "\n"
-        write_content(output_file, result)
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
+def main() -> None:
+    """ Main Template
+    """
+    result = read_content(main_template_file).replace(
+        "//_GENERATE_TYPE_HERE", generate_body())
+    result = '// This file is generated by a python script and some templates .\n\n' + result
+    result += "\n"
+    write_content(output_file, result)
 
 
 if __name__ == '__main__':
-    main = Main()
+    main()
