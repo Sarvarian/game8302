@@ -82,8 +82,7 @@ class FileSystem:
         self.conversions_dir_name: str = 'ab/__templates/conversions'
 
     def read_types(self) -> list[Type]:
-        """Returns a list of dictionaries of types.
-        file_path: Give full path to types list file. (relative or absolute does not matter.)
+        """ Returns a list of dictionaries of types.
         """
         item = read_content(self.types_list_file).split()
         res: list[Type] = []
@@ -94,9 +93,7 @@ class FileSystem:
         return res
 
     def read_routine_templates(self) -> dict[str, str]:
-        """Returns a dictionary of types and their routines.
-        dir_path: Give full path to routine template directory.
-        (relative or absolute does not matter.)
+        """ Returns a dictionary of types and their routines.
         """
         names = os.listdir(self.routines_templates_dir)
         res: dict[str, str] = {}
@@ -110,12 +107,17 @@ class FileSystem:
             res[name] = res[name].replace('\n\t\n', '\n\n')
         return res
 
+    def read_struct_template(self) -> str:
+        """ Returns string of struct template text file
+        """
+        return read_content(self.struct_template_file)
+
 
 if __name__ == '__main__':
     fs = FileSystem()
 
     types = fs.read_types()
-    struct = read_content(fs.struct_template_file)
+    struct = fs.read_struct_template()
     routines = fs.read_routine_templates()
     structs: list[str] = []
     conversions: list[Conversion] = []
