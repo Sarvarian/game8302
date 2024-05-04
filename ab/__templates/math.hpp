@@ -16,6 +16,9 @@ inline long double cpp_std_sqrtl(long double arg) { return sqrtl(arg); }
 inline float cpp_std_floorf(float arg) { return floorf(arg); }
 inline double cpp_std_floor(double arg) { return floor(arg); }
 inline long double cpp_std_floorl(long double arg) { return floorl(arg); }
+inline float cpp_std_truncf(float arg) { return truncf(arg); }
+inline double cpp_std_trunc(double arg) { return trunc(arg); }
+inline long double cpp_std_truncl(long double arg) { return truncl(arg); }
 } // namespace
 
 
