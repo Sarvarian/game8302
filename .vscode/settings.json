@@ -100,5 +100,11 @@
     "powershell",
     "shellscript"
   ],
-  "C_Cpp.vcFormat.indent.namespaceContents": false
+  "C_Cpp.vcFormat.indent.namespaceContents": false,
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.defaultFoldingRangeProvider": "ms-python.autopep8"
+  }
 }
