@@ -312,140 +312,10 @@ def generate_routine(self: Type, types: list[Type],
     self.routines = self.routines.removesuffix('\n')
 
 
-class VectorType(Type):
-    """ Vector Type """
-
-    def __init__(self, component_type: Type, dimensions: int) -> None:
-        super().__init__(component_type.raw, component_type.name, component_type.default)
-        self.dimensions: int = dimensions
-        full_type_name = f'vec{self.dimensions}{self.name}'
-        path = os.path.join(routines_templates_dir, f'{full_type_name}.hpp')
-        self.routines = read_content(path)
-
-    def get_full_type_name(self) -> str:
-        """ Whatever the name says.
-        """
-        return f"vec{self.dimensions}{self.name}"
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
-class Vec2Type(VectorType):
-    """ 2D Vector Type """
-
-    template = ''
-    routines = ''
-
-    def __init__(self, component_type: Type) -> None:
-        super().__init__(component_type, 2)
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
-class Vec3Type(VectorType):
-    """ 2D Vector Type """
-
-    template = ''
-    routines = ''
-
-    def __init__(self, component_type: Type) -> None:
-        super().__init__(component_type, 3)
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
-class Vec4Type(VectorType):
-    """ 2D Vector Type """
-
-    template = ''
-    routines = ''
-
-    def __init__(self, component_type: Type) -> None:
-        super().__init__(component_type, 4)
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method_2(self) -> None:
-        """ public method """
-
-
 def format_routines_template(temp: str) -> str:
     """ Whatever this is!!!
     """
     return temp.replace('\n', '\n\t').replace('\n\t\n', '\n\n')
-
-
-def read_types() -> list[Type]:
-    """ Returns a list of dictionaries of types.
-    """
-
-    Type.routines = format_routines_template(
-        read_content(every_type_routines_file))
-
-    item = read_content(types_list_file).split()
-    types: list[Type] = []
-    i = 0
-    while i < len(item):
-        t = Type(item[i], item[i+1], item[i+2])
-        path = os.path.join(routines_templates_dir, f'{t.name}.hpp')
-        t.routines = format_routines_template(read_content(path))
-        types.append(t)
-        i += 3
-
-    vec_types: list[Type] = []
-    Vec2Type.routines = format_routines_template(
-        read_content(vec2_template_file))
-    Vec3Type.routines = format_routines_template(
-        read_content(vec3_template_file))
-    Vec4Type.routines = format_routines_template(
-        read_content(vec4_template_file))
-
-    for dimension in range(2, 5):
-        for t in types:
-            match dimension:
-                case 2: vec_types.append(Vec2Type(t))
-                case 3: vec_types.append(Vec3Type(t))
-                case 4: vec_types.append(Vec4Type(t))
-                case _: raise DimensionError()
-
-    return types + vec_types
-
-
-def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
-    """ Structs
-    """
-    struct: str = ''
-    struct = read_content(struct_template_file)
-    result = ''
-    for t in types:
-        c: str = struct
-        if t.routines != '':
-            t.routines = '\t' + t.routines + '\n\n'
-        t.routines = Type.routines + '\n\n' + t.routines
-        conversion_generator.type = t
-        for ot in types:
-            if t == ot:
-                continue
-            conversion_generator.other = ot
-            t.routines += conversion_generator.generate_head() + '\n'
-        t.routines = t.routines.removesuffix('\n')
-        c = placeholder_replacement(t, c)
-        c += '\n\n'
-        result += c
-    return result
 
 
 def generate_conversions(types: list[TypeII], conversion_generator: ConversionGenerator) -> str:
@@ -486,7 +356,6 @@ def generate_body() -> str:
     result: str = ''
     result += generate_types_predefine(types)
     result += '\n\n'
-    # result += generate_structs(types, conversion_generator)
     result += generate_structs_ii(types, conversions)
     result += '\n'
     result += generate_conversions(types, conversion_generator)
