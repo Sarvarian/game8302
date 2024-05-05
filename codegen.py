@@ -136,7 +136,7 @@ def read_and_generate_types() -> list[Type]:
     vec_types: list[Type] = []
     for dimension in range(2, 5):
         for comp in scalar_types:
-            name = f'vec{dimension}{comp}'
+            name = f'vec{dimension}{comp.name}'
             vec_template = ''
             vec_routines = ''
             match dimension:
@@ -254,8 +254,6 @@ def generate_types_predefine(types: list[Type]) -> str:
     """
     result: str = ''
     for t in types:
-        if t.type_class != TypeClass.SCALAR:
-            continue
         result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
     return result
