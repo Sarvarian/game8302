@@ -211,14 +211,12 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
     """
     result = ''
     for ty in types:
-        if ty.type_class != TypeClass.SCALAR:
-            continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty or other.type_class != TypeClass.SCALAR:
+            if other == ty or other.type_class != ty.type_class:
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
@@ -236,10 +234,8 @@ def generate_conversions_bodies(types: list[Type], conversions: list[ConversionT
     """
     result: str = ''
     for base in types:
-        if base.type_class != TypeClass.SCALAR:
-            continue
         for other in types:
-            if base == other or other.type_class != TypeClass.SCALAR:
+            if other == base or other.type_class != base.type_class:
                 continue
             for conv in conversions:
                 result += conv.body \
