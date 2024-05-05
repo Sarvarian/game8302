@@ -231,106 +231,20 @@ def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplat
     return result
 
 
-class Type(TypeII):
-    """ Just Type """
-
-    template: str = ''
-    routines: str = ''
-
-    def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
-        super().__init__(raw_type_name, '', type_name, default_value, TypeClass.SCALAR)
-        self.raw: str = raw_type_name
-        self.name: str = type_name
-        self.default: str = default_value
-        self.routines: str = ''
-
-    def get_type_name(self) -> str:
-        """ Whatever this is!!! """
-        return self.name
-
-    def get_full_type_name(self) -> str:
-        """ Whatever this is!!! """
-        return self.get_type_name()
-
-    def public_method(self) -> None:
-        """ public method """
-
-    def public_method2(self) -> None:
-        """ public method """
-
-
-class ConversionGenerator:
-    """ Conversion Routine """
-
-    def __init__(self, templates: list[ConversionTemplate]) -> None:
-        self.templates: list[ConversionTemplate] = templates
-        self.type: TypeII
-        self.other: TypeII
-
-    def __replace(self, text: str) -> str:
-        return text.replace('_TYPE_NAME', self.type.name).replace('_OTHER_TYPE', self.other.name)
-
-    def generate_head(self) -> str:
-        """ Generate head of conversion routine. """
-        result = ''
-        for template in self.templates:
-            result += '\t' + self.__replace(template.head)
-        return result
-
-    def generate_body(self) -> str:
-        """ Generate body of conversion routine. """
-        result = ''
-        for template in self.templates:
-            result = self.__replace(template.body) + '\n\n'
-        return result
-
-
-def generate_conversions_body(conversions: list[ConversionTemplate],
-                              base: TypeII, other: TypeII) -> str:
-    """ Generate body of conversion routine.
-    """
-    result = ''
-    for conv in conversions:
-        result += '\t' + conv.head \
-            .replace('_TYPE_NAME', base.name) \
-            .replace('_OTHER_TYPE', other.name)
-    return result
-
-
-def generate_routine(self: Type, types: list[Type],
-                     conversion_generator: ConversionGenerator) -> None:
-    """ Whatever this is!!! """
-    if self.routines != '':
-        self.routines = '\t' + self.routines + '\n\n'
-    self.routines = Type.routines + '\n\n' + self.routines
-    conversion_generator.type = self
-    for ot in types:
-        if self == ot:
-            continue
-        conversion_generator.other = ot
-        self.routines += conversion_generator.generate_head() + '\n'
-    self.routines = self.routines.removesuffix('\n')
-
-
-def format_routines_template(temp: str) -> str:
-    """ Whatever this is!!!
-    """
-    return temp.replace('\n', '\n\t').replace('\n\t\n', '\n\n')
-
-
-def generate_conversions(types: list[TypeII], conversion_generator: ConversionGenerator) -> str:
+def generate_conversions_bodies(types: list[TypeII], conversions: list[ConversionTemplate]) -> str:
     """ Generate Conversions
     """
     result: str = ''
-    for t in types:
-        if t.type_class != TypeClass.SCALAR:
+    for base in types:
+        if base.type_class != TypeClass.SCALAR:
             continue
-        conversion_generator.type = t
-        for ot in types:
-            if t == ot or ot.type_class != TypeClass.SCALAR:
+        for other in types:
+            if base == other or other.type_class != TypeClass.SCALAR:
                 continue
-            conversion_generator.other = ot
-            result += conversion_generator.generate_body()
+            for conv in conversions:
+                result += conv.body \
+                    .replace('_TYPE_NAME', base.name) \
+                    .replace('_OTHER_TYPE', other.name) + '\n\n'
     result = result.removesuffix('\n\n')
     return result
 
@@ -352,13 +266,12 @@ def generate_body() -> str:
     """
     types = read_and_generate_types()
     conversions = read_conversion_templates()
-    conversion_generator = ConversionGenerator(conversions)
     result: str = ''
     result += generate_types_predefine(types)
     result += '\n\n'
     result += generate_structs_ii(types, conversions)
     result += '\n'
-    result += generate_conversions(types, conversion_generator)
+    result += generate_conversions_bodies(types, conversions)
     result += '\n'
 
     result = result.removesuffix('\n')
