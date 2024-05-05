@@ -1,22 +1,22 @@
 
-struct vec2_TYPE_NAME
+struct _TYPE_NAME
 {
 public:
 
 	//_GENERATE_ROUTINES_HERE
 
-	_TYPE_NAME x() const
+	_COMP_NAME x() const
 	{
 		return x_;
 	}
 
-	_TYPE_NAME y() const
+	_COMP_NAME y() const
 	{
 		return y_;
 	}
 
 private:
-	_TYPE_NAME x_;
-	_TYPE_NAME y_;
+	_COMP_NAME x_;
+	_COMP_NAME y_;
 
 };

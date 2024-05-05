@@ -1,34 +1,34 @@
 
-struct vec4_TYPE_NAME
+struct _TYPE_NAME
 {
 public:
 
 	//_GENERATE_ROUTINES_HERE
 
-	_TYPE_NAME x() const
+	_COMP_NAME x() const
 	{
 		return x_;
 	}
 
-	_TYPE_NAME y() const
+	_COMP_NAME y() const
 	{
 		return y_;
 	}
 
-	_TYPE_NAME z() const
+	_COMP_NAME z() const
 	{
 		return z_;
 	}
 
-	_TYPE_NAME w() const
+	_COMP_NAME w() const
 	{
 		return w_;
 	}
 
 private:
-	_TYPE_NAME x_;
-	_TYPE_NAME y_;
-	_TYPE_NAME z_;
-	_TYPE_NAME w_;
+	_COMP_NAME x_;
+	_COMP_NAME y_;
+	_COMP_NAME z_;
+	_COMP_NAME w_;
 
 };
