@@ -61,7 +61,7 @@ class TypeClass(Enum):
     MATRIX = 2
 
 
-class TypeII:
+class Type:
     """ Second Version of Type Class """
 
     def __init__(self, raw: str, comp: str, name: str, default: str, type_class: TypeClass) -> None:
@@ -88,7 +88,7 @@ class DimensionError(Exception):
         super().__init__('type dimension should not get any other then these numbers!')
 
 
-def read_scalar_types() -> list[TypeII]:
+def read_scalar_types() -> list[Type]:
     """ Read scalar types.
     """
     # Read common templates.
@@ -99,13 +99,13 @@ def read_scalar_types() -> list[TypeII]:
     # Read types.
     #
     basic_types_database = read_content(types_list_file).split()
-    types: list[TypeII] = []
+    types: list[Type] = []
     i = 0
     while i < len(basic_types_database):
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = TypeII(raw, '', name, default, TypeClass.SCALAR)
+        ty = Type(raw, '', name, default, TypeClass.SCALAR)
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -118,7 +118,7 @@ def read_scalar_types() -> list[TypeII]:
     return types
 
 
-def read_and_generate_types() -> list[TypeII]:
+def read_and_generate_types() -> list[Type]:
     """ As the name suggest.
     """
     # Read vector types templates.
@@ -133,7 +133,7 @@ def read_and_generate_types() -> list[TypeII]:
     # Generate vector types
     #
     scalar_types = read_scalar_types()
-    vec_types: list[TypeII] = []
+    vec_types: list[Type] = []
     for dimension in range(2, 5):
         for comp in scalar_types:
             name = f'vec{dimension}{comp}'
@@ -151,8 +151,8 @@ def read_and_generate_types() -> list[TypeII]:
                     vec_routines = vec4_routines
                 case _:
                     raise DimensionError()
-            ty = TypeII(comp.raw, comp.name, name,
-                        comp.default, TypeClass.VECTOR)
+            ty = Type(comp.raw, comp.name, name,
+                      comp.default, TypeClass.VECTOR)
             ty.template = vec_template
             ty.common_routines = vec_routines
             path = os.path.join(routines_templates_dir, name)
@@ -195,7 +195,7 @@ def read_conversion_templates() -> list[ConversionTemplate]:
     return templates
 
 
-def placeholder_replacement(t: TypeII, content: str) -> str:
+def placeholder_replacement(t: Type, content: str) -> str:
     """ Whatever the name says.
     """
     result = content
@@ -206,7 +206,7 @@ def placeholder_replacement(t: TypeII, content: str) -> str:
     return result
 
 
-def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplate]) -> str:
+def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -> str:
     """ Generate body of structs for main body.
     """
     result = ''
@@ -231,7 +231,7 @@ def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplat
     return result
 
 
-def generate_conversions_bodies(types: list[TypeII], conversions: list[ConversionTemplate]) -> str:
+def generate_conversions_bodies(types: list[Type], conversions: list[ConversionTemplate]) -> str:
     """ Generate Conversions
     """
     result: str = ''
@@ -249,7 +249,7 @@ def generate_conversions_bodies(types: list[TypeII], conversions: list[Conversio
     return result
 
 
-def generate_types_predefine(types: list[TypeII]) -> str:
+def generate_types_predefine(types: list[Type]) -> str:
     """ Types Predefine
     """
     result: str = ''
@@ -269,7 +269,7 @@ def generate_body() -> str:
     result: str = ''
     result += generate_types_predefine(types)
     result += '\n\n'
-    result += generate_structs_ii(types, conversions)
+    result += generate_structs(types, conversions)
     result += '\n'
     result += generate_conversions_bodies(types, conversions)
     result += '\n'
