@@ -110,7 +110,7 @@ def read_scalar_types() -> list[TypeII]:
         ty.routines = read_routines_template(path)
         ty.template = common_template
         ty.common_routines = common_routines
-        path = os.path.join(routines_templates_dir, name)
+        path = os.path.join(routines_templates_dir, f'{name}.hpp')
         ty.routines = read_routines_template(path)
         types.append(ty)
         i += 3
@@ -224,7 +224,7 @@ def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplat
                 ty.routines += '\t' + conv.head \
                     .replace('_TYPE_NAME', ty.name) \
                     .replace('_OTHER_TYPE', other.name) + '\n'
-        ty.routines.removesuffix('\n')
+        ty.routines = ty.routines.removesuffix('\n')
         content = placeholder_replacement(ty, content)
         content += '\n\n'
         result += content
@@ -453,9 +453,11 @@ def generate_conversions(types: list[TypeII], conversion_generator: ConversionGe
     """
     result: str = ''
     for t in types:
+        if t.type_class != TypeClass.SCALAR:
+            continue
         conversion_generator.type = t
         for ot in types:
-            if t == ot:
+            if t == ot or ot.type_class != TypeClass.SCALAR:
                 continue
             conversion_generator.other = ot
             result += conversion_generator.generate_body()
@@ -475,45 +477,6 @@ def generate_types_predefine(types: list[TypeII]) -> str:
     return result
 
 
-# def generate_vector_types_predefine(types: list[VectorType]) -> str:
-#     """ Whatever the name says.
-#     """
-#     res = ''
-#     for t in types:
-#         res += f"struct {t.get_full_type_name()};\n"
-#     return res
-
-
-# def generate_vector_structs(types: list[VectorType]) -> str:
-#     """ Whatever the name says.
-#     """
-#     result: str = ''
-
-#     for t in types:
-
-    # if t.routines
-
-    # struct: str = ''
-    # struct = read_content(struct_template_file)
-    # result = ''
-    # for t in types:
-    #     c: str = struct
-    #     if t.routines != '':
-    #         t.routines = '\t' + t.routines + '\n\n'
-    #     t.routines = Type.routines + '\n\n' + t.routines
-    #     conversion_generator.type = t
-    #     for o_t in types:
-    #         if t == o_t:
-    #             continue
-    #         conversion_generator.other = o_t
-    #         t.routines += conversion_generator.generate_head() + '\n'
-    #     t.routines = t.routines.removesuffix('\n')
-    #     c = struct_replacement(t, c)
-    #     c += '\n\n'
-    #     result += c
-    # return result
-
-
 def generate_body() -> str:
     """ Body Of Code
     """
@@ -527,10 +490,7 @@ def generate_body() -> str:
     result += generate_structs_ii(types, conversions)
     result += '\n'
     result += generate_conversions(types, conversion_generator)
-    result += '\n\n\n'
-
-    # result += generate_vector_types_predefine(vector_types)
-    # result += generate_vector_structs(vector_types)
+    result += '\n'
 
     result = result.removesuffix('\n')
     return result
