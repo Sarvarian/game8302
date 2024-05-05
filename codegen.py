@@ -211,14 +211,14 @@ def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplat
     """
     result = ''
     for ty in types:
-        if ty.comp != '':
+        if ty.type_class != TypeClass.SCALAR:
             continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty or other.comp != '':
+            if other == ty or other.type_class != TypeClass.SCALAR:
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
@@ -238,6 +238,7 @@ class Type(TypeII):
     routines: str = ''
 
     def __init__(self, raw_type_name: str, type_name: str, default_value: str) -> None:
+        super().__init__(raw_type_name, '', type_name, default_value, TypeClass.SCALAR)
         self.raw: str = raw_type_name
         self.name: str = type_name
         self.default: str = default_value
@@ -263,8 +264,8 @@ class ConversionGenerator:
 
     def __init__(self, templates: list[ConversionTemplate]) -> None:
         self.templates: list[ConversionTemplate] = templates
-        self.type: Type
-        self.other: Type
+        self.type: TypeII
+        self.other: TypeII
 
     def __replace(self, text: str) -> str:
         return text.replace('_TYPE_NAME', self.type.name).replace('_OTHER_TYPE', self.other.name)
@@ -447,7 +448,7 @@ def generate_structs(types: list[Type], conversion_generator: ConversionGenerato
     return result
 
 
-def generate_conversions(types: list[Type], conversion_generator: ConversionGenerator) -> str:
+def generate_conversions(types: list[TypeII], conversion_generator: ConversionGenerator) -> str:
     """ Generate Conversions
     """
     result: str = ''
@@ -462,12 +463,14 @@ def generate_conversions(types: list[Type], conversion_generator: ConversionGene
     return result
 
 
-def generate_types_predefine(types: list[Type]) -> str:
+def generate_types_predefine(types: list[TypeII]) -> str:
     """ Types Predefine
     """
     result: str = ''
     for t in types:
-        result += f'struct {t.get_full_type_name()};\n'
+        if t.type_class != TypeClass.SCALAR:
+            continue
+        result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
     return result
 
@@ -514,15 +517,14 @@ def generate_types_predefine(types: list[Type]) -> str:
 def generate_body() -> str:
     """ Body Of Code
     """
-    types = read_types()
-    types_ii = read_and_generate_types()
+    types = read_and_generate_types()
     conversions = read_conversion_templates()
     conversion_generator = ConversionGenerator(conversions)
     result: str = ''
     result += generate_types_predefine(types)
     result += '\n\n'
     # result += generate_structs(types, conversion_generator)
-    result += generate_structs_ii(types_ii, conversions)
+    result += generate_structs_ii(types, conversions)
     result += '\n'
     result += generate_conversions(types, conversion_generator)
     result += '\n\n\n'
