@@ -1,5 +1,6 @@
 """" To generate c++ code. """
 
+from enum import Enum
 import os
 import os.path
 
@@ -53,10 +54,17 @@ def read_routines_template(full_path: str) -> str:
         .replace('\n\t\n', '\n\n')
 
 
+class TypeClass(Enum):
+    """ Possible Types of Data Structures """
+    SCALAR = 0
+    VECTOR = 1
+    MATRIX = 2
+
+
 class TypeII:
     """ Second Version of Type Class """
 
-    def __init__(self, raw: str, comp: str, name: str, default: str) -> None:
+    def __init__(self, raw: str, comp: str, name: str, default: str, type_class: TypeClass) -> None:
         self.raw = raw
         self.comp = comp
         self.name = name
@@ -64,6 +72,7 @@ class TypeII:
         self.template = ''
         self.common_routines = ''
         self.routines = ''
+        self.type_class = type_class
 
     def public_method(self) -> None:
         """ public method """
@@ -79,10 +88,9 @@ class DimensionError(Exception):
         super().__init__('type dimension should not get any other then these numbers!')
 
 
-def read_and_generate_types() -> list[TypeII]:
-    """ As the name suggest.
+def read_scalar_types() -> list[TypeII]:
+    """ Read scalar types.
     """
-
     # Read common templates.
     #
     common_template = read_content(struct_template_file)
@@ -97,7 +105,7 @@ def read_and_generate_types() -> list[TypeII]:
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = TypeII(raw, '', name, default)
+        ty = TypeII(raw, '', name, default, TypeClass.SCALAR)
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -107,6 +115,12 @@ def read_and_generate_types() -> list[TypeII]:
         types.append(ty)
         i += 3
 
+    return types
+
+
+def read_and_generate_types() -> list[TypeII]:
+    """ As the name suggest.
+    """
     # Read vector types templates.
     #
     vec2_template = read_content(vec2_template_file)
@@ -118,9 +132,10 @@ def read_and_generate_types() -> list[TypeII]:
 
     # Generate vector types
     #
+    scalar_types = read_scalar_types()
     vec_types: list[TypeII] = []
     for dimension in range(2, 5):
-        for comp in types:
+        for comp in scalar_types:
             name = f'vec{dimension}{comp}'
             vec_template = ''
             vec_routines = ''
@@ -136,14 +151,15 @@ def read_and_generate_types() -> list[TypeII]:
                     vec_routines = vec4_routines
                 case _:
                     raise DimensionError()
-            ty = TypeII(comp.raw, comp.name, name, comp.default)
+            ty = TypeII(comp.raw, comp.name, name,
+                        comp.default, TypeClass.VECTOR)
             ty.template = vec_template
             ty.common_routines = vec_routines
             path = os.path.join(routines_templates_dir, name)
             ty.routines = read_routines_template(path)
             vec_types.append(ty)
 
-    return types + vec_types
+    return scalar_types + vec_types
 
 
 class ConversionTemplate:
@@ -195,17 +211,19 @@ def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplat
     """
     result = ''
     for ty in types:
+        if ty.comp != '':
+            continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty:
+            if other == ty or other.comp != '':
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
                     .replace('_TYPE_NAME', ty.name) \
-                    .replace('_OTHER_TYPE', other.name)
+                    .replace('_OTHER_TYPE', other.name) + '\n'
         ty.routines.removesuffix('\n')
         content = placeholder_replacement(ty, content)
         content += '\n\n'
@@ -497,14 +515,18 @@ def generate_body() -> str:
     """ Body Of Code
     """
     types = read_types()
-    conversion_generator = ConversionGenerator(read_conversion_templates())
+    types_ii = read_and_generate_types()
+    conversions = read_conversion_templates()
+    conversion_generator = ConversionGenerator(conversions)
     result: str = ''
     result += generate_types_predefine(types)
     result += '\n\n'
-    result += generate_structs(types, conversion_generator)
+    # result += generate_structs(types, conversion_generator)
+    result += generate_structs_ii(types_ii, conversions)
     result += '\n'
     result += generate_conversions(types, conversion_generator)
     result += '\n\n\n'
+
     # result += generate_vector_types_predefine(vector_types)
     # result += generate_vector_structs(vector_types)
 
