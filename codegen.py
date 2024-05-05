@@ -14,12 +14,12 @@ struct_template_file: str = 'ab/__templates/struct.hpp'
 routines_templates_dir: str = 'ab/__templates/routines'
 every_type_routines_file: str = 'ab/__templates/routines/_every.hpp'
 conversions_templates_dir: str = 'ab/__templates/conversions'
-vec2_template_file: str = 'ab/__templates/vec2'
-vec3_template_file: str = 'ab/__templates/vec3'
-vec4_template_file: str = 'ab/__templates/vec4'
-vec2_routines_file: str = 'ab/__templates/routines/vec2'
-vec3_routines_file: str = 'ab/__templates/routines/vec3'
-vec4_routines_file: str = 'ab/__templates/routines/vec4'
+vec2_template_file: str = 'ab/__templates/vec2.hpp'
+vec3_template_file: str = 'ab/__templates/vec3.hpp'
+vec4_template_file: str = 'ab/__templates/vec4.hpp'
+vec2_routines_file: str = 'ab/__templates/routines/vec2.hpp'
+vec3_routines_file: str = 'ab/__templates/routines/vec3.hpp'
+vec4_routines_file: str = 'ab/__templates/routines/vec4.hpp'
 
 
 def read_content(file_path: str) -> str:
@@ -64,7 +64,7 @@ class TypeClass(Enum):
 class Type:
     """ Second Version of Type Class """
 
-    def __init__(self, raw: str, comp: str, name: str, default: str, type_class: TypeClass) -> None:
+    def __init__(self, raw: str, comp: str, name: str, default: str, type_class: TypeClass, dimension: int) -> None:
         self.raw = raw
         self.comp = comp
         self.name = name
@@ -73,6 +73,7 @@ class Type:
         self.common_routines = ''
         self.routines = ''
         self.type_class = type_class
+        self.dimension = dimension
 
     def public_method(self) -> None:
         """ public method """
@@ -105,7 +106,7 @@ def read_scalar_types() -> list[Type]:
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = Type(raw, '', name, default, TypeClass.SCALAR)
+        ty = Type(raw, '', name, default, TypeClass.SCALAR, 1)
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -152,10 +153,10 @@ def read_and_generate_types() -> list[Type]:
                 case _:
                     raise DimensionError()
             ty = Type(comp.raw, comp.name, name,
-                      comp.default, TypeClass.VECTOR)
+                      comp.default, TypeClass.VECTOR, dimension)
             ty.template = vec_template
             ty.common_routines = vec_routines
-            path = os.path.join(routines_templates_dir, name)
+            path = os.path.join(routines_templates_dir, f'{name}.hpp')
             ty.routines = read_routines_template(path)
             vec_types.append(ty)
 
@@ -203,6 +204,7 @@ def placeholder_replacement(t: Type, content: str) -> str:
     result = result.replace('_TYPE_NAME', t.name)
     result = result.replace('_RAW_TYPE', t.raw)
     result = result.replace('_DEFAULT_VALUE', t.default)
+    result = result.replace('_COMP_NAME', t.comp)
     return result
 
 
@@ -216,7 +218,7 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty or other.type_class != ty.type_class:
+            if other == ty or other.dimension != ty.dimension:
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
@@ -235,7 +237,7 @@ def generate_conversions_bodies(types: list[Type], conversions: list[ConversionT
     result: str = ''
     for base in types:
         for other in types:
-            if other == base or other.type_class != base.type_class:
+            if other == base or other.dimension != base.dimension:
                 continue
             for conv in conversions:
                 result += conv.body \
