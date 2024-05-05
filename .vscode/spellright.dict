@@ -11,3 +11,8 @@ isize
 usize
 intptr_t
 uintptr_t
+hpp
+vec
+str
+t.routines.removesuffix 
+removesuffix
