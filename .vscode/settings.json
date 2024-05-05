@@ -9,7 +9,8 @@
     "plaintext",
     "cpp",
     "shellscript",
-    "powershell"
+    "powershell",
+    "python"
   ],
   "files.associations": {
     "atomic": "cpp",
