@@ -160,7 +160,60 @@ class ConversionTemplate:
         """ public method """
 
 
-class Type:
+def read_conversion_templates() -> list[ConversionTemplate]:
+    """ Returns list of conversion templates
+    """
+    names = os.listdir(conversions_templates_dir)
+    templates: list[ConversionTemplate] = []
+    for name in names:
+        path = os.path.join(conversions_templates_dir, name)
+        if os.path.isdir(path):
+            continue
+        name = name.removesuffix('.hpp')
+        content = read_content(path).strip()
+        content = content.replace('\n\t\n', '\n\n')
+        content = content.split('\n', 1)
+        head = content[0].strip()
+        body = content[1].strip()
+        templates.append(ConversionTemplate(head, body))
+    return templates
+
+
+def placeholder_replacement(t: TypeII, content: str) -> str:
+    """ Whatever the name says.
+    """
+    result = content
+    result = result.replace('//_GENERATE_ROUTINES_HERE', t.routines)
+    result = result.replace('_TYPE_NAME', t.name)
+    result = result.replace('_RAW_TYPE', t.raw)
+    result = result.replace('_DEFAULT_VALUE', t.default)
+    return result
+
+
+def generate_structs_ii(types: list[TypeII], conversions: list[ConversionTemplate]) -> str:
+    """ Generate body of structs for main body.
+    """
+    result = ''
+    for ty in types:
+        content = ty.template
+        if ty.routines != '':
+            ty.routines = '\t' + ty.routines + '\n\n'
+        ty.routines = ty.common_routines + '\n\n' + ty.routines
+        for other in types:
+            if other == ty:
+                continue
+            for conv in conversions:
+                ty.routines += '\t' + conv.head \
+                    .replace('_TYPE_NAME', ty.name) \
+                    .replace('_OTHER_TYPE', other.name)
+        ty.routines.removesuffix('\n')
+        content = placeholder_replacement(ty, content)
+        content += '\n\n'
+        result += content
+    return result
+
+
+class Type(TypeII):
     """ Just Type """
 
     template: str = ''
@@ -211,6 +264,18 @@ class ConversionGenerator:
         for template in self.templates:
             result = self.__replace(template.body) + '\n\n'
         return result
+
+
+def generate_conversions_body(conversions: list[ConversionTemplate],
+                              base: TypeII, other: TypeII) -> str:
+    """ Generate body of conversion routine.
+    """
+    result = ''
+    for conv in conversions:
+        result += '\t' + conv.head \
+            .replace('_TYPE_NAME', base.name) \
+            .replace('_OTHER_TYPE', other.name)
+    return result
 
 
 def generate_routine(self: Type, types: list[Type],
@@ -340,36 +405,6 @@ def read_types() -> list[Type]:
     return types + vec_types
 
 
-def read_conversion_templates() -> list[ConversionTemplate]:
-    """ Returns list of conversion templates
-    """
-    names = os.listdir(conversions_templates_dir)
-    templates: list[ConversionTemplate] = []
-    for name in names:
-        path = os.path.join(conversions_templates_dir, name)
-        if os.path.isdir(path):
-            continue
-        name = name.removesuffix('.hpp')
-        content = read_content(path).strip()
-        content = content.replace('\n\t\n', '\n\n')
-        content = content.split('\n', 1)
-        head = content[0].strip()
-        body = content[1].strip()
-        templates.append(ConversionTemplate(head, body))
-    return templates
-
-
-def struct_replacement(t: Type, content: str) -> str:
-    """ Whatever the name says.
-    """
-    result = content
-    result = result.replace('//_GENERATE_ROUTINES_HERE', t.routines)
-    result = result.replace('_TYPE_NAME', t.name)
-    result = result.replace('_RAW_TYPE', t.raw)
-    result = result.replace('_DEFAULT_VALUE', t.default)
-    return result
-
-
 def generate_structs(types: list[Type], conversion_generator: ConversionGenerator) -> str:
     """ Structs
     """
@@ -388,7 +423,7 @@ def generate_structs(types: list[Type], conversion_generator: ConversionGenerato
             conversion_generator.other = ot
             t.routines += conversion_generator.generate_head() + '\n'
         t.routines = t.routines.removesuffix('\n')
-        c = struct_replacement(t, c)
+        c = placeholder_replacement(t, c)
         c += '\n\n'
         result += c
     return result
