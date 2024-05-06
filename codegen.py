@@ -102,9 +102,8 @@ class Dimension:
 class Type:
     """ Second Version of Type Class """
 
-    def __init__(self, raw: str, comp: str, name: str, default: str, dimension: Dimension) -> None:
-        self.raw = raw
-        self.comp = comp
+    def __init__(self, base_tape: str, name: str, default: str, dimension: Dimension) -> None:
+        self.base = base_tape
         self.name = name
         self.default = default
         self.template = ''
@@ -136,7 +135,7 @@ def read_scalar_types() -> list[Type]:
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = Type(raw, '', name, default, Dimension(1, 1))
+        ty = Type(raw, name, default, Dimension(1, 1))
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -182,7 +181,7 @@ def read_and_generate_types() -> list[Type]:
                     vec_routines = vec4_routines
                 case _:
                     raise DimensionError()
-            ty = Type(comp.raw, comp.name, name, comp.default, Dimension(i, 1))
+            ty = Type(comp.name, name, comp.default, Dimension(i, 1))
             ty.template = vec_template
             ty.common_routines = vec_routines
             path = os.path.join(routines_templates_dir, f'{name}.hpp')
@@ -231,9 +230,9 @@ def placeholder_replacement(t: Type, content: str) -> str:
     result = content
     result = result.replace('//_GENERATE_ROUTINES_HERE', t.routines)
     result = result.replace('_TYPE_NAME', t.name)
-    result = result.replace('_RAW_TYPE', t.raw)
+    result = result.replace('_RAW_TYPE', t.base)
     result = result.replace('_DEFAULT_VALUE', t.default)
-    result = result.replace('_COMP_NAME', t.comp)
+    result = result.replace('_COMP_NAME', t.base)
     return result
 
 
