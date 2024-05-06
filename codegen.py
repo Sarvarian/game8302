@@ -9,7 +9,6 @@ from string import Template
 output_dir: str = 'ab/'
 output_file: str = 'ab/code_gen_output.hpp'
 templates_dir: str = 'ab/__templates'
-# types_list_file: str = 'ab/__templates/types.txt'
 struct_template_file: str = 'ab/__templates/struct.hpp'
 routines_templates_dir: str = 'ab/__templates/routines'
 every_type_routines_file: str = 'ab/__templates/routines/_every.hpp'
