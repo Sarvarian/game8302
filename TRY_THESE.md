@@ -40,7 +40,9 @@ that changes together, stays together.
 // Constant Values
 vec2f32::unit_0   // 1, 0
 vec2f32::unit_30
+vec2f32::unit_n30 // negative 30 degree vector
 vec2f32::unit_45  // ~0.70, ~0.70
+vec2f32::unit_n45  // ~-0.70, ~-0.70
 vec2f32::unit_60
 vec2f32::unit_90  // 0, 1
 vec2f32::unit_10
@@ -60,6 +62,7 @@ vec2f32::unit_5pi4
 vec2f32::unit_...
 vec2f32::unit_2pi
 vec2f32::sin_45   // f32 value
+vec2f32::sin_n45   sin negative 45 degree
 vec2f32::cos_10
 vec2f32::tan_90
 ```
