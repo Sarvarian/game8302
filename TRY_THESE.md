@@ -58,4 +58,17 @@ typedef radu32;
 degf32::to_rad()
 radf32::to_deg()
 
+typedef turnf32;  // Turn or Revolution (aka rev)
+typedef gonf32;   // Gradian
+
+
+```
+
+(Color System)
+
+```cpp
+typedef rgbf32;
+typedef hsvf32
+type
+
 ```
