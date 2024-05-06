@@ -1,5 +1,6 @@
 """" To generate c++ code. """
 
+from dataclasses import dataclass
 from enum import Enum
 import os
 import os.path
@@ -61,10 +62,47 @@ class TypeClass(Enum):
     MATRIX = 2
 
 
+class DimensionError(Exception):
+    """ Dimension Error """
+
+    def __init__(self) -> None:
+        super().__init__('type dimension is invalid!')
+
+
+@dataclass
+class Dimension:
+    """ Dimension of Data Type
+        1 x 1 is scalar
+        n x 1 is vector
+        n x m is matrix
+    """
+
+    def __init__(self, i: int, j: int):
+        self.i = i
+        self.j = j
+        if i < 1 or j < 1:
+            raise DimensionError()
+
+    def is_scalar(self) -> bool:
+        """ Check if dimension is 1 x 1
+        """
+        return self.i == 1 and self.j == 1
+
+    def is_vector(self) -> bool:
+        """ Check if dimension is n x 1
+        """
+        return self.i > 1 and self.j == 1
+
+    def is_matrix(self) -> bool:
+        """ Check if dimension is n x m
+        """
+        return self.i > 1 and self.j > 1
+
+
 class Type:
     """ Second Version of Type Class """
 
-    def __init__(self, raw: str, comp: str, name: str, default: str, dimension: int) -> None:
+    def __init__(self, raw: str, comp: str, name: str, default: str, dimension: Dimension) -> None:
         self.raw = raw
         self.comp = comp
         self.name = name
@@ -79,13 +117,6 @@ class Type:
 
     def public_method_2(self) -> None:
         """ public method """
-
-
-class DimensionError(Exception):
-    """ Dimension Error """
-
-    def __init__(self) -> None:
-        super().__init__('type dimension should not get any other then these numbers!')
 
 
 def read_scalar_types() -> list[Type]:
@@ -105,7 +136,7 @@ def read_scalar_types() -> list[Type]:
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = Type(raw, '', name, default, 1)
+        ty = Type(raw, '', name, default, Dimension(1, 1))
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -134,12 +165,12 @@ def read_and_generate_types() -> list[Type]:
     #
     scalar_types = read_scalar_types()
     vec_types: list[Type] = []
-    for dimension in range(2, 5):
+    for i in range(2, 5):
         for comp in scalar_types:
-            name = f'vec{dimension}{comp.name}'
+            name = f'vec{i}{comp.name}'
             vec_template = ''
             vec_routines = ''
-            match dimension:
+            match i:
                 case 2:
                     vec_template = vec2_template
                     vec_routines = vec2_routines
@@ -151,7 +182,7 @@ def read_and_generate_types() -> list[Type]:
                     vec_routines = vec4_routines
                 case _:
                     raise DimensionError()
-            ty = Type(comp.raw, comp.name, name, comp.default, dimension)
+            ty = Type(comp.raw, comp.name, name, comp.default, Dimension(i, 1))
             ty.template = vec_template
             ty.common_routines = vec_routines
             path = os.path.join(routines_templates_dir, f'{name}.hpp')
@@ -211,14 +242,14 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
     """
     result = ''
     for ty in types:
-        if ty.dimension != 1:
+        if not ty.dimension.is_scalar():
             continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty or other.dimension != 1:
+            if other == ty or not other.dimension.is_scalar():
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
@@ -236,10 +267,10 @@ def generate_conversions_bodies(types: list[Type], conversions: list[ConversionT
     """
     result: str = ''
     for base in types:
-        if base.dimension != 1:
+        if not base.dimension.is_scalar():
             continue
         for other in types:
-            if other == base or other.dimension != 1:
+            if other == base or not other.dimension.is_scalar():
                 continue
             for conv in conversions:
                 result += conv.body \
@@ -254,7 +285,7 @@ def generate_types_predefine(types: list[Type]) -> str:
     """
     result: str = ''
     for t in types:
-        if t.dimension != 1:
+        if not t.dimension.is_scalar():
             continue
         result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
