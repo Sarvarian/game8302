@@ -221,6 +221,7 @@ def generate_scalar_types() -> list[Type]:
     float_types: list[Type] = []
     float_types.append(Type('float', 'f32', '0.0f', Dimension(1, 1)))
     float_types.append(Type('double', 'f64', '0.0', Dimension(1, 1)))
+    # Generate template values:
     list(map(generate_float_template_values, float_types))
 
     # Generate pointer size types.
@@ -228,6 +229,7 @@ def generate_scalar_types() -> list[Type]:
     ptr_size_types: list[Type] = []
     ptr_size_types.append(Type('intptr_t', 'isize', '0', Dimension(1, 1)))
     ptr_size_types.append(Type('uintptr_t', 'usize', '0', Dimension(1, 1)))
+    # Generate template values:
     list(map(generate_integer_template_values, ptr_size_types))
 
     # Generate integer types.
@@ -245,6 +247,7 @@ def generate_scalar_types() -> list[Type]:
         ty = Type(f'Uint{bit_number}', f'u{bit_number}', '0', Dimension(1, 1))
         integer_types.append(ty)
         bit_number *= 2
+    # Generate template values:
     list(map(generate_integer_template_values, integer_types))
 
     return float_types + integer_types + ptr_size_types
