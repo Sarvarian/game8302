@@ -64,7 +64,7 @@ class TypeClass(Enum):
 class Type:
     """ Second Version of Type Class """
 
-    def __init__(self, raw: str, comp: str, name: str, default: str, type_class: TypeClass, dimension: int) -> None:
+    def __init__(self, raw: str, comp: str, name: str, default: str, dimension: int) -> None:
         self.raw = raw
         self.comp = comp
         self.name = name
@@ -72,7 +72,6 @@ class Type:
         self.template = ''
         self.common_routines = ''
         self.routines = ''
-        self.type_class = type_class
         self.dimension = dimension
 
     def public_method(self) -> None:
@@ -106,7 +105,7 @@ def read_scalar_types() -> list[Type]:
         raw = basic_types_database[i]
         name = basic_types_database[i + 1]
         default = basic_types_database[i+2]
-        ty = Type(raw, '', name, default, TypeClass.SCALAR, 1)
+        ty = Type(raw, '', name, default, 1)
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
@@ -152,8 +151,7 @@ def read_and_generate_types() -> list[Type]:
                     vec_routines = vec4_routines
                 case _:
                     raise DimensionError()
-            ty = Type(comp.raw, comp.name, name,
-                      comp.default, TypeClass.VECTOR, dimension)
+            ty = Type(comp.raw, comp.name, name, comp.default, dimension)
             ty.template = vec_template
             ty.common_routines = vec_routines
             path = os.path.join(routines_templates_dir, f'{name}.hpp')
@@ -213,12 +211,14 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
     """
     result = ''
     for ty in types:
+        if ty.dimension != 1:
+            continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
         ty.routines = ty.common_routines + '\n\n' + ty.routines
         for other in types:
-            if other == ty or other.dimension != ty.dimension:
+            if other == ty or other.dimension != 1:
                 continue
             for conv in conversions:
                 ty.routines += '\t' + conv.head \
@@ -236,8 +236,10 @@ def generate_conversions_bodies(types: list[Type], conversions: list[ConversionT
     """
     result: str = ''
     for base in types:
+        if base.dimension != 1:
+            continue
         for other in types:
-            if other == base or other.dimension != base.dimension:
+            if other == base or other.dimension != 1:
                 continue
             for conv in conversions:
                 result += conv.body \
@@ -252,6 +254,8 @@ def generate_types_predefine(types: list[Type]) -> str:
     """
     result: str = ''
     for t in types:
+        if t.dimension != 1:
+            continue
         result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
     return result
