@@ -34,7 +34,7 @@ that changes together, stays together.
 // Constant Values
 vec2f32::unit_0   // 1, 0
 vec2f32::unit_30
-vec2f32::unit_45  // ~0.777, ~0.777
+vec2f32::unit_45  // ~0.70, ~0.70
 vec2f32::unit_60
 vec2f32::unit_90  // 0, 1
 vec2f32::unit_10
