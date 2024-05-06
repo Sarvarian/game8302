@@ -9,7 +9,7 @@ from string import Template
 output_dir: str = 'ab/'
 output_file: str = 'ab/code_gen_output.hpp'
 templates_dir: str = 'ab/__templates'
-types_list_file: str = 'ab/__templates/types.txt'
+# types_list_file: str = 'ab/__templates/types.txt'
 struct_template_file: str = 'ab/__templates/struct.hpp'
 routines_templates_dir: str = 'ab/__templates/routines'
 every_type_routines_file: str = 'ab/__templates/routines/_every.hpp'
@@ -20,25 +20,6 @@ vec4_template_file: str = 'ab/__templates/vec4.hpp'
 vec2_routines_file: str = 'ab/__templates/routines/vec2.hpp'
 vec3_routines_file: str = 'ab/__templates/routines/vec3.hpp'
 vec4_routines_file: str = 'ab/__templates/routines/vec4.hpp'
-
-
-list_of_float_types: str = """
-float      f32    0.0f
-double     f64    0.0
-""".strip()
-
-list_of_integer_types: str = """
-Sint8      i8     0
-Sint16     i16    0
-Sint32     i32    0
-Sint64     i64    0
-Uint8      u8     0
-Uint16     u16    0
-Uint32     u32    0
-Uint64     u64    0
-intptr_t   isize  0
-uintptr_t  usize  0
-""".strip()
 
 
 main_body_template: str = """
@@ -205,32 +186,50 @@ class Type:
         """ public method """
 
 
-def read_scalar_types() -> list[Type]:
-    """ Read scalar types.
+def generate_scalar_types() -> list[Type]:
+    """ Generate scalar types.
     """
     # Read common templates.
     #
     common_template = read_content(struct_template_file)
     common_routines = read_routines_template(every_type_routines_file)
 
-    # Read types.
+    # Generate float types.
     #
-    basic_types_database = read_content(types_list_file).split()
-    types: list[Type] = []
-    i = 0
-    while i < len(basic_types_database):
-        raw = basic_types_database[i]
-        name = basic_types_database[i + 1]
-        default = basic_types_database[i+2]
-        ty = Type(raw, name, default, Dimension(1, 1))
+    float_types: list[Type] = []
+    float_types.append(Type('float', 'f32', '0.0f', Dimension(1, 1)))
+    float_types.append(Type('double', 'f64', '0.0', Dimension(1, 1)))
+
+    # Generate pointer size types.
+    #
+    ptr_size_types: list[Type] = []
+    ptr_size_types.append(Type('intptr_t', 'isize', '0', Dimension(1, 1)))
+    ptr_size_types.append(Type('uintptr_t', 'usize', '0', Dimension(1, 1)))
+
+    # Generate integer types.
+    integer_types: list[Type] = []
+
+    bit_number = 8
+    while bit_number <= 64:
+        ty = Type(f'Sint{bit_number}', f'i{bit_number}', '0', Dimension(1, 1))
+        integer_types.append(ty)
+        bit_number *= 2
+
+    bit_number = 8
+    while bit_number <= 64:
+        ty = Type(f'Uint{bit_number}', f'u{bit_number}', '0', Dimension(1, 1))
+        integer_types.append(ty)
+        bit_number *= 2
+
+    types = float_types + integer_types + ptr_size_types
+
+    for ty in types:
         path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
         ty.template = common_template
         ty.common_routines = common_routines
-        path = os.path.join(routines_templates_dir, f'{name}.hpp')
+        path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
         ty.routines = read_routines_template(path)
-        types.append(ty)
-        i += 3
 
     return types
 
@@ -249,7 +248,7 @@ def read_and_generate_types() -> list[Type]:
 
     # Generate vector types
     #
-    scalar_types = read_scalar_types()
+    scalar_types = generate_scalar_types()
     vec_types: list[Type] = []
     for i in range(2, 5):
         for comp in scalar_types:
