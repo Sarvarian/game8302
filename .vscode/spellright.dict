@@ -23,3 +23,6 @@ c_std_
 func_signature
 func_call
 cpp_std_
+arg
+func_name
+typed_args
