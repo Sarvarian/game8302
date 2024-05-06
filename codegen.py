@@ -2,7 +2,7 @@
 
 import os
 import os.path
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from enum import Enum
 from string import Template
 
@@ -15,16 +15,27 @@ vec2_routines_file: str = 'ab/__templates/routines/vec2.hpp'
 vec3_routines_file: str = 'ab/__templates/routines/vec3.hpp'
 vec4_routines_file: str = 'ab/__templates/routines/vec4.hpp'
 
-list_of_c_math_functions: str = """
+STRUCT_BODY_TEMPLATE = Template("""
+struct $name
+{
+public:
+$public_area
+
+private:
+$private_area
+};$new_line$new_line
+""".strip())
+
+LIST_OF_C_MATH_FUNCTIONS: str = """
 pow base exponent
 sqrt arg
 floor arg
 trunc arg
 """.strip()
 
-C_MATH_FUNCTION_TEMPLATE = """
+C_MATH_FUNCTION_TEMPLATE = Template("""
 inline $type_name cpp_std_$func_name$suffix($typed_args) { return $func_name$suffix($input); }$new_line
-""".strip()
+""".strip())
 
 
 def generate_c_math_functions_director() -> str:
@@ -37,9 +48,8 @@ def generate_c_math_functions_director() -> str:
         {'name': 'double', 'suffix': ''},
         {'name': 'long double', 'suffix': 'l'},
     ]
-    functions = list_of_c_math_functions.splitlines()
+    functions = LIST_OF_C_MATH_FUNCTIONS.splitlines()
     functions = map(lambda x: x.strip().split(), functions)
-    temp = Template(C_MATH_FUNCTION_TEMPLATE)
 
     res = ''
     for func in functions:
@@ -58,7 +68,7 @@ def generate_c_math_functions_director() -> str:
             values['typed_args'] = typed_args
             values['input'] = typed_args.replace(f'{type_name} ', '')
             values['new_line'] = '\n'
-            res += temp.substitute(values)
+            res += C_MATH_FUNCTION_TEMPLATE.substitute(values)
     res = res.strip()
     return f"""
 namespace
@@ -122,6 +132,9 @@ class Dimension:
         n x m is matrix
     """
 
+    i: int
+    j: int
+
     def __init__(self, i: int, j: int):
         self.i = i
         self.j = j
@@ -144,18 +157,26 @@ class Dimension:
         return self.i > 1 and self.j > 1
 
 
+@dataclass
 class Type:
     """ Second Version of Type Class """
+
+    name: str
+    base: str
+    default: str
+    dimension: Dimension
+    public_area: str
+    private_area: str
+    new_line: str = '\n'
 
     def __init__(self, base_tape: str, name: str, default: str, dimension: Dimension) -> None:
         self.base = base_tape
         self.name = name
         self.default = default
+        self.dimension = dimension
         self.template = ''
         self.common_routines = ''
         self.routines = ''
-        self.dimension = dimension
-        self.body = ''
 
     def public_method(self) -> None:
         """ public method """
@@ -164,32 +185,16 @@ class Type:
         """ public method """
 
 
-STRUCT_BODY_TEMPLATE = Template("""
-struct $type_name
-{
-public:
-$public_area
-
-private:
-$private_area
-};$new_line$new_line
-""".strip())
-
-
-def generate_scalar_body(ty: Type):
+def generate_scalar_template_values(ty: Type):
     """ Generate body of a type.
     """
-    values: dict[str, str] = {}
-    values['type_name'] = ty.name
-    values['new_line'] = '\n'
     if ty.dimension.is_scalar():
         # Generate typedef
         typedef = f'\ttypedef {ty.base} Raw;\n'
         member = '\tRaw value_;'
         getter = '\n\tRaw raw() const\n\t{\n\t\treturn value_;\n\t}'
-        values['public_area'] = typedef + getter
-        values['private_area'] = member
-    ty.body = STRUCT_BODY_TEMPLATE.substitute(values)
+        ty.public_area = typedef + getter
+        ty.private_area = member
 
 
 def generate_scalar_types() -> list[Type]:
@@ -225,13 +230,7 @@ def generate_scalar_types() -> list[Type]:
     types = float_types + integer_types + ptr_size_types
 
     for ty in types:
-        generate_scalar_body(ty)
-    # path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
-    # ty.routines = read_routines_template(path)
-    # ty.template = common_template
-    # ty.common_routines = common_routines
-    # path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
-    # ty.routines = read_routines_template(path)
+        generate_scalar_template_values(ty)
 
     return types
 
@@ -332,7 +331,7 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
         if not ty.dimension.is_scalar():
             continue
         else:
-            result += ty.body
+            result += STRUCT_BODY_TEMPLATE.substitute(asdict(ty))
             continue
         content = ty.template
         if ty.routines != '':
