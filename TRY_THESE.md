@@ -39,6 +39,20 @@ vec2f32::unit_60
 vec2f32::unit_90  // 0, 1
 vec2f32::unit_10
 vec2f32::unit_5
+vec2f32::unit_360
+vec2f32::unit_pi6
+vec2f32::unit_pi4
+vec2f32::unit_pi3
+vec2f32::unit_pi2
+vec2f32::unit_2pi3
+vec2f32::unit_3pi4
+vec2f32::unit_5pi6
+vec2f32::unit_5pi6
+vec2f32::unit_pi
+vec2f32::unit_7pi6
+vec2f32::unit_5pi4
+vec2f32::unit_...
+vec2f32::unit_2pi
 vec2f32::sin_45   // f32 value
 vec2f32::cos_10
 vec2f32::tan_90
