@@ -23,6 +23,12 @@ But maybe adds ability for player to have some control
 on fall speed. Like slow down to aim and shoot or
 fall fast and punch down.
 
+(Movement Snap)
+
+On controller joystick make it so
+movement direction snap to certain
+degrees like 45 or 30.
+
 (Modularization)
 
 Modularize in such a way that things
