@@ -57,6 +57,45 @@ namespace math
 """.strip()
 
 
+list_of_c_math_functions: str = """
+pow_SUFFIX_(_TYPE_NAME__SPACE_base,_SPACE__TYPE_NAME__SPACE_exponent)
+sqrt_SUFFIX_(_TYPE_NAME__SPACE_arg)
+floor_SUFFIX_(_TYPE_NAME__SPACE_arg)
+trunc_SUFFIX_(_TYPE_NAME__SPACE_arg)
+""".strip()
+
+
+def generate_c_math_function_director() -> str:
+    """ Generate a list of functions that points'
+        to c math function.
+        (Because... I can't care to explain right now!)
+    """
+    types = [
+        {'name': 'float', 'suffix': 'f'},
+        {'name': 'double', 'suffix': ''},
+        {'name': 'long double', 'suffix': 'l'},
+    ]
+    functions: list[str] = []
+    for func in list_of_c_math_functions.splitlines():
+        for t in types:
+            type_name = t['name']
+            suffix = t['suffix']
+            func_signature = func \
+                .replace('_SUFFIX_',  f'{suffix}') \
+                .replace('_TYPE_NAME_', type_name) \
+                .replace('_SPACE_', ' ')
+            func_call = func_signature.replace(f'{type_name+' '}', '')
+            res = f'inline {type_name} cpp_std_{
+                func_signature} {{ return {func_call}; }}'
+            functions.append(res)
+    return f"""
+namespace
+{{
+{'\n'.join(functions)}
+}} // namespace
+""".strip() + '\n\n'
+
+
 def read_content(file_path: str) -> str:
     """Returns content of a text file if file exist, otherwise returns empty string.
     file_path: Give a full path. (relative or absolute does not matter.)
@@ -323,45 +362,6 @@ def generate_types_predefine(types: list[Type]) -> str:
         result += f'struct {t.name};\n'
     result = result.removesuffix('\n')
     return result
-
-
-list_of_c_math_functions: str = """
-pow_SUFFIX_(_TYPE_NAME__SPACE_base,_SPACE__TYPE_NAME__SPACE_exponent)
-sqrt_SUFFIX_(_TYPE_NAME__SPACE_arg)
-floor_SUFFIX_(_TYPE_NAME__SPACE_arg)
-trunc_SUFFIX_(_TYPE_NAME__SPACE_arg)
-""".strip()
-
-
-def generate_c_math_function_director() -> str:
-    """ Generate a list of functions that points'
-        to c math function.
-        (Because... I can't care to explain right now!)
-    """
-    types = [
-        {'name': 'float', 'suffix': 'f'},
-        {'name': 'double', 'suffix': ''},
-        {'name': 'long double', 'suffix': 'l'},
-    ]
-    functions: list[str] = []
-    for func in list_of_c_math_functions.splitlines():
-        for t in types:
-            type_name = t['name']
-            suffix = t['suffix']
-            func_signature = func \
-                .replace('_SUFFIX_',  f'{suffix}') \
-                .replace('_TYPE_NAME_', type_name) \
-                .replace('_SPACE_', ' ')
-            func_call = func_signature.replace(f'{type_name+' '}', '')
-            res = f'inline {type_name} cpp_std_{
-                func_signature} {{ return {func_call}; }}'
-            functions.append(res)
-    return f"""
-namespace
-{{
-{'\n'.join(functions)}
-}} // namespace
-""".strip() + '\n\n'
 
 
 def generate_body() -> str:
