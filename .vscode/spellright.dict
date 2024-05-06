@@ -16,3 +16,5 @@ vec
 str
 t.routines.removesuffix 
 removesuffix
+trunc _TYPE_NAME_arg 
+trunc
