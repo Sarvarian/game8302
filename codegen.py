@@ -169,8 +169,8 @@ class Type:
     base: str
     default: str
     dimension: Dimension
-    public_area: str
-    private_area: str
+    public_area: str = ''
+    private_area: str = ''
     new_line: str = '\n'
 
     def __init__(self, base_tape: str, name: str, default: str, dimension: Dimension) -> None:
@@ -189,7 +189,7 @@ class Type:
         """ public method """
 
 
-def generate_scalar_template_values(ty: Type):
+def generate_scalar_template_values(ty: Type) -> None:
     """ Generate body of a type.
     """
     if ty.dimension.is_scalar():
@@ -201,6 +201,18 @@ def generate_scalar_template_values(ty: Type):
         ty.private_area = member
 
 
+def generate_float_template_values(float_t: Type) -> None:
+    """ Generate template values for float Types
+    """
+    generate_scalar_template_values(float_t)
+
+
+def generate_integer_template_values(int_t: Type) -> None:
+    """ Generate template values for integer Types
+    """
+    generate_scalar_template_values(int_t)
+
+
 def generate_scalar_types() -> list[Type]:
     """ Generate scalar types.
     """
@@ -209,13 +221,14 @@ def generate_scalar_types() -> list[Type]:
     float_types: list[Type] = []
     float_types.append(Type('float', 'f32', '0.0f', Dimension(1, 1)))
     float_types.append(Type('double', 'f64', '0.0', Dimension(1, 1)))
-    generate_float_template_values(float_types)
+    list(map(generate_float_template_values, float_types))
 
     # Generate pointer size types.
     #
     ptr_size_types: list[Type] = []
     ptr_size_types.append(Type('intptr_t', 'isize', '0', Dimension(1, 1)))
     ptr_size_types.append(Type('uintptr_t', 'usize', '0', Dimension(1, 1)))
+    list(map(generate_integer_template_values, ptr_size_types))
 
     # Generate integer types.
     #
@@ -232,6 +245,7 @@ def generate_scalar_types() -> list[Type]:
         ty = Type(f'Uint{bit_number}', f'u{bit_number}', '0', Dimension(1, 1))
         integer_types.append(ty)
         bit_number *= 2
+    list(map(generate_integer_template_values, integer_types))
 
     return float_types + integer_types + ptr_size_types
 
