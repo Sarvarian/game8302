@@ -1,10 +1,10 @@
 """" To generate c++ code. """
 
-from dataclasses import dataclass
-from enum import Enum
 import os
 import os.path
-
+from dataclasses import dataclass
+from enum import Enum
+from string import Template
 
 output_dir: str = 'ab/'
 output_file: str = 'ab/code_gen_output.hpp'
@@ -58,14 +58,14 @@ namespace math
 
 
 list_of_c_math_functions: str = """
-pow_SUFFIX_(_TYPE_NAME__SPACE_base,_SPACE__TYPE_NAME__SPACE_exponent)
-sqrt_SUFFIX_(_TYPE_NAME__SPACE_arg)
-floor_SUFFIX_(_TYPE_NAME__SPACE_arg)
-trunc_SUFFIX_(_TYPE_NAME__SPACE_arg)
+pow base exponent
+sqrt arg
+floor arg
+trunc arg
 """.strip()
 
 
-def generate_c_math_function_director() -> str:
+def generate_c_math_functions_director() -> str:
     """ Generate a list of functions that points'
         to c math function.
         (Because... I can't care to explain right now!)
@@ -75,23 +75,33 @@ def generate_c_math_function_director() -> str:
         {'name': 'double', 'suffix': ''},
         {'name': 'long double', 'suffix': 'l'},
     ]
-    functions: list[str] = []
-    for func in list_of_c_math_functions.splitlines():
-        for t in types:
-            type_name = t['name']
-            suffix = t['suffix']
-            func_signature = func \
-                .replace('_SUFFIX_',  f'{suffix}') \
-                .replace('_TYPE_NAME_', type_name) \
-                .replace('_SPACE_', ' ')
-            func_call = func_signature.replace(f'{type_name+' '}', '')
-            res = f'inline {type_name} cpp_std_{
-                func_signature} {{ return {func_call}; }}'
-            functions.append(res)
+    functions = list_of_c_math_functions.splitlines()
+    functions = map(lambda x: x.strip().split(), functions)
+    temp = 'inline $type_name cpp_std_$func_name$suffix($typed_args) { return $func_name$suffix($input); }\n'
+    temp = Template(temp)
+
+    res = ''
+    for func in functions:
+        for ty in types:
+            type_name = ty['name']
+            typed_args = ''
+            for text in func:
+                if text == func[0]:
+                    continue
+                typed_args += f' {type_name} {text},'
+            typed_args = typed_args.strip().removesuffix(',')
+            values: dict[str, str] = {}
+            values['type_name'] = type_name
+            values['suffix'] = ty['suffix']
+            values['func_name'] = func[0]
+            values['typed_args'] = typed_args
+            values['input'] = typed_args.replace(f'{type_name} ', '')
+            res += temp.substitute(values)
+    res = res.strip()
     return f"""
 namespace
 {{
-{'\n'.join(functions)}
+{res}
 }} // namespace
 """.strip() + '\n\n'
 
@@ -368,7 +378,7 @@ def generate_body() -> str:
     """ Body Of Code
     """
     result: str = ''
-    result += generate_c_math_function_director()
+    result += generate_c_math_functions_director()
     types = read_and_generate_types()
     conversions = read_conversion_templates()
     result += generate_types_predefine(types)
