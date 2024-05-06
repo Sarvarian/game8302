@@ -6,6 +6,7 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 from string import Template
 
+
 routines_templates_dir: str = 'ab/__templates/routines'
 conversions_templates_dir: str = 'ab/__templates/conversions'
 vec2_template_file: str = 'ab/__templates/vec2.hpp'
@@ -14,6 +15,7 @@ vec4_template_file: str = 'ab/__templates/vec4.hpp'
 vec2_routines_file: str = 'ab/__templates/routines/vec2.hpp'
 vec3_routines_file: str = 'ab/__templates/routines/vec3.hpp'
 vec4_routines_file: str = 'ab/__templates/routines/vec4.hpp'
+
 
 STRUCT_BODY_TEMPLATE = Template("""
 struct $name
@@ -26,12 +28,14 @@ $private_area
 };$new_line$new_line
 """.strip())
 
+
 LIST_OF_C_MATH_FUNCTIONS: str = """
 pow base exponent
 sqrt arg
 floor arg
 trunc arg
 """.strip()
+
 
 C_MATH_FUNCTION_TEMPLATE = Template("""
 inline $type_name cpp_std_$func_name$suffix($typed_args) { return $func_name$suffix($input); }$new_line
