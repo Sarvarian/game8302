@@ -1,4 +1,4 @@
-"""" To generate c++ code. """
+"""" To generate c++ math library code. """
 
 import os
 import os.path
@@ -6,9 +6,7 @@ from dataclasses import dataclass
 from enum import Enum
 from string import Template
 
-struct_template_file: str = 'ab/__templates/struct.hpp'
 routines_templates_dir: str = 'ab/__templates/routines'
-every_type_routines_file: str = 'ab/__templates/routines/_every.hpp'
 conversions_templates_dir: str = 'ab/__templates/conversions'
 vec2_template_file: str = 'ab/__templates/vec2.hpp'
 vec3_template_file: str = 'ab/__templates/vec3.hpp'
@@ -157,6 +155,7 @@ class Type:
         self.common_routines = ''
         self.routines = ''
         self.dimension = dimension
+        self.body = ''
 
     def public_method(self) -> None:
         """ public method """
@@ -165,14 +164,37 @@ class Type:
         """ public method """
 
 
+STRUCT_BODY_TEMPLATE = Template("""
+struct $type_name
+{
+public:
+$public_area
+
+private:
+$private_area
+};$new_line$new_line
+""".strip())
+
+
+def generate_scalar_body(ty: Type):
+    """ Generate body of a type.
+    """
+    values: dict[str, str] = {}
+    values['type_name'] = ty.name
+    values['new_line'] = '\n'
+    if ty.dimension.is_scalar():
+        # Generate typedef
+        typedef = f'\ttypedef {ty.base} Raw;\n'
+        member = '\tRaw value_;'
+        getter = '\n\tRaw raw() const\n\t{\n\t\treturn value_;\n\t}'
+        values['public_area'] = typedef + getter
+        values['private_area'] = member
+    ty.body = STRUCT_BODY_TEMPLATE.substitute(values)
+
+
 def generate_scalar_types() -> list[Type]:
     """ Generate scalar types.
     """
-    # Read common templates.
-    #
-    common_template = read_content(struct_template_file)
-    common_routines = read_routines_template(every_type_routines_file)
-
     # Generate float types.
     #
     float_types: list[Type] = []
@@ -203,12 +225,13 @@ def generate_scalar_types() -> list[Type]:
     types = float_types + integer_types + ptr_size_types
 
     for ty in types:
-        path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
-        ty.routines = read_routines_template(path)
-        ty.template = common_template
-        ty.common_routines = common_routines
-        path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
-        ty.routines = read_routines_template(path)
+        generate_scalar_body(ty)
+    # path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
+    # ty.routines = read_routines_template(path)
+    # ty.template = common_template
+    # ty.common_routines = common_routines
+    # path = os.path.join(routines_templates_dir, f'{ty.name}.hpp')
+    # ty.routines = read_routines_template(path)
 
     return types
 
@@ -308,6 +331,9 @@ def generate_structs(types: list[Type], conversions: list[ConversionTemplate]) -
     for ty in types:
         if not ty.dimension.is_scalar():
             continue
+        else:
+            result += ty.body
+            continue
         content = ty.template
         if ty.routines != '':
             ty.routines = '\t' + ty.routines + '\n\n'
@@ -361,7 +387,7 @@ def generate_body() -> str:
     """
     result: str = ''
     result += generate_c_math_functions_director()
-    types = read_and_generate_types()
+    types = generate_scalar_types()
     conversions = read_conversion_templates()
     result += generate_types_predefine(types)
     result += '\n\n'
