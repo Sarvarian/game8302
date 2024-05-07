@@ -5,6 +5,8 @@ import os.path
 from dataclasses import dataclass, asdict
 from string import Template
 
+from code_generation.cmath import generate_c_math_functions_directors
+
 
 routines_templates_dir: str = 'ab/__templates/routines'
 conversions_templates_dir: str = 'ab/__templates/conversions'
@@ -26,59 +28,6 @@ private:
 $private_area
 };$new_line$new_line
 """.strip())
-
-
-LIST_OF_C_MATH_FUNCTIONS: str = """
-pow base exponent
-sqrt arg
-floor arg
-trunc arg
-""".strip()
-
-
-C_MATH_FUNCTION_TEMPLATE = Template("""
-inline $type_name cpp_std_$func_name$suffix($typed_args) { return $func_name$suffix($input); }$new_line
-""".strip())
-
-
-def generate_c_math_functions_director() -> str:
-    """ Generate a list of functions that points'
-        to c math function.
-        (Because... I can't care to explain right now!)
-    """
-    types = [
-        {'name': 'float', 'suffix': 'f'},
-        {'name': 'double', 'suffix': ''},
-        {'name': 'long double', 'suffix': 'l'},
-    ]
-    functions = LIST_OF_C_MATH_FUNCTIONS.splitlines()
-    functions = map(lambda x: x.strip().split(), functions)
-
-    res = ''
-    for func in functions:
-        for ty in types:
-            type_name = ty['name']
-            typed_args = ''
-            for text in func:
-                if text == func[0]:
-                    continue
-                typed_args += f' {type_name} {text},'
-            typed_args = typed_args.strip().removesuffix(',')
-            values: dict[str, str] = {}
-            values['type_name'] = type_name
-            values['suffix'] = ty['suffix']
-            values['func_name'] = func[0]
-            values['typed_args'] = typed_args
-            values['input'] = typed_args.replace(f'{type_name} ', '')
-            values['new_line'] = '\n'
-            res += C_MATH_FUNCTION_TEMPLATE.substitute(values)
-    res = res.strip()
-    return f"""
-namespace
-{{
-{res}
-}} // namespace
-""".strip() + '\n\n'
 
 
 def read_content(file_path: str) -> str:
@@ -455,7 +404,7 @@ def generate_body() -> str:
     """ Body Of Code
     """
     result: str = ''
-    result += generate_c_math_functions_director()
+    result += generate_c_math_functions_directors()
     types = generate_scalar_types()
     conversions = read_conversion_templates()
     result += generate_types_predefine(types)
