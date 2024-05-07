@@ -44,16 +44,6 @@ def read_content(file_path: str) -> str:
         return ''
 
 
-def write_content(file_path: str, content: str) -> None:
-    """Write content to a text file.
-    file_path: Give a full path. (relative or absolute does not matter.)
-    content: String of text.
-    """
-    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
-        file.write(content)
-        file.close()
-
-
 def read_routines_template(full_path: str) -> str:
     """ Read the given address file and returns formatted.
     """
@@ -337,6 +327,16 @@ def generate_body() -> str:
 
     result = result.removesuffix('\n')
     return result
+
+
+def write_content(file_path: str, content: str) -> None:
+    """Write content to a text file.
+    file_path: Give a full path. (relative or absolute does not matter.)
+    content: String of text.
+    """
+    with open(file_path, 'w', encoding='utf-8', newline='\n') as file:
+        file.write(content)
+        file.close()
 
 
 def main() -> None:
