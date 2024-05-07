@@ -1,4 +1,4 @@
-""" Data types use in code generation. """
+""" Data types for use in code generation. """
 
 from dataclasses import dataclass
 
