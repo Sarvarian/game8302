@@ -3,7 +3,6 @@
 import os
 import os.path
 from dataclasses import dataclass, asdict
-from enum import Enum
 from string import Template
 
 
