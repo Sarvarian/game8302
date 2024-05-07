@@ -182,22 +182,63 @@ class Type:
         self.common_routines = ''
         self.routines = ''
 
-    def public_method(self) -> None:
-        """ public method """
+    def useless_public_method(self) -> None:
+        """ useless public method """
 
-    def public_method_2(self) -> None:
-        """ public method """
+    def useless_public_method_2(self) -> None:
+        """ useless public method """
+
+
+class ConstructorData:
+    """ Data used for generating constructor methods for types.
+    """
+
+    def __init__(self) -> None:
+        self.type_name: str = ''
+        self.base_type_name: str = ''
+        self.default_value: str = ''
+        self.member_names_without_suffix_underscore: list[str]
+
+
+def generate_constructor_methods_for_type(data: ConstructorData) -> str:
+    """ Generate constructor methods for the given type.
+    """
+    name = data.type_name
+    base = data.base_type_name
+    default = data.default_value
+    arguments = ''
+    value_initialization_with_arguments = ''
+    value_initialization_with_default = ''
+    for member in data.member_names_without_suffix_underscore:
+        arguments += f'{base} {member}, '
+        value_initialization_with_arguments += f'{member}_({member}), '
+        value_initialization_with_default += f'{member}_({default}), '
+    arguments = arguments.removesuffix(', ')
+    value_initialization_with_arguments = \
+        value_initialization_with_arguments.removesuffix(', ')
+    value_initialization_with_default = \
+        value_initialization_with_default.removesuffix(', ')
+    result = ''
+    result += f'\t{name}({arguments}) : {value_initialization_with_arguments} {{}}\n\n'
+    result += f'\t{name}() : {value_initialization_with_default} {{}}\n\n'
+    return result
 
 
 def generate_scalar_template_values(ty: Type) -> None:
     """ Generate body of a type.
     """
+    constructor_data: ConstructorData = ConstructorData()
+    constructor_data.type_name = ty.name
+    constructor_data.default_value = ty.default
     if ty.dimension.is_scalar():
+        constructor_data.base_type_name = 'Raw'
+        constructor_data.member_names_without_suffix_underscore = ['value']
         # Generate typedef
-        typedef = f'\ttypedef {ty.base} Raw;\n'
+        typedef = f'\ttypedef {ty.base} Raw;\n\n'
+        constructors = generate_constructor_methods_for_type(constructor_data)
         member = '\tRaw value_;'
         getter = '\n\tRaw raw() const\n\t{\n\t\treturn value_;\n\t}'
-        ty.public_area = typedef + getter
+        ty.public_area = typedef + constructors + getter
         ty.private_area = member
 
 
