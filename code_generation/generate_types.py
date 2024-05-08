@@ -53,39 +53,43 @@ def generate_constructor_methods_for_type(data: MethodGenerationData) -> str:
     return init_constructor + default_constructor
 
 
-def generate_addition_and_subtraction_operation_methods(data: MethodGenerationData):
+def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     """ Generate methods of add and sub for the given type.
     """
     name = data.type_name
     base = data.base_type_name
     default = data.default_value
     members = data.member_names_without_suffix_underscore
+    operations = list[list[str]] = [
+        ['add', '+'],
+        ['sub', '-'],
+        ['mul', '*'],
+        ['div', '/']
+    ]
+
     result = ''
-    result += f'\t{name} add({name} rhs) const\n'
-    result += f'\t{{\n'
-    result += f'\t\treturn {name}();\n'
-    result += f'\t}}\n'
-    result += f'\n'
-    result += f'\t{name} add_inplace({name} rhs)\n'
-    result += f'\t{{\n'
-    result += f'\t\r {base}_ =  \n'
-    result += f'\t}}\n\n'
+    return result
 
 
 def generate_scalar_template_values(ty: Type) -> None:
     """ Generate body of a type.
     """
-    constructor_data: MethodGenerationData = MethodGenerationData()
-    constructor_data.type_name = ty.name
-    constructor_data.default_value = ty.default
+    data: MethodGenerationData = MethodGenerationData()
+    data.type_name = ty.name
+    data.default_value = ty.default
     if ty.dimension.is_scalar():
-        constructor_data.base_type_name = 'Raw'
-        constructor_data.member_names_without_suffix_underscore = ['value']
+        data.base_type_name = 'Raw'
+        data.member_names_without_suffix_underscore = ['value']
         # Generate typedef
         typedef = f'\ttypedef {ty.base} Raw;\n\n'
-        constructors = generate_constructor_methods_for_type(constructor_data)
+        constructors = generate_constructor_methods_for_type(data)
+        data.method_arguments = ''
+        data.method_name = 'raw'
+        data.method_return_type = 'Raw'
+        data.method_body = 'return value_;'
+        data.const = ' const'
+        getter = generate_method(data)
         member = '\tRaw value_;'
-        getter = '\n\tRaw raw() const\n\t{\n\t\treturn value_;\n\t}'
         ty.public_area = typedef + constructors + getter
         ty.private_area = member
 
