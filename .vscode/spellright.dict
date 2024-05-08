@@ -33,3 +33,5 @@ default_inits
 add_inplace
 rhs
 _inplace
+join members .splitlines   
+splitlines
