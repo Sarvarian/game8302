@@ -56,10 +56,6 @@ def generate_constructor_methods_for_type(data: MethodGenerationData) -> str:
 def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     """ Generate methods of add and sub for the given type.
     """
-    name = data.type_name
-    base = data.base_type_name
-    default = data.default_value
-    members = data.member_names_without_suffix_underscore
     operations = [
         ['add', '+'],
         ['sub', '-'],
@@ -83,6 +79,28 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     return result
 
 
+def generate_scalar_comparison_methods(data: MethodGenerationData) -> str:
+    """ Generate comparison methods for a scalar type.
+    """
+    operators = [
+        ['greater_then', '>'],
+        ['less_then', '<'],
+        ['equal_to', '=='],
+        ['greater_then_or_equal_to', '>='],
+        ['less_then_or_equal_to', '<='],
+    ]
+    result = ''
+    for op in operators:
+        data.method_name = f'is_{op[0]}'
+        data.method_return_type = 'bool'
+        data.method_arguments = f'{data.type_name} rhs'
+        data.const = ' const'
+        data.method_body = \
+            f'return value_ {op[1]} rhs.value_;'
+        result += generate_method(data)
+    return result
+
+
 def generate_scalar_template_values(ty: Type) -> None:
     """ Generate body of a type.
     """
@@ -102,8 +120,10 @@ def generate_scalar_template_values(ty: Type) -> None:
         data.const = ' const'
         getter = generate_method(data).removesuffix('\n')
         member = '\tRaw value_;'
-        ty.public_area = typedef + constructors + \
-            generate_scalar_elementary_arithmetic(data) + getter
+        ty.public_area = typedef + constructors \
+            + generate_scalar_elementary_arithmetic(data) \
+            + generate_scalar_comparison_methods(data) \
+            + getter
         ty.private_area = member + '\n'
 
 
