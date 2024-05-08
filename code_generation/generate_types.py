@@ -1,56 +1,9 @@
 """ Generate types for use in code generation. """
 
-from dataclasses import asdict
-from string import Template
 
+from code_generation.constructor import generate_constructor_methods_for_type
+from code_generation.method import generate_method
 from code_generation.types import Dimension, MethodGenerationData, Type
-
-METHOD_TEMPLATE = Template("""
-$tab_character$method_return_type $method_name($method_arguments)$const
-$tab_character{
-$tab_character$tab_character$method_body
-$tab_character}$new_line$new_line
-""".strip())
-
-
-def generate_method(data: MethodGenerationData) -> str:
-    ''' Generate methods.
-    '''
-    result = METHOD_TEMPLATE.substitute(asdict(data))
-    return result
-
-
-def generate_constructor_methods_for_type(data: MethodGenerationData) -> str:
-    """ Generate constructor methods for the given type.
-    """
-    name = data.type_name
-    base = data.base_type_name
-    default = data.default_value
-    members = data.member_names_without_suffix_underscore
-    arguments = ''
-    arg_inits = ''
-    default_inits = ''
-    for member in members:
-        arguments += f'{base} {member}, '
-        arg_inits += f'{member}_({member}), '
-        default_inits += f'{member}_({default}), '
-    arguments = arguments.removesuffix(', ')
-    arg_inits = arg_inits.removesuffix(', ')
-    default_inits = default_inits.removesuffix(', ')
-    data.method_name = name
-    data.method_return_type = ''
-    data.method_arguments = arguments
-    data.const = f' : {arg_inits}'
-    elements = \
-        list(map(lambda x: x.strip(), generate_method(data).splitlines()))
-    init_constructor = f'\t{elements[0]} {elements[1]}{elements[3]}\n\n'
-    data.const = f' : {default_inits}'
-    data.method_arguments = ''
-    elements = \
-        list(map(lambda x: x.strip(), generate_method(data).splitlines()))
-    default_constructor = f'\t{
-        elements[0]} {elements[1]}{elements[3]}\n\n'
-    return init_constructor + default_constructor
 
 
 def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
@@ -107,24 +60,22 @@ def generate_scalar_template_values(ty: Type) -> None:
     data: MethodGenerationData = MethodGenerationData()
     data.type_name = ty.name
     data.default_value = ty.default
-    if ty.dimension.is_scalar():
-        data.base_type_name = 'Raw'
-        data.member_names_without_suffix_underscore = ['value']
-        # Generate typedef
-        typedef = f'\ttypedef {ty.base} Raw;\n\n'
-        constructors = generate_constructor_methods_for_type(data)
-        data.method_arguments = ''
-        data.method_name = 'raw'
-        data.method_return_type = 'Raw'
-        data.method_body = 'return value_;'
-        data.const = ' const'
-        getter = generate_method(data).removesuffix('\n')
-        member = '\tRaw value_;'
-        ty.public_area = typedef + constructors \
-            + generate_scalar_elementary_arithmetic(data) \
-            + generate_scalar_comparison_methods(data) \
-            + getter
-        ty.private_area = member + '\n'
+    data.base_type_name = 'Raw'
+    data.member_names_without_suffix_underscore = ['value']
+    typedef = f'\ttypedef {ty.base} Raw;\n\n'
+    constructors = generate_constructor_methods_for_type(data)
+    data.method_arguments = ''
+    data.method_name = 'raw'
+    data.method_return_type = 'Raw'
+    data.method_body = 'return value_;'
+    data.const = ' const'
+    getter = generate_method(data).removesuffix('\n')
+    member = '\tRaw value_;'
+    ty.public_area = typedef + constructors \
+        + generate_scalar_elementary_arithmetic(data) \
+        + generate_scalar_comparison_methods(data) \
+        + getter
+    ty.private_area = member + '\n'
 
 
 def generate_float_template_values(float_t: Type) -> None:
