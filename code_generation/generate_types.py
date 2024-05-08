@@ -70,7 +70,6 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     for op in operations:
         data.method_name = op[0]
         data.method_return_type = data.type_name
-        # TODO: can make the argument const reference.
         data.method_arguments = f'{data.type_name} rhs'
         data.const = ' const'
         data.method_body = \
