@@ -73,11 +73,19 @@ class Type:
 
 @dataclass
 class MethodGenerationData:
-    """ Data used for generating constructor methods for types.
+    """ Data used for generating methods for types.
     """
+    type_name: str = ''
+    base_type_name: str = ''
+    default_value: str = ''
+    method_name: str = ''
+    method_return_type: str = ''
+    const: str = ''
+    method_arguments: str = ''
+    method_body: str = ''
+    tab_character: str = '\t'
 
-    def __init__(self) -> None:
-        self.type_name: str = ''
-        self.base_type_name: str = ''
-        self.default_value: str = ''
-        self.member_names_without_suffix_underscore: list[str]
+    def __init__(self):
+        self.member_names_without_suffix_underscore: list[str] = []
+        self.method_arguments_as_list_of_pairs_of_type_and_name: list[list[str]] = [
+        ]

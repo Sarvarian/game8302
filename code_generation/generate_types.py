@@ -1,6 +1,23 @@
 """ Generate types for use in code generation. """
 
-from code_generation.types import (Dimension, MethodGenerationData, Type)
+from dataclasses import asdict
+from string import Template
+
+from code_generation.types import Dimension, MethodGenerationData, Type
+
+METHOD_TEMPLATE = Template("""
+$tab_character$method_return_type $method_name($method_arguments)$const
+$tab_character{
+$tab_character$tab_character$method_body
+$tab_character}
+""".strip())
+
+
+def generate_method(data: MethodGenerationData) -> str:
+    ''' Generate methods.
+    '''
+    result = METHOD_TEMPLATE.substitute(asdict(data))
+    return result
 
 
 def generate_constructor_methods_for_type(data: MethodGenerationData) -> str:
@@ -20,29 +37,39 @@ def generate_constructor_methods_for_type(data: MethodGenerationData) -> str:
     arguments = arguments.removesuffix(', ')
     arg_inits = arg_inits.removesuffix(', ')
     default_inits = default_inits.removesuffix(', ')
+    data.method_name = name
+    data.method_return_type = ''
+    data.method_arguments = arguments
+    data.const = f' : {arg_inits}'
+    elements = \
+        list(map(lambda x: x.strip(), generate_method(data).splitlines()))
+    init_constructor = f'\t{elements[0]} {elements[1]}{elements[3]}\n\n'
+    data.const = f' : {default_inits}'
+    data.method_arguments = ''
+    elements = \
+        list(map(lambda x: x.strip(), generate_method(data).splitlines()))
+    default_constructor = f'\t{
+        elements[0]} {elements[1]}{elements[3]}\n\n'
+    return init_constructor + default_constructor
+
+
+def generate_addition_and_subtraction_operation_methods(data: MethodGenerationData):
+    """ Generate methods of add and sub for the given type.
+    """
+    name = data.type_name
+    base = data.base_type_name
+    default = data.default_value
+    members = data.member_names_without_suffix_underscore
     result = ''
-    result += f'\t{name}({arguments}) : {arg_inits} {{}}\n\n'
-    result += f'\t{name}() : {default_inits} {{}}\n\n'
-    return result
-
-
-# def generate_addition_and_subtraction_operation_methods(data: MethodGenerationData):
-#     """ Generate methods of add and sub for the given type.
-#     """
-#     name = data.type_name
-#     base = data.base_type_name
-#     default = data.default_value
-#     members = data.member_names_without_suffix_underscore
-#     result = ''
-#     result += f'\t{name} add({name} rhs) const\n'
-#     result += f'\t{{\n'
-#     result += f'\t\treturn {name}();\n'
-#     result += f'\t}}\n'
-#     result += f'\n'
-#     result += f'\t{name} add_inplace({name} rhs)\n'
-#     result += f'\t{{\n'
-#     result += f'\t\r {base}_ =  \n'
-#     result += f'\t}}\n\n'
+    result += f'\t{name} add({name} rhs) const\n'
+    result += f'\t{{\n'
+    result += f'\t\treturn {name}();\n'
+    result += f'\t}}\n'
+    result += f'\n'
+    result += f'\t{name} add_inplace({name} rhs)\n'
+    result += f'\t{{\n'
+    result += f'\t\r {base}_ =  \n'
+    result += f'\t}}\n\n'
 
 
 def generate_scalar_template_values(ty: Type) -> None:
