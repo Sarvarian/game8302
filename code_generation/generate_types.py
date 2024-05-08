@@ -66,8 +66,18 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
         ['mul', '*'],
         ['div', '/']
     ]
-
     result = ''
+    for op in operations:
+        data.method_name = op[0]
+        data.method_return_type = data.type_name
+        # TODO: can make the argument const reference.
+        data.method_arguments = f'{data.type_name} rhs'
+        data.const = ' const'
+        result += generate_method(data)
+        data.method_name = f'{op[0]}_inplace'
+        data.method_return_type = 'void'
+        data.const = ''
+        result += generate_method(data)
     return result
 
 

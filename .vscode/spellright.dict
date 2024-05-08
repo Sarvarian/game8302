@@ -32,3 +32,4 @@ arg_inits
 default_inits
 add_inplace
 rhs
+_inplace

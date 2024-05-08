@@ -95,3 +95,8 @@ typedef hsvf32
 type
 
 ```
+
+(const reference)
+
+can make arguments in elementary arithmetic
+functions const reference.
