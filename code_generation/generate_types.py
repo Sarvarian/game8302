@@ -1,7 +1,9 @@
 """ Generate types for use in code generation. """
 
 
-from code_generation.method import generate_constructors, generate_constructors_for_scalar_type, generate_getters, generate_getters_for_scalar_type, generate_method
+from code_generation.method import (generate_constructors_for_scalar_type,
+                                    generate_getters_for_scalar_type,
+                                    generate_method)
 from code_generation.types import Dimension, MethodGenerationData, Type
 
 
