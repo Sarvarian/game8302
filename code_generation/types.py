@@ -84,6 +84,7 @@ class MethodGenerationData:
     method_arguments: str = ''
     method_body: str = ''
     tab_character: str = '\t'
+    new_line: str = '\n'
 
     def __init__(self):
         self.member_names_without_suffix_underscore: list[str] = []

@@ -24,7 +24,6 @@ struct $name
 {
 public:
 $public_area
-
 private:
 $private_area
 };$new_line$new_line

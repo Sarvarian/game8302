@@ -9,7 +9,7 @@ METHOD_TEMPLATE = Template("""
 $tab_character$method_return_type $method_name($method_arguments)$const
 $tab_character{
 $tab_character$tab_character$method_body
-$tab_character}
+$tab_character}$new_line$new_line
 """.strip())
 
 
@@ -60,7 +60,7 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     base = data.base_type_name
     default = data.default_value
     members = data.member_names_without_suffix_underscore
-    operations = list[list[str]] = [
+    operations = [
         ['add', '+'],
         ['sub', '-'],
         ['mul', '*'],
@@ -73,10 +73,13 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
         # TODO: can make the argument const reference.
         data.method_arguments = f'{data.type_name} rhs'
         data.const = ' const'
+        data.method_body = \
+            f'return {data.type_name}(value_ {op[1]} rhs.value_);'
         result += generate_method(data)
         data.method_name = f'{op[0]}_inplace'
         data.method_return_type = 'void'
         data.const = ''
+        data.method_body = f'value_ = value_ {op[1]} rhs.value_;'
         result += generate_method(data)
     return result
 
@@ -98,10 +101,11 @@ def generate_scalar_template_values(ty: Type) -> None:
         data.method_return_type = 'Raw'
         data.method_body = 'return value_;'
         data.const = ' const'
-        getter = generate_method(data)
+        getter = generate_method(data).removesuffix('\n')
         member = '\tRaw value_;'
-        ty.public_area = typedef + constructors + getter
-        ty.private_area = member
+        ty.public_area = typedef + constructors + \
+            generate_scalar_elementary_arithmetic(data) + getter
+        ty.private_area = member + '\n'
 
 
 def generate_float_template_values(float_t: Type) -> None:
