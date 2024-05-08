@@ -37,25 +37,50 @@ def generate_arguments(arguments: list[list[str]]) -> str:
 def generate_constructors(ty: Type) -> str:
     """ Generate constructor methods for the given type.
     """
-    members = ty.members
-    data = MethodGenerationData()
-    data.type_name = ty.name
-    data.default_value = ty.default
-    data.base_type_name = 'Raw'
+    data = MethodGenerationData(ty)
     data.method_name = data.type_name
     data.method_return_type = ''
-    data.const = f' : {members[0]}_({members[0]}) '
-    data.method_arguments = f'{data.base_type_name} {', '.join(members)}'
+    data.const = f' : {ty.members[0]}_({ty.members[0]}) '
+    data.method_arguments = f'{data.base_type_name} {', '.join(ty.members)}'
     data.method_body = ''
     init_constructor = \
         generate_method(data) \
         .replace('\t ', '\t') \
         .replace('\n\t{\n\t\t\n\t}', '{}')
     s = f'_({data.default_value}), '
-    data.const = f' : {s.join(members)}{s.removesuffix(', ')} '
+    data.const = f' : {s.join(ty.members)}{s.removesuffix(', ')} '
     data.method_arguments = ''
     default_constructor = \
         generate_method(data) \
         .replace('\t ', '\t') \
         .replace('\n\t{\n\t\t\n\t}', '{}')
     return init_constructor + default_constructor
+
+
+def generate_constructors_for_scalar_type(ty: Type) -> str:
+    """ Call generate_constructors but with some modifications.
+    """
+    return generate_constructors(ty).replace(ty.base, 'Raw')
+
+
+def generate_getters(ty: Type) -> str:
+    """ Generate getters of members of a type.
+    """
+    data: MethodGenerationData = MethodGenerationData(ty)
+    data.method_arguments = ''
+    result = ''
+    for member in ty.members:
+        data.method_name = member
+        data.method_return_type = ty.base
+        data.method_body = f'return {member}_;'
+        data.const = ' const'
+        result += generate_method(data).removesuffix('\n')
+    return result
+
+
+def generate_getters_for_scalar_type(ty: Type) -> str:
+    """ Run generate_getters but with some modifications.
+    """
+    return generate_getters(ty) \
+        .replace(ty.base, 'Raw') \
+        .replace('value()', 'raw()')

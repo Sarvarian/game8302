@@ -1,13 +1,14 @@
 """ Generate types for use in code generation. """
 
 
-from code_generation.method import generate_constructors, generate_method
+from code_generation.method import generate_constructors, generate_constructors_for_scalar_type, generate_getters, generate_getters_for_scalar_type, generate_method
 from code_generation.types import Dimension, MethodGenerationData, Type
 
 
-def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
+def generate_scalar_elementary_arithmetic(ty: Type) -> str:
     """ Generate methods of add and sub for the given type.
     """
+    data = MethodGenerationData(ty)
     operations = [
         ['add', '+'],
         ['sub', '-'],
@@ -31,9 +32,10 @@ def generate_scalar_elementary_arithmetic(data: MethodGenerationData) -> str:
     return result
 
 
-def generate_scalar_comparison_methods(data: MethodGenerationData) -> str:
+def generate_scalar_comparison_methods(ty: Type) -> str:
     """ Generate comparison methods for a scalar type.
     """
+    data = MethodGenerationData(ty)
     operators = [
         ['greater_then', '>'],
         ['less_then', '<'],
@@ -56,20 +58,11 @@ def generate_scalar_comparison_methods(data: MethodGenerationData) -> str:
 def generate_scalar_template_values(ty: Type) -> None:
     """ Generate body of a type.
     """
-    data: MethodGenerationData = MethodGenerationData()
-    data.type_name = ty.name
-    data.default_value = ty.default
-    data.base_type_name = 'Raw'
     typedef = f'\ttypedef {ty.base} Raw;\n\n'
-    data.method_arguments = ''
-    data.method_name = 'raw'
-    data.method_return_type = 'Raw'
-    data.method_body = 'return value_;'
-    data.const = ' const'
-    getter = generate_method(data).removesuffix('\n')
-    ty.public_area = typedef + generate_constructors(ty) \
-        + generate_scalar_elementary_arithmetic(data) \
-        + generate_scalar_comparison_methods(data) \
+    getter = generate_getters_for_scalar_type(ty)
+    ty.public_area = typedef + generate_constructors_for_scalar_type(ty) \
+        + generate_scalar_elementary_arithmetic(ty) \
+        + generate_scalar_comparison_methods(ty) \
         + getter
     ty.private_area = '\tRaw value_;\n'
 

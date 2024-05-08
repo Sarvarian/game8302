@@ -113,6 +113,7 @@ class MethodGenerationData:
     tab_character: str = '\t'
     new_line: str = '\n'
 
-    def __init__(self):
-        self.method_arguments_as_list_of_pairs_of_type_and_name: list[list[str]] = [
-        ]
+    def __init__(self, ty: Type):
+        self.type_name = ty.name
+        self.base_type_name = ty.base
+        self.default_value = ty.default
