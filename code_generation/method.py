@@ -4,7 +4,7 @@
 
 from dataclasses import asdict
 from string import Template
-from code_generation.types import MethodGenerationData
+from code_generation.types import MethodGenerationData, Type
 
 
 METHOD_TEMPLATE = Template("""
@@ -32,3 +32,30 @@ def generate_arguments(arguments: list[list[str]]) -> str:
         result += f'{arg[0]} {arg[1]}, '
     result = result.removesuffix(', ')
     return result
+
+
+def generate_constructors(ty: Type) -> str:
+    """ Generate constructor methods for the given type.
+    """
+    members = ty.members
+    data = MethodGenerationData()
+    data.type_name = ty.name
+    data.default_value = ty.default
+    data.base_type_name = 'Raw'
+    data.method_name = data.type_name
+    data.method_return_type = ''
+    data.const = f' : {members[0]}_({members[0]}) '
+    data.method_arguments = f'{data.base_type_name} {', '.join(members)}'
+    data.method_body = ''
+    init_constructor = \
+        generate_method(data) \
+        .replace('\t ', '\t') \
+        .replace('\n\t{\n\t\t\n\t}', '{}')
+    s = f'_({data.default_value}), '
+    data.const = f' : {s.join(members)}{s.removesuffix(', ')} '
+    data.method_arguments = ''
+    default_constructor = \
+        generate_method(data) \
+        .replace('\t ', '\t') \
+        .replace('\n\t{\n\t\t\n\t}', '{}')
+    return init_constructor + default_constructor

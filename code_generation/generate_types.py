@@ -1,8 +1,7 @@
 """ Generate types for use in code generation. """
 
 
-from code_generation.constructor import generate_constructor_methods_for_type
-from code_generation.method import generate_method
+from code_generation.method import generate_constructors, generate_method
 from code_generation.types import Dimension, MethodGenerationData, Type
 
 
@@ -61,21 +60,18 @@ def generate_scalar_template_values(ty: Type) -> None:
     data.type_name = ty.name
     data.default_value = ty.default
     data.base_type_name = 'Raw'
-    data.member_names_without_suffix_underscore = ['value']
     typedef = f'\ttypedef {ty.base} Raw;\n\n'
-    constructors = generate_constructor_methods_for_type(data)
     data.method_arguments = ''
     data.method_name = 'raw'
     data.method_return_type = 'Raw'
     data.method_body = 'return value_;'
     data.const = ' const'
     getter = generate_method(data).removesuffix('\n')
-    member = '\tRaw value_;'
-    ty.public_area = typedef + constructors \
+    ty.public_area = typedef + generate_constructors(ty) \
         + generate_scalar_elementary_arithmetic(data) \
         + generate_scalar_comparison_methods(data) \
         + getter
-    ty.private_area = member + '\n'
+    ty.private_area = '\tRaw value_;\n'
 
 
 def generate_float_template_values(float_t: Type) -> None:

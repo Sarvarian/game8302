@@ -7,7 +7,14 @@ class DimensionError(Exception):
     """ Dimension Error """
 
     def __init__(self) -> None:
-        super().__init__('type dimension is invalid!')
+        super().__init__('type dimension is invalid!.')
+
+
+class UnhandledCase(Exception):
+    """ Unhandled Case """
+
+    def __init__(self) -> None:
+        super().__init__('Case for a clause in a condition is not handled.')
 
 
 @dataclass
@@ -42,6 +49,25 @@ class Dimension:
         """
         return self.i > 1 and self.j > 1
 
+    def generate_member_names(self) -> list[str]:
+        """ Generate member names for types
+        that use this dimension.
+        Without suffix underscore.
+        """
+        if self.is_scalar():
+            return ['value']
+        if self.is_vector():
+            names = ['x', 'y', 'z', 'w']
+            if self.i > len(names):
+                raise UnhandledCase()
+            result: list[str] = []
+            for i in range(self.i):
+                result.append(names[i])
+            return result
+        if self.is_matrix():
+            raise UnhandledCase()
+        raise UnhandledCase()
+
 
 @dataclass
 class Type:
@@ -63,6 +89,7 @@ class Type:
         self.template = ''
         self.common_routines = ''
         self.routines = ''
+        self.members: list[str] = dimension.generate_member_names()
 
     def useless_public_method(self) -> None:
         """ useless public method """
@@ -87,6 +114,5 @@ class MethodGenerationData:
     new_line: str = '\n'
 
     def __init__(self):
-        self.member_names_without_suffix_underscore: list[str] = []
         self.method_arguments_as_list_of_pairs_of_type_and_name: list[list[str]] = [
         ]
