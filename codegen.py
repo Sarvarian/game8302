@@ -4,8 +4,13 @@
 from string import Template
 
 
+#
+# Level 2
+#
 # 1. Generate C Math Function Directors.
 # 2. Generate Types and their Conversion Bodies.
+#
+#
 
 
 def generate_main_body() -> str:
@@ -14,9 +19,14 @@ def generate_main_body() -> str:
     return ''
 
 
+#
+# Level 1
+#
 # 1. Call generate_main_body.
 # 2. Put the return value inside the main template.
 # 3. Write the final result into the output file.
+#
+#
 
 
 def write_content(file_path: str, content: str) -> None:
