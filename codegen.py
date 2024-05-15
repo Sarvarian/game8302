@@ -4,6 +4,10 @@
 from string import Template
 
 
+# 1. Generate C Math Function Directors.
+# 2. Generate Types and their Conversion Bodies.
+
+
 def generate_main_body() -> str:
     """ Generate the main body of content.
     """
